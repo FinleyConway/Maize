@@ -1,0 +1,3 @@
+[submodule "Dependencies/EntityComponentSystem"]
+	path = Dependencies/EntityComponentSystem
+	url = https://github.com/FinleyConway/EntityComponentSystem.git
