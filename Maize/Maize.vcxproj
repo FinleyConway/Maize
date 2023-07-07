@@ -45,11 +45,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)Bin\Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)Bin\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)Bin\Intermediate\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)Bin\Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -58,10 +58,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -73,16 +76,48 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Scene\Systems\RenderingSystem.cpp" />
+    <ClCompile Include="src\Core\Renderer.cpp" />
+    <ClCompile Include="src\Core\Window.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dependencies\EntityComponentSystem\EntityComponentSystem\EntityComponentSystem.vcxproj">
+      <Project>{2a6a9780-6208-42d6-806e-6cf197cb930f}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Scene\Asset.h" />
+    <ClInclude Include="include\Scene\AssetManager.h" />
+    <ClInclude Include="include\Components\Transform.h" />
+    <ClInclude Include="include\Core\Renderer.h" />
+    <ClInclude Include="include\Core\Texture.h" />
+    <ClInclude Include="include\Core\Window.h" />
+    <ClInclude Include="include\Math\Vec2.h" />
+    <ClInclude Include="include\Math\Vec2Int.h" />
+    <ClInclude Include="include\Math\Vec2UInt.h" />
+    <ClInclude Include="include\Scene\Components.h" />
+    <ClInclude Include="include\Scene\Scene.h" />
+    <ClInclude Include="include\Scene\Systems\ISystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Scene\Systems\RenderingSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Corn.png" />
+    <Image Include="Assets\PixelTest.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
