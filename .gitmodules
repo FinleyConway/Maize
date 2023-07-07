@@ -1,3 +1,11 @@
 [submodule "Dependencies/EntityComponentSystem"]
 	path = Dependencies/EntityComponentSystem
 	url = https://github.com/FinleyConway/EntityComponentSystem.git
+[submodule "Dependencies/SDL"]
+	path = Dependencies/SDL
+	url = https://github.com/libsdl-org/SDL.git
+	branch = release-2.28.x
+[submodule "Dependencies/SDL_image"]
+	path = Dependencies/SDL_image
+	url = https://github.com/libsdl-org/SDL_image.git
+	branch = release-2.6.x
