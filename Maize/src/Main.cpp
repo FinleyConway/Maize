@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 	renderer.SetLogicalSize({ 320, 180 });
 
 	AssetManager assetManager(renderer);
-	assetManager.AddAsset<Texture>("Assets/Corn.png");
+	assetManager.AddAsset<Texture>("Assets/Corn..png");
 
 
 	EntityWorld world;

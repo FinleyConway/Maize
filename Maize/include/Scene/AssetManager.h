@@ -19,6 +19,8 @@ namespace Maize {
         template <typename T>
         void AddAsset(const std::string& path)
         {
+            static_assert(std::is_base_of_v<Asset, T>, "T must be derived from Asset");
+
             std::hash<std::string> hasher;
 
             if constexpr (std::is_same_v<T, Texture>)
@@ -33,6 +35,8 @@ namespace Maize {
         template <typename T>
         T* GetAsset(const std::string& path) const
         {
+            static_assert(std::is_base_of_v<Asset, T>, "T must be derived from Asset");
+
             std::hash<std::string> hasher;
 
             if (auto it = m_Assets.find(hasher(path)); it != m_Assets.end())
@@ -60,7 +64,7 @@ namespace Maize {
 
             if (loadedSurface == nullptr)
             {
-                std::cout << "Unable to load image: " << filePath << " " << SDL_GetError() << std::endl;
+                std::cout << SDL_GetError() << std::endl;
                 return Texture(); // return an invalid Texture object
             }
 
@@ -70,11 +74,11 @@ namespace Maize {
 
             if (newTexture == nullptr)
             {
-                std::cout << "Unable to create texture from: " << filePath << " " << SDL_GetError() << std::endl;
+                std::cout << SDL_GetError() << std::endl;
                 return Texture(); // return an invalid Texture object
             }
 
-            return Texture(newTexture, Vec2Int{ loadedSurface->w, loadedSurface->h });
+            return Texture(newTexture, Vec2Int( loadedSurface->w, loadedSurface->h ));
         }
     };
 
