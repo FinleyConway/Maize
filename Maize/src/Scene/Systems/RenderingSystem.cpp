@@ -28,13 +28,15 @@ namespace Maize {
     void RenderingSystem::RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData)
     {
         std::unordered_map<std::string, std::vector<SpriteRenderData>> spriteBatches;
-        GetSpriteRenderData(registry, spriteBatches);
+        GetSpriteRenderData(registry, cameraData, spriteBatches);
         SortSpriteBatches(spriteBatches);
 
         // render each batch
         for (const auto& [texturePath, renderDataList] : spriteBatches)
         {
             const Texture& texture = *m_AssetManager.GetAsset<Texture>(texturePath);
+
+            std::cout << renderDataList.size() << std::endl;
 
             for (const auto& renderData : renderDataList)
             {
@@ -43,7 +45,7 @@ namespace Maize {
         }
     }
 
-    void RenderingSystem::GetSpriteRenderData(ECS::EntityWorld& registry, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches)
+    void RenderingSystem::GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches)
     {
         spriteBatches.clear();
 
@@ -51,11 +53,59 @@ namespace Maize {
         {
             const auto& [transform, sprite] = registry.GetComponents<TransformComponent, SpriteComponent>(entity);
 
-            spriteBatches[sprite.texture].emplace_back(SpriteRenderData(&transform, &sprite));
+            SpriteRenderData renderData(&transform, &sprite);
+
+            if (IsVisibleInCamera(renderData, cameraData))
+            { 
+                spriteBatches[sprite.texture].emplace_back(renderData);
+            }
         }
     }
 
-    void RenderingSystem::SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches)
+    /*
+    * Needs refactoring!!
+    */
+    bool RenderingSystem::IsVisibleInCamera(const SpriteRenderData& renderData, const CameraData& cameraData) const
+    {
+        const auto RotateVector = [](Vec2 vector, float angle)
+        {
+            const float cosAngle = cos(angle);
+            const float sinAngle = sin(angle);
+
+            const float x = vector.x * cosAngle - vector.y * sinAngle;
+            const float y = vector.x * sinAngle + vector.y * cosAngle;
+
+            return Vec2(x, y);
+        };
+
+        const Vec2& spritePosition = renderData.transform->position;
+        const Vec2Int& spriteSize = m_AssetManager.GetAsset<Texture>(renderData.sprite->texture)->Size();
+        const float spriteRotation = renderData.transform->angle;
+
+        const Vec2& cameraPosition = cameraData.transform.position;
+        const Vec2Int& cameraSize = cameraData.camera.bounds;
+
+        // Transform sprite position based on rotation
+        const Vec2 rotatedSpritePosition = RotateVector(spritePosition, spriteRotation);
+
+        // Transform sprite size based on rotation
+        const Vec2Int rotatedSpriteSize(
+            abs(static_cast<int>(spriteSize.x * cos(spriteRotation))) + abs(static_cast<int>(spriteSize.y * sin(spriteRotation))),
+            abs(static_cast<int>(spriteSize.x * sin(spriteRotation))) + abs(static_cast<int>(spriteSize.y * cos(spriteRotation)))
+        );
+
+        const float spriteRight = rotatedSpritePosition.x + static_cast<float>(rotatedSpriteSize.x);
+        const float spriteBottom = rotatedSpritePosition.y + static_cast<float>(rotatedSpriteSize.y);
+        const float cameraRight = cameraPosition.x + static_cast<float>(cameraSize.x);
+        const float cameraBottom = cameraPosition.y + static_cast<float>(cameraSize.y);
+
+        return spriteRight > cameraPosition.x &&
+            rotatedSpritePosition.x < cameraRight &&
+            spriteBottom > cameraPosition.y &&
+            rotatedSpritePosition.y < cameraBottom;
+    }
+
+    void RenderingSystem::SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches) const
     {
         // sort batch based on entities y position
         for (auto& [_, renderDataList] : spriteBatches)
@@ -66,7 +116,7 @@ namespace Maize {
         }
     }
 
-    SDL_RendererFlip RenderingSystem::FlipSprite(const SpriteComponent& sprite)
+    SDL_RendererFlip RenderingSystem::FlipSprite(const SpriteComponent& sprite) const
     {
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
@@ -91,6 +141,7 @@ namespace Maize {
         const TransformComponent& cameraTransform = cameraData.transform;
         const CameraComponent& camera = cameraData.camera;
 
+        // pixel perfect
         SDL_Rect dstRect;
         dstRect.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
         dstRect.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
@@ -104,7 +155,6 @@ namespace Maize {
         SDL_RendererFlip flip = FlipSprite(sprite);
 
         SDL_Colour colour = renderData.sprite->colour;
-
         texture.SetColour(colour.r, colour.g, colour.b);
         texture.SetAlpha(colour.a);
 

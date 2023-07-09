@@ -3,10 +3,10 @@
 #include <algorithm>
 #include <unordered_map>
 
-#include "Scene/Systems/ISystem.h"
 #include "Core/Renderer.h"
 #include "Scene/Components.h"
 #include "Scene/AssetManager.h"
+#include "Scene/Systems/ISystem.h"
 
 namespace Maize {
 
@@ -35,9 +35,10 @@ namespace Maize {
 		};
 
 		void RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData);
-		void GetSpriteRenderData(ECS::EntityWorld& registry, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
-		void SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
-		SDL_RendererFlip FlipSprite(const SpriteComponent& sprite);
+		void GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
+		bool IsVisibleInCamera(const SpriteRenderData& renderData, const CameraData& cameraData) const;
+		void SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches) const;
+		SDL_RendererFlip FlipSprite(const SpriteComponent& sprite) const;
 		void RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const Texture& texture);
 	};
 

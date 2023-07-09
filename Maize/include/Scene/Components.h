@@ -54,6 +54,8 @@ namespace Maize {
 		enum class RenderMode { NonPixelPerfect, PixelPerfect, };
 
 		RenderMode renderMode = RenderMode::NonPixelPerfect;
+		SDL_Rect viewport;
+		Vec2Int bounds;
 		float zoom = 1;
 	};
 

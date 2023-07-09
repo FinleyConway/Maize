@@ -20,7 +20,7 @@ auto CreateTestEntity(ECS::EntityWorld& world, Vec2 position)
 	auto& sprite = world.AddComponent<SpriteComponent>(entity);
 
 	transform.position = position;
-	transform.angle = 0;
+	transform.angle = 25;
 
 	sprite.texture = "Assets/Corn.png";
 	sprite.pixelPerUnit = 32;
@@ -30,7 +30,7 @@ auto CreateTestEntity(ECS::EntityWorld& world, Vec2 position)
 	return entity;
 }
 
-auto CreateCameraEntity(ECS::EntityWorld& world)
+auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 {
 	auto entity = world.CreateEntity();
 	auto& transform = world.AddComponent<TransformComponent>(entity);
@@ -38,6 +38,7 @@ auto CreateCameraEntity(ECS::EntityWorld& world)
 
 	transform.position = Vec2(0, 0);
 
+	camera.bounds = window.Size();
 	camera.zoom = 1;
 
 	return entity;
@@ -62,21 +63,12 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<SpriteComponent>();
 	world.RegisterComponent<CameraComponent>();
 
-	/*for (float i = 0; i < 32*4; i++)
-	{
-		for (float j = 0; j < 32*4; j++)
-		{
-			CreateTestEntity(world, { i, j });
-		}
-	}*/
-	auto entity = CreateTestEntity(world, { 50, 50 });
-	auto& sprite = world.GetComponent<SpriteComponent>(entity);
-	sprite.colour = { 255, 0, 255, 100 };
-	sprite.flipX = true;
+	auto entity = CreateTestEntity(world, { -40, -40 });
+	auto& transform = world.GetComponent<TransformComponent>(entity);
 
 	CreateTestEntity(world, { 100, 100 });
 
-	CreateCameraEntity(world);
+	CreateCameraEntity(world, window);
 
 	RenderingSystem renderingSystem(renderer, assetManager);
 
@@ -101,12 +93,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		renderingSystem.OnRender(world, deltaTime);
-
-		// calculate frame time
-		uint32_t frameEndTime = SDL_GetTicks();
-		float frameTime = static_cast<float>(frameEndTime - frameStartTime) / 1000.0f;
-		std::cout << "Frame Time: " << frameTime << " seconds" << std::endl;
+ 		renderingSystem.OnRender(world, deltaTime);
 
 		prevTime = currentTime;
 	}
