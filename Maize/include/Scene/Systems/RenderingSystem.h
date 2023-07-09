@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <unordered_map>
 
 #include "Scene/Systems/ISystem.h"
@@ -14,27 +15,30 @@ namespace Maize {
 	public:
 		RenderingSystem(Renderer& renderer, AssetManager& asset);
 
-		virtual void OnUpdate(ECS::EntityWorld& registry, float dt) override;
-		virtual void OnRender(ECS::EntityWorld& registry, float dt) override;
+		void OnUpdate(ECS::EntityWorld& registry, float dt) override;
+		void OnRender(ECS::EntityWorld& registry, float dt) override;
 
 	private:
-		struct CameraGroup
+		Renderer& m_Renderer;
+		AssetManager& m_AssetManager;
+
+		struct CameraData
 		{
 			const TransformComponent& transform;
 			const CameraComponent& camera;
 		};
 
-		struct SpriteGroup
+		struct SpriteRenderData
 		{
-			const TransformComponent& transform;
-			const Texture& texture;
+			const TransformComponent* transform;
+			const SpriteComponent* sprite;
 		};
 
-		Renderer& m_Renderer;
-		AssetManager& m_AssetManager;
-
-		void CreateBatches(ECS::EntityWorld& registry, auto& batch);
-		void RenderSprite(const SpriteGroup& spriteGroup, const CameraGroup& cameraGroup);
+		void RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData);
+		void GetSpriteRenderData(ECS::EntityWorld& registry, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
+		void SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
+		SDL_RendererFlip FlipSprite(const SpriteComponent& sprite);
+		void RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const Texture& texture);
 	};
 
 }

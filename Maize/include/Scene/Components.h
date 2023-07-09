@@ -21,7 +21,6 @@ namespace Maize {
 		uint32_t pixelPerUnit = 100;
 		bool flipX = false;
 		bool flipY = false;
-		int32_t sortOrder = 0;
 	};
 
 	struct Rigidbody
@@ -56,9 +55,6 @@ namespace Maize {
 
 		RenderMode renderMode = RenderMode::NonPixelPerfect;
 		float zoom = 1;
-
-		CameraComponent() = default;
-		CameraComponent(const CameraComponent& other) = default;
 	};
 
 	struct Animator

@@ -21,7 +21,7 @@ namespace Maize {
 			SDL_SetTextureAlphaMod(m_Texture.get(), alpha);
 		}
 
-		void SetColor(uint8_t r, uint8_t g, uint8_t b) const
+		void SetColour(uint8_t r, uint8_t g, uint8_t b) const
 		{
 			SDL_SetTextureColorMod(m_Texture.get(), r, g, b);
 		}

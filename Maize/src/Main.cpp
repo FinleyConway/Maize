@@ -24,6 +24,8 @@ auto CreateTestEntity(ECS::EntityWorld& world, Vec2 position)
 
 	sprite.texture = "Assets/Corn.png";
 	sprite.pixelPerUnit = 32;
+	sprite.flipX = false;
+	sprite.flipY = false;
 
 	return entity;
 }
@@ -52,7 +54,7 @@ int main(int argc, char* argv[])
 	renderer.SetLogicalSize({ 320, 180 });
 
 	AssetManager assetManager(renderer);
-	assetManager.AddAsset<Texture>("Assets/Corn..png");
+	assetManager.AddAsset<Texture>("Assets/Corn.png");
 
 
 	EntityWorld world;
@@ -60,13 +62,20 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<SpriteComponent>();
 	world.RegisterComponent<CameraComponent>();
 
-	for (float i = 0; i < 32*4; i++)
+	/*for (float i = 0; i < 32*4; i++)
 	{
 		for (float j = 0; j < 32*4; j++)
 		{
 			CreateTestEntity(world, { i, j });
 		}
-	}
+	}*/
+	auto entity = CreateTestEntity(world, { 50, 50 });
+	auto& sprite = world.GetComponent<SpriteComponent>(entity);
+	sprite.colour = { 255, 0, 255, 100 };
+	sprite.flipX = true;
+
+	CreateTestEntity(world, { 100, 100 });
+
 	CreateCameraEntity(world);
 
 	RenderingSystem renderingSystem(renderer, assetManager);
@@ -80,10 +89,10 @@ int main(int argc, char* argv[])
 		uint32_t currentTime = SDL_GetTicks();
 		float deltaTime = static_cast<float>(currentTime - prevTime) / 1000.0f;
 
-		// Start timer
+		// start timer
 		uint32_t frameStartTime = SDL_GetTicks();
 
-		// Process events
+		// process events
 		while (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
@@ -94,7 +103,7 @@ int main(int argc, char* argv[])
 
 		renderingSystem.OnRender(world, deltaTime);
 
-		// Calculate frame time
+		// calculate frame time
 		uint32_t frameEndTime = SDL_GetTicks();
 		float frameTime = static_cast<float>(frameEndTime - frameStartTime) / 1000.0f;
 		std::cout << "Frame Time: " << frameTime << " seconds" << std::endl;
@@ -107,8 +116,3 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-
-/*
-TODO:
-* start to actually creating a scene rather then slapping everything in main
-*/

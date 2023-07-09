@@ -35,7 +35,7 @@ namespace Maize {
 		SDL_Rect GetViewPort() const;
 
 		void Clear();
-		void RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, SDL_Point point);
+		void RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, SDL_Point point, SDL_RendererFlip flip);
 		void Present();
 
 		operator SDL_Renderer*() const;
