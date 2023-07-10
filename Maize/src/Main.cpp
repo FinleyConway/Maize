@@ -5,6 +5,7 @@
 
 #include "Core/Window.h"
 #include "Core/Renderer.h"
+#include "Core/Point.h"
 
 #include "Scene/Components.h"
 #include "Scene/Systems/RenderingSystem.h"
@@ -13,7 +14,7 @@
 using namespace Maize;
 using namespace ECS;
 
-auto CreateTestEntity(ECS::EntityWorld& world, Vec2 position)
+auto CreateTestEntity(ECS::EntityWorld& world, PointF position)
 {
 	auto entity = world.CreateEntity();
 	auto& transform = world.AddComponent<TransformComponent>(entity);
@@ -36,7 +37,7 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 	auto& transform = world.AddComponent<TransformComponent>(entity);
 	auto& camera = world.AddComponent<CameraComponent>(entity);
 
-	transform.position = Vec2(0, 0);
+	transform.position = PointF(0, 0);
 
 	camera.bounds = window.Size();
 	camera.zoom = 1;
@@ -51,7 +52,7 @@ int main(int argc, char* argv[])
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 
 	Renderer renderer(window);
-	renderer.SetViewport(Vec2Int(0, 0), Vec2Int(1280, 720));
+	renderer.SetViewport(Point(0, 0), Point(1280, 720));
 	renderer.SetLogicalSize({ 320, 180 });
 
 	AssetManager assetManager(renderer);

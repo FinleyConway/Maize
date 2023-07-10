@@ -5,23 +5,23 @@
 #include <memory>
 #include <iostream>
 
-#include "Math/Vec2Int.h"
+#include "Point.h"
 
 namespace Maize {
 
 	class Window
 	{
 	public:
-		Window(const std::string& title, Vec2Int windowPosition, Vec2Int windowSize, uint32_t flags);
+		Window(const std::string& title, Point windowPosition, Point windowSize, uint32_t flags);
 
 		std::string Title() const;
-		void Title(const std::string& title);
+		void Title(const std::string& title) const;
 
-		Vec2Int Position() const;
-		void Position(Vec2Int position);
+		Point Position() const;
+		void Position(Point position) const;
 
-		Vec2Int Size() const;
-		void Size(Vec2Int size);
+		Point Size() const;
+		void Size(Point size) const;
 
 		void Maximize() const;
 		void Minimize() const;

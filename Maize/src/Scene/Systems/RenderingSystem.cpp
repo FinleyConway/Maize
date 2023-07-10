@@ -67,7 +67,7 @@ namespace Maize {
     */
     bool RenderingSystem::IsVisibleInCamera(const SpriteRenderData& renderData, const CameraData& cameraData) const
     {
-        const auto RotateVector = [](Vec2 vector, float angle)
+        const auto RotateVector = [](PointF vector, float angle)
         {
             const float cosAngle = cos(angle);
             const float sinAngle = sin(angle);
@@ -75,21 +75,21 @@ namespace Maize {
             const float x = vector.x * cosAngle - vector.y * sinAngle;
             const float y = vector.x * sinAngle + vector.y * cosAngle;
 
-            return Vec2(x, y);
+            return PointF(x, y);
         };
 
-        const Vec2& spritePosition = renderData.transform->position;
-        const Vec2Int& spriteSize = m_AssetManager.GetAsset<Texture>(renderData.sprite->texture)->Size();
+        const PointF& spritePosition = renderData.transform->position;
+        const Point& spriteSize = m_AssetManager.GetAsset<Texture>(renderData.sprite->texture)->Size();
         const float spriteRotation = renderData.transform->angle;
 
-        const Vec2& cameraPosition = cameraData.transform.position;
-        const Vec2Int& cameraSize = cameraData.camera.bounds;
+        const PointF& cameraPosition = cameraData.transform.position;
+        const Point& cameraSize = cameraData.camera.bounds;
 
         // Transform sprite position based on rotation
-        const Vec2 rotatedSpritePosition = RotateVector(spritePosition, spriteRotation);
+        const PointF rotatedSpritePosition = RotateVector(spritePosition, spriteRotation);
 
         // Transform sprite size based on rotation
-        const Vec2Int rotatedSpriteSize(
+        const Point rotatedSpriteSize(
             abs(static_cast<int>(spriteSize.x * cos(spriteRotation))) + abs(static_cast<int>(spriteSize.y * sin(spriteRotation))),
             abs(static_cast<int>(spriteSize.x * sin(spriteRotation))) + abs(static_cast<int>(spriteSize.y * cos(spriteRotation)))
         );

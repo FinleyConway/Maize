@@ -6,6 +6,7 @@
 
 #include "Window.h"
 #include "Texture.h"
+#include "Point.h"
 #include "Scene/Components.h"
 
 namespace Maize {
@@ -22,21 +23,20 @@ namespace Maize {
 		Renderer(const Window& window, int32_t index = -1, uint32_t flags = SDL_RENDERER_ACCELERATED);
 
 		void SetIntegerScale(bool isIntegerScale);
-		void SetLogicalSize(Vec2Int size);
-		void SetScale(Vec2 scale);
-		void SetViewport(Vec2Int position, Vec2Int size);
+		void SetLogicalSize(Point size);
+		void SetScale(PointF scale);
+		void SetViewport(Point position, Point size);
 		void SetVSync(bool vsync);
-
 		void SetTarget(const Texture* texture);
 
 		bool GetIntegerScale() const;
-		Vec2Int GetLogicalSize() const;
-		Vec2 GetScale() const;
+		Point GetLogicalSize() const;
+		PointF GetScale() const;
 		SDL_Rect GetViewPort() const;
 
-		void Clear();
-		void RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, SDL_Point point, SDL_RendererFlip flip);
-		void Present();
+		void Clear() const;
+		void RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, Point point, SDL_RendererFlip flip) const;
+		void Present() const;
 
 		operator SDL_Renderer*() const;
 

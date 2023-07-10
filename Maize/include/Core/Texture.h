@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <memory>
 
-#include "Math/Vec2UInt.h"
+#include "Point.h"
 #include "Scene/Asset.h" 
 
 namespace Maize {
@@ -12,7 +12,7 @@ namespace Maize {
 	{
 	public:
 		Texture() = default;
-		Texture(SDL_Texture* texture, Vec2Int size) : m_Texture(texture, &SDL_DestroyTexture), m_Size(size)
+		Texture(SDL_Texture* texture, Point size) : m_Texture(texture, &SDL_DestroyTexture), m_Size(size)
 		{
 		}
 
@@ -26,7 +26,7 @@ namespace Maize {
 			SDL_SetTextureColorMod(m_Texture.get(), r, g, b);
 		}
 
-		Vec2Int Size() const { return m_Size; }
+		Point Size() const { return m_Size; }
 
 		operator SDL_Texture*() const { return m_Texture.get(); }
 
@@ -34,7 +34,7 @@ namespace Maize {
 		friend class AssetManager;
 
 		std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_Texture = { nullptr, &SDL_DestroyTexture };
-		Vec2Int m_Size = { 0, 0 };
+		Point m_Size;
 
 		bool IsValid() const
 		{

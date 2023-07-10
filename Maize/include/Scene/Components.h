@@ -2,16 +2,16 @@
 
 #include <SDL.h>
 
-#include "Math/Vec2.h"
+#include "Core/Point.h"
 #include "Core/Texture.h"
 
 namespace Maize {
 
 	struct TransformComponent
 	{
-		Vec2 position = { 0, 0 };
+		PointF position = { 0, 0 };
 		float angle = 0;
-		Vec2 scale = { 1, 1 };
+		PointF scale = { 1, 1 };
 	};
 
 	struct SpriteComponent
@@ -34,13 +34,13 @@ namespace Maize {
 
 	struct SquareCollider
 	{
-		Vec2 offset = { 0, 0 };
-		Vec2 size = Vec2(0.5f, 0.5f);
+		PointF offset = { 0, 0 };
+		PointF size = PointF(0.5f, 0.5f);
 	};
 
 	struct CircleCollider
 	{
-		Vec2 offset = { 0, 0 };
+		PointF offset = { 0, 0 };
 		float radius = 0.5f;
 	};
 
@@ -55,7 +55,7 @@ namespace Maize {
 
 		RenderMode renderMode = RenderMode::NonPixelPerfect;
 		SDL_Rect viewport;
-		Vec2Int bounds;
+		Point bounds;
 		float zoom = 1;
 	};
 

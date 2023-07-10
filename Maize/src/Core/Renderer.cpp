@@ -11,25 +11,22 @@ namespace Maize {
 		}
 	}
 
-	void Renderer::SetIntegerScale(bool isIntegerScale)
+	void Renderer::SetIntegerScale(bool isIntegerScale) 
 	{
-		if (isIntegerScale)
-			SDL_RenderSetIntegerScale(m_Renderer.get(), SDL_TRUE);
-		else
-			SDL_RenderSetIntegerScale(m_Renderer.get(), SDL_FALSE);
+		SDL_RenderSetIntegerScale(m_Renderer.get(), static_cast<SDL_bool>(isIntegerScale));
 	}
 
-	void Renderer::SetLogicalSize(Vec2Int size)
+	void Renderer::SetLogicalSize(Point size)
 	{
 		SDL_RenderSetLogicalSize(m_Renderer.get(), size.x, size.y);
 	}
 
-	void Renderer::SetScale(Vec2 scale)
+	void Renderer::SetScale(PointF scale)
 	{
 		SDL_RenderSetScale(m_Renderer.get(), scale.x, scale.y);
 	}
 
-	void Renderer::SetViewport(Vec2Int position, Vec2Int size)
+	void Renderer::SetViewport(Point position, Point size)
 	{
 		SDL_Rect rect = { position.x, position.y, size.x, size.y };
 		SDL_RenderSetViewport(m_Renderer.get(), &rect);
@@ -50,18 +47,18 @@ namespace Maize {
 		return SDL_RenderGetIntegerScale(m_Renderer.get());
 	}
 
-	Vec2Int Renderer::GetLogicalSize() const
+	Point Renderer::GetLogicalSize() const
 	{
 		int x, y;
 		SDL_RenderGetLogicalSize(m_Renderer.get(), &x, &y);
-		return Vec2Int(x, y);
+		return Point(x, y);
 	}
 
-	Vec2 Renderer::GetScale() const
+	PointF Renderer::GetScale() const
 	{
 		float x, y;
 		SDL_RenderGetScale(m_Renderer.get(), &x, &y);
-		return Vec2(x, y);
+		return PointF(x, y);
 	}
 
 	SDL_Rect Renderer::GetViewPort() const
@@ -71,17 +68,18 @@ namespace Maize {
 		return rect;
 	}
 
-	void Renderer::Clear() 
+	void Renderer::Clear() const
 	{ 
 		SDL_RenderClear(m_Renderer.get());
 	}
 
-	void Renderer::RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, SDL_Point point, SDL_RendererFlip flip)
+	void Renderer::RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, Point point, SDL_RendererFlip flip) const
 	{
-		SDL_RenderCopyEx(m_Renderer.get(), texture, nullptr, &dest, angle, &point, flip);
+		SDL_Point sdlPoint = { point.x, point.y };
+		SDL_RenderCopyEx(m_Renderer.get(), texture, nullptr, &dest, angle, &sdlPoint, flip);
 	}
 
-	void Renderer::Present() 
+	void Renderer::Present() const
 	{ 
 		SDL_RenderPresent(m_Renderer.get()); 
 	}

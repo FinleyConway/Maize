@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "Core/Point.h"
 #include "Core/Renderer.h"
 #include "Scene/Components.h"
 #include "Scene/AssetManager.h"

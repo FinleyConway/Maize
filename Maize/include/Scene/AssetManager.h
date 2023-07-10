@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "Core/Renderer.h"
+#include "Core/Point.h"
 #include "Asset.h"
 
 namespace Maize {
@@ -78,7 +79,7 @@ namespace Maize {
                 return Texture(); // return an invalid Texture object
             }
 
-            return Texture(newTexture, Vec2Int( loadedSurface->w, loadedSurface->h ));
+            return Texture(newTexture, Point( loadedSurface->w, loadedSurface->h ));
         }
     };
 
