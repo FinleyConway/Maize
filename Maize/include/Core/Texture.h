@@ -4,11 +4,10 @@
 #include <memory>
 
 #include "Point.h"
-#include "Scene/Asset.h" 
 
 namespace Maize {
 
-	struct Texture : public Asset
+	struct Texture
 	{
 	public:
 		Texture() = default;
@@ -31,7 +30,7 @@ namespace Maize {
 		operator SDL_Texture*() const { return m_Texture.get(); }
 
 	private:
-		friend class AssetManager;
+		friend class SpriteSheetManager;
 
 		std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_Texture = { nullptr, &SDL_DestroyTexture };
 		Point m_Size;

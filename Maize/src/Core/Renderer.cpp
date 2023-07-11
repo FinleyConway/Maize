@@ -73,10 +73,10 @@ namespace Maize {
 		SDL_RenderClear(m_Renderer.get());
 	}
 
-	void Renderer::RenderSprite(const Texture& texture, const SDL_Rect& dest, float angle, Point point, SDL_RendererFlip flip) const
+	void Renderer::RenderSprite(const Texture& texture, const SDL_Rect& spritePosition, const SDL_Rect& screenPosition, float angle, Point point, SDL_RendererFlip flip) const
 	{
 		SDL_Point sdlPoint = { point.x, point.y };
-		SDL_RenderCopyEx(m_Renderer.get(), texture, nullptr, &dest, angle, &sdlPoint, flip);
+		SDL_RenderCopyEx(m_Renderer.get(), texture, &spritePosition, &screenPosition, angle, &sdlPoint, flip);
 	}
 
 	void Renderer::Present() const

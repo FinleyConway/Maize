@@ -2,9 +2,9 @@
 
 namespace Maize {
 
-	RenderingSystem::RenderingSystem(Renderer& renderer, AssetManager& asset) :
+	RenderingSystem::RenderingSystem(Renderer& renderer, SpriteSheetManager& spriteManager) :
 		m_Renderer(renderer),
-        m_AssetManager(asset)
+        m_SpriteManager(spriteManager)
 	{
 	}
 
@@ -34,13 +34,9 @@ namespace Maize {
         // render each batch
         for (const auto& [texturePath, renderDataList] : spriteBatches)
         {
-            const Texture& texture = *m_AssetManager.GetAsset<Texture>(texturePath);
-
-            std::cout << renderDataList.size() << std::endl;
-
             for (const auto& renderData : renderDataList)
             {
-                RenderSprite(renderData, cameraData, texture);
+                RenderSprite(renderData, cameraData, texturePath);
             }
         }
     }
@@ -79,7 +75,7 @@ namespace Maize {
         };
 
         const PointF& spritePosition = renderData.transform->position;
-        const Point& spriteSize = m_AssetManager.GetAsset<Texture>(renderData.sprite->texture)->Size();
+        const Point& spriteSize = m_SpriteManager.GetSprite(renderData.sprite->texture, renderData.sprite->name).texture.Size();
         const float spriteRotation = renderData.transform->angle;
 
         const PointF& cameraPosition = cameraData.transform.position;
@@ -133,7 +129,7 @@ namespace Maize {
         return flip;
     }
 
-    void RenderingSystem::RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const Texture& texture)
+    void RenderingSystem::RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const std::string& texturePath)
     {
         const TransformComponent& spriteTransform = *renderData.transform;
         const SpriteComponent& sprite = *renderData.sprite;
@@ -141,16 +137,18 @@ namespace Maize {
         const TransformComponent& cameraTransform = cameraData.transform;
         const CameraComponent& camera = cameraData.camera;
 
+        const auto&[spriteData, texture] = m_SpriteManager.GetSprite(texturePath, renderData.sprite->name);
+
         // pixel perfect
-        SDL_Rect dstRect;
-        dstRect.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
-        dstRect.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
-        dstRect.w = static_cast<int>(std::round(static_cast<float>(texture.Size().x) * spriteTransform.scale.x * camera.zoom));
-        dstRect.h = static_cast<int>(std::round(static_cast<float>(texture.Size().y) * spriteTransform.scale.y * camera.zoom));
+        SDL_Rect screenPosition;
+        screenPosition.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
+        screenPosition.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
+        screenPosition.w = static_cast<int>(std::round(static_cast<float>(spriteData.spritePosition.w) * spriteTransform.scale.x * camera.zoom));
+        screenPosition.h = static_cast<int>(std::round(static_cast<float>(spriteData.spritePosition.h) * spriteTransform.scale.y * camera.zoom));
 
         SDL_Point center;
-        center.x = dstRect.w / 2;
-        center.y = dstRect.h / 2;
+        center.x = screenPosition.w / 2;
+        center.y = screenPosition.h / 2;
 
         SDL_RendererFlip flip = FlipSprite(sprite);
 
@@ -158,7 +156,7 @@ namespace Maize {
         texture.SetColour(colour.r, colour.g, colour.b);
         texture.SetAlpha(colour.a);
 
-        m_Renderer.RenderSprite(texture, dstRect, spriteTransform.angle, center, flip);
+        m_Renderer.RenderSprite(texture, spriteData.spritePosition, screenPosition, spriteTransform.angle, center, flip);
     }
 
 }

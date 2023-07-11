@@ -33,6 +33,9 @@
     <ClCompile Include="src\Core\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\SpriteSheetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Components\Transform.h">
@@ -56,16 +59,13 @@
     <ClInclude Include="include\Scene\Systems\ISystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\AssetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Scene\Asset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Core\PointF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\SpriteSheetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,6 +77,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Assets\PixelTest.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\AnimationTest.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

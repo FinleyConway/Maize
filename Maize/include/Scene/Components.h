@@ -17,6 +17,7 @@ namespace Maize {
 	struct SpriteComponent
 	{
 		std::string texture = "";
+		std::string name = "";
 		SDL_Colour colour = { 255, 255, 255, 255 };
 		uint32_t pixelPerUnit = 100;
 		bool flipX = false;

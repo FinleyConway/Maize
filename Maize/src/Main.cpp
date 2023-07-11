@@ -9,7 +9,7 @@
 
 #include "Scene/Components.h"
 #include "Scene/Systems/RenderingSystem.h"
-#include "Scene/AssetManager.h"
+#include "Scene/SpriteSheetManager.h"
 
 using namespace Maize;
 using namespace ECS;
@@ -21,9 +21,9 @@ auto CreateTestEntity(ECS::EntityWorld& world, PointF position)
 	auto& sprite = world.AddComponent<SpriteComponent>(entity);
 
 	transform.position = position;
-	transform.angle = 25;
 
-	sprite.texture = "Assets/Corn.png";
+	sprite.texture = "Assets/AnimationTest.png";
+	sprite.name = "Test5";
 	sprite.pixelPerUnit = 32;
 	sprite.flipX = false;
 	sprite.flipY = false;
@@ -55,27 +55,31 @@ int main(int argc, char* argv[])
 	renderer.SetViewport(Point(0, 0), Point(1280, 720));
 	renderer.SetLogicalSize({ 320, 180 });
 
-	AssetManager assetManager(renderer);
-	assetManager.AddAsset<Texture>("Assets/Corn.png");
-
+	SpriteSheetManager spriteManager(renderer);
+	std::vector<Sprite> sprites;
+	for (int i = 0; i < 16; i++)
+	{
+		sprites.push_back(Sprite("Test" + std::to_string(i), { i * 32, 0, 32, 32 }, { 0, 0 }));
+	}
+	spriteManager.AddSprites("Assets/AnimationTest.png", sprites);
 
 	EntityWorld world;
 	world.RegisterComponent<TransformComponent>();
 	world.RegisterComponent<SpriteComponent>();
 	world.RegisterComponent<CameraComponent>();
 
-	auto entity = CreateTestEntity(world, { -40, -40 });
-	auto& transform = world.GetComponent<TransformComponent>(entity);
-
-	CreateTestEntity(world, { 100, 100 });
+	auto entity = CreateTestEntity(world, { 0, 0 });
+	auto& sprite = world.GetComponent<SpriteComponent>(entity);
 
 	CreateCameraEntity(world, window);
 
-	RenderingSystem renderingSystem(renderer, assetManager);
+	RenderingSystem renderingSystem(renderer, spriteManager);
 
 	bool isRunning = true;
 	SDL_Event event;
 	uint32_t prevTime = SDL_GetTicks();
+
+	int currentFrame = 0;
 
 	while (isRunning)
 	{
@@ -95,6 +99,13 @@ int main(int argc, char* argv[])
 		}
 
  		renderingSystem.OnRender(world, deltaTime);
+
+		SDL_Delay(100);
+
+		//sprite.name = "Test" + std::to_string(currentFrame);
+
+		currentFrame++;
+		if (currentFrame > 15) currentFrame = 0;
 
 		prevTime = currentTime;
 	}
