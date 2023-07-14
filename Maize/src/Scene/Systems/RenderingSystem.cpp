@@ -48,6 +48,7 @@ namespace Maize {
         {
             const auto& [transform, sprite] = registry.GetComponents<TransformComponent, SpriteComponent>(entity);
 
+            // only add valid and visable sprites to the batch
             if (sprite.sprite != nullptr)
             {
                 SpriteRenderData renderData(&transform, &sprite);

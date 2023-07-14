@@ -6,6 +6,7 @@ namespace Maize {
 
 	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix)
 	{
+		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
 			AddSprites(spriteStartPosition, spriteEndPosition, size, pivot, ppu, texturePath, prefix);
@@ -25,12 +26,13 @@ namespace Maize {
 
 	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& spriteName)
 	{
+		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
 			std::unordered_map<std::string, Sprite>& spriteMap = m_SpriteSheets[texturePath];
 			SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
 
-			spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
+			m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 		}
 		else
 		{
@@ -40,17 +42,16 @@ namespace Maize {
 			{
 				m_Textures[texturePath] = std::move(texture);
 
-				std::unordered_map<std::string, Sprite> spriteMap;
 				SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
 
-				spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
-				m_SpriteSheets.try_emplace(texturePath, spriteMap);
+				m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 			}
 		}
 	}
 
 	const Sprite* SpriteSheetManager::GetSprite(const std::string& texturePath, const std::string& spriteName)
 	{
+		// get sprite from specific texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
 			auto& spriteSheet = m_SpriteSheets[texturePath];
@@ -74,6 +75,7 @@ namespace Maize {
 
 	void SpriteSheetManager::RemoveTexture(const std::string& texturePath)
 	{
+		// remove texture with sprites that corresponding with that texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
 			m_SpriteSheets.erase(texturePath);
@@ -87,6 +89,7 @@ namespace Maize {
 
 	void SpriteSheetManager::RemoveSprite(const std::string& texturePath, const std::string& spriteName)
 	{
+		// remove sprite from corresponding texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
 			auto& spriteMap = m_SpriteSheets[texturePath];
@@ -135,6 +138,7 @@ namespace Maize {
 		std::unordered_map<std::string, Sprite> spriteMap;
 		uint32_t index = 0;
 
+		// loop through each sprite in a rectangle area of a sprite
 		for (int32_t x = spriteStartPosition.x; x <= spriteEndPosition.x; x++)
 		{
 			for (int32_t y = spriteStartPosition.y; y <= spriteEndPosition.y; y++)
@@ -142,12 +146,10 @@ namespace Maize {
 				std::string spriteName = std::format("{}{}", prefix, index);
 				SDL_Rect spriteRect = { x * size.x, y * size.y, size.x, size.y };
 
-				spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
+				m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 				index++;
 			}
 		}
-
-		m_SpriteSheets.try_emplace(texturePath, spriteMap);
 	}
 
 }

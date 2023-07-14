@@ -59,12 +59,19 @@ int main(int argc, char* argv[])
 
 	SpriteSheetManager spriteManager(renderer);
 	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
+	spriteManager.AddSpritesFromSheet({ 0, 1 }, { 3, 1 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerWalking");
 
 	AnimationClip playerIdle;
 	playerIdle.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), 100);
 	playerIdle.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
 	playerIdle.AddFrame(2, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle2"), 100);
 	playerIdle.AddFrame(3, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
+
+	AnimationClip playerWalking;
+	playerWalking.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking0"), 100);
+	playerWalking.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
+	playerWalking.AddFrame(2, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking2"), 100);
+	playerWalking.AddFrame(3, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
 
 	EntityWorld world;
 	world.RegisterComponent<TransformComponent>();
@@ -76,7 +83,7 @@ int main(int argc, char* argv[])
 	{
 		for (float j = 0; j < 5; j++)
 		{
-			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle);
+			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking0"), playerWalking);
 		}
 	}
 
