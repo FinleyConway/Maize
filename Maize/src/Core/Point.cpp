@@ -66,6 +66,11 @@ namespace Maize {
         return { x, y };
     }
 
+    Point::operator const SDL_Point* () const
+    {
+        return reinterpret_cast<const SDL_Point*>(this);
+    }
+
     Point::operator PointF() const
     {
         return PointF(floatCast(x), floatCast(y));

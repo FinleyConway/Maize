@@ -88,6 +88,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\RectF.cpp" />
+    <ClCompile Include="src\Core\Rect.cpp" />
     <ClCompile Include="src\Core\AnimationClip.cpp" />
     <ClCompile Include="src\Scene\SpriteSheetManager.cpp" />
     <ClCompile Include="src\Core\Point.cpp" />
@@ -108,6 +110,8 @@
     <ClInclude Include="include\Core\Point.h" />
     <ClInclude Include="include\Core\PointF.h" />
     <ClInclude Include="include\Components\Transform.h" />
+    <ClInclude Include="include\Core\Rect.h" />
+    <ClInclude Include="include\Core\RectF.h" />
     <ClInclude Include="include\Core\Renderer.h" />
     <ClInclude Include="include\Core\Sprite.h" />
     <ClInclude Include="include\Core\Texture.h" />

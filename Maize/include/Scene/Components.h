@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "Core/Point.h"
+#include "Core/Rect.h"
 #include "Core/Texture.h"
 #include "Core/AnimationClip.h"
 
@@ -66,7 +67,7 @@ namespace Maize {
 		enum class RenderMode { NonPixelPerfect, PixelPerfect, };
 
 		RenderMode renderMode = RenderMode::NonPixelPerfect;
-		SDL_Rect viewport;
+		Rect viewport;
 		Point bounds;
 		float zoom = 1;
 	};

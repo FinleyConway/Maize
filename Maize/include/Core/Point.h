@@ -38,6 +38,7 @@ namespace Maize {
 		static Point Min(Point other1, Point other2);
 
 		operator SDL_Point() const;
+		operator const SDL_Point* () const;
 		operator PointF() const;
 
 		Point operator+(Point other) const;

@@ -16,7 +16,7 @@
 using namespace Maize;
 using namespace ECS;
 
-auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sprite, const AnimationClip& clip)
+auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sprite, const AnimationClip& idle, const AnimationClip& walking)
 {
 	auto entity = world.CreateEntity();
 	auto& transform = world.AddComponent<TransformComponent>(entity);
@@ -29,7 +29,9 @@ auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sp
 
 	anim.animationSpeed = 1;
 	anim.currentState = "Idle";
-	anim.states["Idle"] = clip;
+
+	anim.states["Idle"] = idle;
+	anim.states["Walking"] = walking;
 }
 
 auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
@@ -66,12 +68,20 @@ int main(int argc, char* argv[])
 	playerIdle.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
 	playerIdle.AddFrame(2, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle2"), 100);
 	playerIdle.AddFrame(3, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
+	playerIdle.AddFrame(4, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), 100);
+	playerIdle.AddFrame(5, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
+	playerIdle.AddFrame(6, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle2"), 100);
+	playerIdle.AddFrame(7, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
 
 	AnimationClip playerWalking;
 	playerWalking.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking0"), 100);
 	playerWalking.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
 	playerWalking.AddFrame(2, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking2"), 100);
 	playerWalking.AddFrame(3, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
+	playerWalking.AddFrame(4, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking0"), 100);
+	playerWalking.AddFrame(5, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
+	playerWalking.AddFrame(6, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking2"), 100);
+	playerWalking.AddFrame(7, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking1"), 100);
 
 	EntityWorld world;
 	world.RegisterComponent<TransformComponent>();
@@ -83,7 +93,7 @@ int main(int argc, char* argv[])
 	{
 		for (float j = 0; j < 5; j++)
 		{
-			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerWalking0"), playerWalking);
+			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking);
 		}
 	}
 

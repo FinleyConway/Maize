@@ -29,7 +29,6 @@ namespace Maize {
 		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
-			std::unordered_map<std::string, Sprite>& spriteMap = m_SpriteSheets[texturePath];
 			SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
 
 			m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);

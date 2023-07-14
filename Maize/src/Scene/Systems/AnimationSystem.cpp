@@ -14,6 +14,15 @@ namespace Maize {
 			if (frameIndex >= animationClip.Clip().size())
 			{
 				frameIndex = 0;
+
+				if (animation.currentState == "Idle")
+				{
+					animation.currentState = "Walking";
+				}
+				else
+				{
+					animation.currentState = "Idle";
+				}
 			}
 
 			AnimationFrame& currentFrame = animationClip.GetFrame(frameIndex);

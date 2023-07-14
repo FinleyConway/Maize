@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "Core/Point.h"
+#include "Core/Rect.h"
 #include "Core/Renderer.h"
 #include "Scene/Components.h"
 #include "Scene/Systems/ISystem.h"
