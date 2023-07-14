@@ -6,7 +6,6 @@
 #include "Core/Point.h"
 #include "Core/Renderer.h"
 #include "Scene/Components.h"
-#include "Scene/SpriteSheetManager.h"
 #include "Scene/Systems/ISystem.h"
 
 namespace Maize {
@@ -14,14 +13,13 @@ namespace Maize {
 	class RenderingSystem : public ISystem
 	{
 	public:
-		RenderingSystem(Renderer& renderer, SpriteSheetManager& spriteManager);
+		RenderingSystem(Renderer& renderer);
 
 		void OnUpdate(ECS::EntityWorld& registry, float dt) override;
 		void OnRender(ECS::EntityWorld& registry, float dt) override;
 
 	private:
 		Renderer& m_Renderer;
-		SpriteSheetManager& m_SpriteManager;
 
 		struct CameraData
 		{
@@ -36,11 +34,11 @@ namespace Maize {
 		};
 
 		void RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData);
-		void GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches);
+		void GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<Texture*, std::vector<SpriteRenderData>>& spriteBatches);
 		bool IsVisibleInCamera(const SpriteRenderData& renderData, const CameraData& cameraData) const;
-		void SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches) const;
+		void SortSpriteBatches(std::unordered_map<Texture*, std::vector<SpriteRenderData>>& spriteBatches) const;
 		SDL_RendererFlip FlipSprite(const SpriteComponent& sprite) const;
-		void RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const std::string& texturePath);
+		void RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData);
 	};
 
 }

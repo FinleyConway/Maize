@@ -1,9 +1,13 @@
 #pragma once
 
 #include <SDL.h>
+#include <vector>
+#include <string>
+#include <unordered_map>
 
 #include "Core/Point.h"
 #include "Core/Texture.h"
+#include "Core/AnimationClip.h"
 
 namespace Maize {
 
@@ -16,12 +20,19 @@ namespace Maize {
 
 	struct SpriteComponent
 	{
-		std::string texture = "";
-		std::string name = "";
+		const Sprite* sprite = nullptr;
 		SDL_Colour colour = { 255, 255, 255, 255 };
-		uint32_t pixelPerUnit = 100;
 		bool flipX = false;
 		bool flipY = false;
+	};
+
+	struct AnimationFrame;
+	struct AnimationComponent
+	{
+		float animationSpeed = 1;
+		uint32_t currentFrame = 0;
+		std::string currentState = "";
+		std::unordered_map<std::string, AnimationClip> states;
 	};
 
 	struct Rigidbody
@@ -58,11 +69,6 @@ namespace Maize {
 		SDL_Rect viewport;
 		Point bounds;
 		float zoom = 1;
-	};
-
-	struct Animator
-	{
-
 	};
 
 }

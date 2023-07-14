@@ -2,9 +2,8 @@
 
 namespace Maize {
 
-	RenderingSystem::RenderingSystem(Renderer& renderer, SpriteSheetManager& spriteManager) :
-		m_Renderer(renderer),
-        m_SpriteManager(spriteManager)
+	RenderingSystem::RenderingSystem(Renderer& renderer) :
+		m_Renderer(renderer)
 	{
 	}
 
@@ -27,21 +26,21 @@ namespace Maize {
 
     void RenderingSystem::RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData)
     {
-        std::unordered_map<std::string, std::vector<SpriteRenderData>> spriteBatches;
+        std::unordered_map<Texture*, std::vector<SpriteRenderData>> spriteBatches;
         GetSpriteRenderData(registry, cameraData, spriteBatches);
         SortSpriteBatches(spriteBatches);
 
         // render each batch
-        for (const auto& [texturePath, renderDataList] : spriteBatches)
+        for (const auto& [_, renderDataList] : spriteBatches)
         {
             for (const auto& renderData : renderDataList)
             {
-                RenderSprite(renderData, cameraData, texturePath);
+                RenderSprite(renderData, cameraData);
             }
         }
     }
 
-    void RenderingSystem::GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches)
+    void RenderingSystem::GetSpriteRenderData(ECS::EntityWorld& registry, const CameraData& cameraData, std::unordered_map<Texture*, std::vector<SpriteRenderData>>& spriteBatches)
     {
         spriteBatches.clear();
 
@@ -49,11 +48,14 @@ namespace Maize {
         {
             const auto& [transform, sprite] = registry.GetComponents<TransformComponent, SpriteComponent>(entity);
 
-            SpriteRenderData renderData(&transform, &sprite);
+            if (sprite.sprite != nullptr)
+            {
+                SpriteRenderData renderData(&transform, &sprite);
 
-            if (IsVisibleInCamera(renderData, cameraData))
-            { 
-                spriteBatches[sprite.texture].emplace_back(renderData);
+                if (IsVisibleInCamera(renderData, cameraData))
+                {
+                    spriteBatches[&sprite.sprite->Tex()].emplace_back(renderData);
+                }
             }
         }
     }
@@ -75,7 +77,7 @@ namespace Maize {
         };
 
         const PointF& spritePosition = renderData.transform->position;
-        const Point& spriteSize = m_SpriteManager.GetSprite(renderData.sprite->texture, renderData.sprite->name).texture.Size();
+        const Point& spriteSize = Point(renderData.sprite->sprite->Position().w, renderData.sprite->sprite->Position().h);
         const float spriteRotation = renderData.transform->angle;
 
         const PointF& cameraPosition = cameraData.transform.position;
@@ -101,7 +103,7 @@ namespace Maize {
             rotatedSpritePosition.y < cameraBottom;
     }
 
-    void RenderingSystem::SortSpriteBatches(std::unordered_map<std::string, std::vector<SpriteRenderData>>& spriteBatches) const
+    void RenderingSystem::SortSpriteBatches(std::unordered_map<Texture*, std::vector<SpriteRenderData>>& spriteBatches) const
     {
         // sort batch based on entities y position
         for (auto& [_, renderDataList] : spriteBatches)
@@ -129,7 +131,7 @@ namespace Maize {
         return flip;
     }
 
-    void RenderingSystem::RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData, const std::string& texturePath)
+    void RenderingSystem::RenderSprite(const SpriteRenderData& renderData, const CameraData& cameraData)
     {
         const TransformComponent& spriteTransform = *renderData.transform;
         const SpriteComponent& sprite = *renderData.sprite;
@@ -137,14 +139,14 @@ namespace Maize {
         const TransformComponent& cameraTransform = cameraData.transform;
         const CameraComponent& camera = cameraData.camera;
 
-        const auto&[spriteData, texture] = m_SpriteManager.GetSprite(texturePath, renderData.sprite->name);
+        const Sprite* spriteData = renderData.sprite->sprite;
 
         // pixel perfect
         SDL_Rect screenPosition;
         screenPosition.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
         screenPosition.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
-        screenPosition.w = static_cast<int>(std::round(static_cast<float>(spriteData.spritePosition.w) * spriteTransform.scale.x * camera.zoom));
-        screenPosition.h = static_cast<int>(std::round(static_cast<float>(spriteData.spritePosition.h) * spriteTransform.scale.y * camera.zoom));
+        screenPosition.w = static_cast<int>(std::round(static_cast<float>(spriteData->Position().w) * spriteTransform.scale.x * camera.zoom));
+        screenPosition.h = static_cast<int>(std::round(static_cast<float>(spriteData->Position().h) * spriteTransform.scale.y * camera.zoom));
 
         SDL_Point center;
         center.x = screenPosition.w / 2;
@@ -153,10 +155,10 @@ namespace Maize {
         SDL_RendererFlip flip = FlipSprite(sprite);
 
         SDL_Colour colour = renderData.sprite->colour;
-        texture.SetColour(colour.r, colour.g, colour.b);
-        texture.SetAlpha(colour.a);
+        spriteData->Tex().SetColour(colour.r, colour.g, colour.b);
+        spriteData->Tex().SetAlpha(colour.a);
 
-        m_Renderer.RenderSprite(texture, spriteData.spritePosition, screenPosition, spriteTransform.angle, center, flip);
+        m_Renderer.RenderSprite(spriteData->Tex(), spriteData->Position(), screenPosition, spriteTransform.angle, center, flip);
     }
 
 }

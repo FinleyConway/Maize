@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SDL.h>
-#include <SDL_image.h>	
 #include <memory>
 
 #include "Window.h"
@@ -10,12 +9,6 @@
 #include "Scene/Components.h"
 
 namespace Maize {
-
-	enum class RenderMode
-	{
-		NonPixelPerfect,
-		PixelPerfect,
-	};
 
 	class Renderer
 	{

@@ -2,48 +2,54 @@
 
 namespace Maize {
 
-	SpriteSheetManager::SpriteSheetManager(Renderer& renderer) : m_Renderer(renderer)
-	{
-		// create a default sprite
-		std::unordered_map<std::string, Sprite> spriteMap;
-		spriteMap.try_emplace("Error");
+	SpriteSheetManager::SpriteSheetManager(Renderer& renderer) : m_Renderer(renderer) { }
 
-		m_SpriteSheets["Error"] = spriteMap;
-	}
-
-	void SpriteSheetManager::AddSprites(const std::string& texturePath, const std::vector<Sprite>& sprites)
+	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix)
 	{
 		if (m_SpriteSheets.contains(texturePath))
 		{
-			std::cout << texturePath << " already exist for a sprite sheet!" << std::endl;
-			return;
+			AddSprites(spriteStartPosition, spriteEndPosition, size, pivot, ppu, texturePath, prefix);
 		}
-
-		Texture texture = LoadTexture(texturePath);
-
-		if (texture.IsValid())
+		else
 		{
-			m_Textures[texturePath] = std::move(texture);
+			Texture texture = LoadTexture(texturePath);
 
-			std::unordered_map<std::string, Sprite> spriteMap;
-
-			for (const auto& sprite : sprites)
+			if (texture.IsValid())
 			{
-				if (!spriteMap.contains(sprite.name))
-				{
-					spriteMap[sprite.name] = sprite;
-				}
-				else
-				{
-					std::cout << sprite.name << " is already in sprite sheet!" << std::endl;
-				}
-			}
+				m_Textures[texturePath] = std::move(texture);
 
-			m_SpriteSheets[texturePath] = spriteMap;
+				AddSprites(spriteStartPosition, spriteEndPosition, size, pivot, ppu, texturePath, prefix);
+			}
 		}
 	}
 
-	SpriteData SpriteSheetManager::GetSprite(const std::string& texturePath, const std::string& spriteName)
+	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& spriteName)
+	{
+		if (m_SpriteSheets.contains(texturePath))
+		{
+			std::unordered_map<std::string, Sprite>& spriteMap = m_SpriteSheets[texturePath];
+			SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
+
+			spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
+		}
+		else
+		{
+			Texture texture = LoadTexture(texturePath);
+
+			if (texture.IsValid())
+			{
+				m_Textures[texturePath] = std::move(texture);
+
+				std::unordered_map<std::string, Sprite> spriteMap;
+				SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
+
+				spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
+				m_SpriteSheets.try_emplace(texturePath, spriteMap);
+			}
+		}
+	}
+
+	const Sprite* SpriteSheetManager::GetSprite(const std::string& texturePath, const std::string& spriteName)
 	{
 		if (m_SpriteSheets.contains(texturePath))
 		{
@@ -51,18 +57,18 @@ namespace Maize {
 
 			if (spriteSheet.contains(spriteName))
 			{
-				return { spriteSheet.at(spriteName), m_Textures[texturePath] };
+				return &spriteSheet.at(spriteName);
 			}
 			else
 			{
 				std::cout << spriteName << " for sprite sheet cannot be found!" << std::endl;
-				return { m_SpriteSheets["Error"].at("Error"), Texture() };
+				return nullptr;
 			}
 		}
 		else
 		{
 			std::cout << texturePath << " for sprite sheet cannot be found!" << std::endl;
-			return { m_SpriteSheets["Error"].at("Error"), Texture() };
+			return nullptr;
 		}
 	}
 
@@ -121,7 +127,27 @@ namespace Maize {
 			return Texture(); // return an invalid Texture object
 		}
 
-		return Texture(newTexture, Point(loadedSurface->w, loadedSurface->h));
+		return Texture(newTexture);
+	}
+
+	void SpriteSheetManager::AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix)
+	{
+		std::unordered_map<std::string, Sprite> spriteMap;
+		uint32_t index = 0;
+
+		for (int32_t x = spriteStartPosition.x; x <= spriteEndPosition.x; x++)
+		{
+			for (int32_t y = spriteStartPosition.y; y <= spriteEndPosition.y; y++)
+			{
+				std::string spriteName = std::format("{}{}", prefix, index);
+				SDL_Rect spriteRect = { x * size.x, y * size.y, size.x, size.y };
+
+				spriteMap.try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
+				index++;
+			}
+		}
+
+		m_SpriteSheets.try_emplace(texturePath, spriteMap);
 	}
 
 }

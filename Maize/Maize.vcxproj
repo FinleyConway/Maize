@@ -88,9 +88,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\AnimationClip.cpp" />
     <ClCompile Include="src\Scene\SpriteSheetManager.cpp" />
     <ClCompile Include="src\Core\Point.cpp" />
     <ClCompile Include="src\Core\PointF.cpp" />
+    <ClCompile Include="src\Scene\Systems\AnimationSystem.cpp" />
     <ClCompile Include="src\Scene\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\Core\Renderer.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
@@ -102,15 +104,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Core\AnimationClip.h" />
     <ClInclude Include="include\Core\Point.h" />
     <ClInclude Include="include\Core\PointF.h" />
     <ClInclude Include="include\Components\Transform.h" />
     <ClInclude Include="include\Core\Renderer.h" />
+    <ClInclude Include="include\Core\Sprite.h" />
     <ClInclude Include="include\Core\Texture.h" />
     <ClInclude Include="include\Core\Window.h" />
     <ClInclude Include="include\Scene\Components.h" />
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Scene\SpriteSheetManager.h" />
+    <ClInclude Include="include\Scene\Systems\AnimationSystem.h" />
     <ClInclude Include="include\Scene\Systems\ISystem.h" />
   </ItemGroup>
   <ItemGroup>

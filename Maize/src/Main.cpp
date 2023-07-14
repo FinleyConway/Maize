@@ -6,29 +6,30 @@
 #include "Core/Window.h"
 #include "Core/Renderer.h"
 #include "Core/Point.h"
+#include "Core/AnimationClip.h"
 
 #include "Scene/Components.h"
-#include "Scene/Systems/RenderingSystem.h"
 #include "Scene/SpriteSheetManager.h"
+#include "Scene/Systems/AnimationSystem.h"
+#include "Scene/Systems/RenderingSystem.h"
 
 using namespace Maize;
 using namespace ECS;
 
-auto CreateTestEntity(ECS::EntityWorld& world, PointF position)
+auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sprite, const AnimationClip& clip)
 {
 	auto entity = world.CreateEntity();
 	auto& transform = world.AddComponent<TransformComponent>(entity);
-	auto& sprite = world.AddComponent<SpriteComponent>(entity);
+	auto& spriteC = world.AddComponent<SpriteComponent>(entity);
+	auto& anim = world.AddComponent<AnimationComponent>(entity);
 
 	transform.position = position;
 
-	sprite.texture = "Assets/AnimationTest.png";
-	sprite.name = "Test5";
-	sprite.pixelPerUnit = 32;
-	sprite.flipX = false;
-	sprite.flipY = false;
+	spriteC.sprite = sprite;
 
-	return entity;
+	anim.animationSpeed = 1;
+	anim.currentState = "Idle";
+	anim.states["Idle"] = clip;
 }
 
 auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
@@ -50,44 +51,52 @@ int main(int argc, char* argv[])
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { return 1; }
 
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
-
 	Renderer renderer(window);
 	renderer.SetViewport(Point(0, 0), Point(1280, 720));
 	renderer.SetLogicalSize({ 320, 180 });
 
+
+
 	SpriteSheetManager spriteManager(renderer);
-	std::vector<Sprite> sprites;
-	for (int i = 0; i < 16; i++)
-	{
-		sprites.push_back(Sprite("Test" + std::to_string(i), { i * 32, 0, 32, 32 }, { 0, 0 }));
-	}
-	spriteManager.AddSprites("Assets/AnimationTest.png", sprites);
+	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
+
+	AnimationClip playerIdle;
+	playerIdle.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), 100);
+	playerIdle.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
+	playerIdle.AddFrame(2, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle2"), 100);
+	playerIdle.AddFrame(3, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
 
 	EntityWorld world;
 	world.RegisterComponent<TransformComponent>();
 	world.RegisterComponent<SpriteComponent>();
+	world.RegisterComponent<AnimationComponent>();
 	world.RegisterComponent<CameraComponent>();
 
-	auto entity = CreateTestEntity(world, { 0, 0 });
-	auto& sprite = world.GetComponent<SpriteComponent>(entity);
+	for (float i = 0; i < 5; i++)
+	{
+		for (float j = 0; j < 5; j++)
+		{
+			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle);
+		}
+	}
 
 	CreateCameraEntity(world, window);
 
-	RenderingSystem renderingSystem(renderer, spriteManager);
+
+
+
+	// test main loop
+	AnimationSystem animationSystem;
+	RenderingSystem renderingSystem(renderer);
 
 	bool isRunning = true;
 	SDL_Event event;
 	uint32_t prevTime = SDL_GetTicks();
 
-	int currentFrame = 0;
-
 	while (isRunning)
 	{
 		uint32_t currentTime = SDL_GetTicks();
 		float deltaTime = static_cast<float>(currentTime - prevTime) / 1000.0f;
-
-		// start timer
-		uint32_t frameStartTime = SDL_GetTicks();
 
 		// process events
 		while (SDL_PollEvent(&event))
@@ -98,14 +107,8 @@ int main(int argc, char* argv[])
 			}
 		}
 
+		animationSystem.OnUpdate(world, deltaTime);
  		renderingSystem.OnRender(world, deltaTime);
-
-		SDL_Delay(100);
-
-		//sprite.name = "Test" + std::to_string(currentFrame);
-
-		currentFrame++;
-		if (currentFrame > 15) currentFrame = 0;
 
 		prevTime = currentTime;
 	}
