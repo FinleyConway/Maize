@@ -43,7 +43,7 @@ namespace Maize {
 		RenderMode renderMode = RenderMode::NonPixelPerfect;
 		Rect viewport;
 		Point bounds;
-		float zoom = 1;
+		float size = 1;
 	};
 
 	struct RigidbodyComponent

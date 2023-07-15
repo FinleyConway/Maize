@@ -4,7 +4,7 @@ namespace Maize {
 
 	SpriteSheetManager::SpriteSheetManager(Renderer& renderer) : m_Renderer(renderer) { }
 
-	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix)
+	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, PointF pivot, float ppu, const std::string& texturePath, const std::string& prefix)
 	{
 		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
@@ -24,7 +24,7 @@ namespace Maize {
 		}
 	}
 
-	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& spriteName)
+	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, PointF pivot, float ppu, const std::string& texturePath, const std::string& spriteName)
 	{
 		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
@@ -132,7 +132,7 @@ namespace Maize {
 		return Texture(newTexture);
 	}
 
-	void SpriteSheetManager::AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix)
+	void SpriteSheetManager::AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, PointF pivot, float ppu, const std::string& texturePath, const std::string& prefix)
 	{
 		std::unordered_map<std::string, Sprite> spriteMap;
 		uint32_t index = 0;

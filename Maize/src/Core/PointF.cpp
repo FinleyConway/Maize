@@ -95,6 +95,11 @@ namespace Maize {
         return reinterpret_cast<const SDL_FPoint*>(this);
     }
 
+    PointF::operator const SDL_Point* () const
+    {
+        return reinterpret_cast<const SDL_Point*>(this);
+    }
+
     PointF PointF::operator+(PointF other) const
     {
         return PointF(x + other.x, y + other.y);

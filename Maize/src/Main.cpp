@@ -50,8 +50,9 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 
 	transform.position = PointF(0, 0);
 
+	camera.viewport = Rect(0, 0, 1280, 720);
 	camera.bounds = window.Size();
-	camera.zoom = 10;
+	camera.size = 10;
 
 	return entity;
 }
@@ -63,11 +64,10 @@ int main(int argc, char* argv[])
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 	Renderer renderer(window);
 	renderer.SetViewport(Point(0, 0), Point(1280, 720));
-	renderer.SetLogicalSize(Point(320, 180));
 
 	SpriteSheetManager spriteManager(renderer);
-	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
-	spriteManager.AddSpritesFromSheet({ 0, 1 }, { 3, 1 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerWalking");
+	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 16, 16 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
+	spriteManager.AddSpritesFromSheet({ 0, 1 }, { 3, 1 }, { 32, 32 }, { 16, 16 }, 32, "Assets/AnimationTest.png", "PlayerWalking");
 
 	AnimationClip playerIdle;
 	playerIdle.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), 100);
@@ -99,14 +99,14 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<CircleCollider>();
 
 	CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
-	CreateTestEntity(world, { 0, 5 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
+	CreateTestEntity(world, { 0, 3.5f }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
 
 	CreateCameraEntity(world, window);
 
 	// test main loop
 	AnimationSystem animationSystem;
 	RenderingSystem renderingSystem(renderer);
-	PhysicsSystem physicsSystem(PointF(0, 9.8f));
+	PhysicsSystem physicsSystem(PointF(0, 9.81f));
 
 	bool isRunning = true;
 	SDL_Event event;

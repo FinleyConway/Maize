@@ -36,6 +36,7 @@ namespace Maize {
 
 		operator SDL_FPoint() const;
 		operator const SDL_FPoint* () const;
+		operator const SDL_Point* () const;
 
 		PointF operator+(PointF other) const;
 		PointF operator-(PointF other) const;

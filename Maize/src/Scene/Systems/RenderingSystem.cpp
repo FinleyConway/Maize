@@ -80,7 +80,9 @@ namespace Maize {
         const float spriteRotation = renderData.transform->angle;
 
         const PointF& cameraPosition = cameraData.transform.position;
-        const Point& cameraSize = cameraData.camera.bounds;
+        const Point& cameraBounds = cameraData.camera.bounds;
+        const float cameraSize = cameraData.camera.size;
+        const float cameraSizeFactor = cameraBounds.y / cameraSize;
 
         // Transform sprite position based on rotation
         const PointF rotatedSpritePosition = RotateVector(spritePosition, spriteRotation);
@@ -93,8 +95,8 @@ namespace Maize {
 
         const float spriteRight = rotatedSpritePosition.x + static_cast<float>(rotatedSpriteSize.x);
         const float spriteBottom = rotatedSpritePosition.y + static_cast<float>(rotatedSpriteSize.y);
-        const float cameraRight = cameraPosition.x + static_cast<float>(cameraSize.x);
-        const float cameraBottom = cameraPosition.y + static_cast<float>(cameraSize.y);
+        const float cameraRight = cameraPosition.x + cameraBounds.x / cameraSizeFactor;
+        const float cameraBottom = cameraPosition.y + cameraBounds.y / cameraSizeFactor;
 
         return spriteRight > cameraPosition.x &&
             rotatedSpritePosition.x < cameraRight &&
@@ -140,18 +142,24 @@ namespace Maize {
 
         const Sprite* spriteData = renderData.sprite->sprite;
 
-        float spriteScaleFactor = 1.0f / spriteData->PPU();
+        float meter = 1;
+        float spriteScaleFactor = meter / spriteData->PPU();
 
-        // pixel perfect
-        Rect screenPosition;
-        screenPosition.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
-        screenPosition.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
-        screenPosition.width = static_cast<int>(std::round(static_cast<float>(spriteData->Position().width) * spriteTransform.scale.x * camera.zoom * spriteScaleFactor));
-        screenPosition.height = static_cast<int>(std::round(static_cast<float>(spriteData->Position().height) * spriteTransform.scale.y * camera.zoom * spriteScaleFactor));
+        Point offset = camera.viewport.Size() / 2 - spriteData->Position().Size() / 2;
 
-        Point center;
-        center.x = screenPosition.width / 2;
-        center.y = screenPosition.height / 2;
+        // calculate the scale factor based on camera size
+        float cameraSizeFactor = cameraData.camera.bounds.y / cameraData.camera.size;
+
+        // calculate the sprite screen position and size
+        Rect spriteScreenPos;
+        spriteScreenPos.x = static_cast<int32_t>((spriteTransform.position.x - cameraTransform.position.x) * cameraSizeFactor) + offset.x;
+        spriteScreenPos.y = static_cast<int32_t>((spriteTransform.position.y - cameraTransform.position.y) * cameraSizeFactor) + offset.y;
+        spriteScreenPos.width = static_cast<int32_t>(static_cast<float>(spriteData->Position().width) * spriteTransform.scale.x * cameraSizeFactor * spriteScaleFactor);
+        spriteScreenPos.height = static_cast<int32_t>(static_cast<float>(spriteData->Position().height) * spriteTransform.scale.y * cameraSizeFactor * spriteScaleFactor);
+
+        // adjust the position to keep the sprite centered
+        spriteScreenPos.x -= spriteScreenPos.width / 2;
+        spriteScreenPos.y -= spriteScreenPos.height / 2;
 
         SDL_RendererFlip flip = FlipSprite(sprite);
 
@@ -159,7 +167,7 @@ namespace Maize {
         spriteData->Tex().SetColour(colour.r, colour.g, colour.b);
         spriteData->Tex().SetAlpha(colour.a);
 
-        m_Renderer.RenderSprite(spriteData->Tex(), spriteData->Position(), screenPosition, spriteTransform.angle, center, flip);
+        m_Renderer.RenderSprite(spriteData->Tex(), spriteData->Position(), spriteScreenPos, spriteTransform.angle, spriteData->Pivot(), flip);
     }
 
 }
