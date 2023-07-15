@@ -7,7 +7,6 @@
 #include "Texture.h"
 #include "Point.h"
 #include "Rect.h"
-#include "Scene/Components.h"
 
 namespace Maize {
 

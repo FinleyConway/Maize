@@ -1,22 +1,23 @@
 #pragma once
 
+#include <SDL.h>
 #include <algorithm>
 #include <unordered_map>
+#include <vector>
 
 #include "Core/Point.h"
 #include "Core/Rect.h"
 #include "Core/Renderer.h"
 #include "Scene/Components.h"
-#include "Scene/Systems/ISystem.h"
+#include "Scene/Systems/System.h"
 
 namespace Maize {
 
-	class RenderingSystem : public ISystem
+	class RenderingSystem : public System
 	{
 	public:
 		RenderingSystem(Renderer& renderer);
 
-		void OnUpdate(ECS::EntityWorld& registry, float dt) override;
 		void OnRender(ECS::EntityWorld& registry, float dt) override;
 
 	private:

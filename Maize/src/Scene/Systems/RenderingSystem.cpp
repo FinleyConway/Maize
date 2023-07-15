@@ -7,9 +7,7 @@ namespace Maize {
 	{
 	}
 
-	void RenderingSystem::OnUpdate(ECS::EntityWorld& registry, float dt) { return; }
-
-    void RenderingSystem::OnRender(ECS::EntityWorld& registry, float dt)
+	void RenderingSystem::OnRender(ECS::EntityWorld& registry, float dt)
     {
         m_Renderer.Clear();
 
@@ -48,7 +46,7 @@ namespace Maize {
         {
             const auto& [transform, sprite] = registry.GetComponents<TransformComponent, SpriteComponent>(entity);
 
-            // only add valid and visable sprites to the batch
+            // only add valid and visible sprites to the batch
             if (sprite.sprite != nullptr)
             {
                 SpriteRenderData renderData(&transform, &sprite);
@@ -142,12 +140,14 @@ namespace Maize {
 
         const Sprite* spriteData = renderData.sprite->sprite;
 
+        float spriteScaleFactor = 1.0f / spriteData->PPU();
+
         // pixel perfect
         Rect screenPosition;
         screenPosition.x = static_cast<int>(std::round((spriteTransform.position.x - cameraTransform.position.x) * camera.zoom));
         screenPosition.y = static_cast<int>(std::round((spriteTransform.position.y - cameraTransform.position.y) * camera.zoom));
-        screenPosition.width = static_cast<int>(std::round(static_cast<float>(spriteData->Position().width) * spriteTransform.scale.x * camera.zoom));
-        screenPosition.height = static_cast<int>(std::round(static_cast<float>(spriteData->Position().height) * spriteTransform.scale.y * camera.zoom));
+        screenPosition.width = static_cast<int>(std::round(static_cast<float>(spriteData->Position().width) * spriteTransform.scale.x * camera.zoom * spriteScaleFactor));
+        screenPosition.height = static_cast<int>(std::round(static_cast<float>(spriteData->Position().height) * spriteTransform.scale.y * camera.zoom * spriteScaleFactor));
 
         Point center;
         center.x = screenPosition.width / 2;

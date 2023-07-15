@@ -58,7 +58,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,7 +76,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,12 +95,16 @@
     <ClCompile Include="src\Core\Point.cpp" />
     <ClCompile Include="src\Core\PointF.cpp" />
     <ClCompile Include="src\Scene\Systems\AnimationSystem.cpp" />
+    <ClCompile Include="src\Scene\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\Scene\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\Core\Renderer.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dependencies\box2d\build\src\box2d.vcxproj">
+      <Project>{dabdb3a6-d49b-321f-a27d-cde0a3ccb0f2}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Dependencies\EntityComponentSystem\EntityComponentSystem\EntityComponentSystem.vcxproj">
       <Project>{2a6a9780-6208-42d6-806e-6cf197cb930f}</Project>
     </ProjectReference>
@@ -120,7 +124,8 @@
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Scene\SpriteSheetManager.h" />
     <ClInclude Include="include\Scene\Systems\AnimationSystem.h" />
-    <ClInclude Include="include\Scene\Systems\ISystem.h" />
+    <ClInclude Include="include\Scene\Systems\PhysicsSystem.h" />
+    <ClInclude Include="include\Scene\Systems\System.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scene\Systems\RenderingSystem.h" />

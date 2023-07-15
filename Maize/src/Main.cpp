@@ -12,16 +12,19 @@
 #include "Scene/SpriteSheetManager.h"
 #include "Scene/Systems/AnimationSystem.h"
 #include "Scene/Systems/RenderingSystem.h"
+#include "Scene/Systems/PhysicsSystem.h"
 
 using namespace Maize;
 using namespace ECS;
 
-auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sprite, const AnimationClip& idle, const AnimationClip& walking)
+auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sprite, const AnimationClip& idle, const AnimationClip& walking, auto type)
 {
 	auto entity = world.CreateEntity();
 	auto& transform = world.AddComponent<TransformComponent>(entity);
 	auto& spriteC = world.AddComponent<SpriteComponent>(entity);
 	auto& anim = world.AddComponent<AnimationComponent>(entity);
+	auto& rigidbody = world.AddComponent<RigidbodyComponent>(entity);
+	auto& square = world.AddComponent<SquareCollider>(entity);
 
 	transform.position = position;
 
@@ -32,6 +35,11 @@ auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sp
 
 	anim.states["Idle"] = idle;
 	anim.states["Walking"] = walking;
+
+	rigidbody.type = type;
+	rigidbody.fixedRotation = false;
+
+	square.size = Point(1, 1);
 }
 
 auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
@@ -43,7 +51,7 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 	transform.position = PointF(0, 0);
 
 	camera.bounds = window.Size();
-	camera.zoom = 1;
+	camera.zoom = 10;
 
 	return entity;
 }
@@ -55,9 +63,7 @@ int main(int argc, char* argv[])
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 	Renderer renderer(window);
 	renderer.SetViewport(Point(0, 0), Point(1280, 720));
-	renderer.SetLogicalSize({ 320, 180 });
-
-
+	renderer.SetLogicalSize(Point(320, 180));
 
 	SpriteSheetManager spriteManager(renderer);
 	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 0, 0 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
@@ -88,27 +94,25 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<SpriteComponent>();
 	world.RegisterComponent<AnimationComponent>();
 	world.RegisterComponent<CameraComponent>();
+	world.RegisterComponent<RigidbodyComponent>();
+	world.RegisterComponent<SquareCollider>();
+	world.RegisterComponent<CircleCollider>();
 
-	for (float i = 0; i < 5; i++)
-	{
-		for (float j = 0; j < 5; j++)
-		{
-			CreateTestEntity(world, { i * 32, j * 32 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking);
-		}
-	}
+	CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
+	CreateTestEntity(world, { 0, 5 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
 
 	CreateCameraEntity(world, window);
-
-
-
 
 	// test main loop
 	AnimationSystem animationSystem;
 	RenderingSystem renderingSystem(renderer);
+	PhysicsSystem physicsSystem(PointF(0, 9.8f));
 
 	bool isRunning = true;
 	SDL_Event event;
 	uint32_t prevTime = SDL_GetTicks();
+
+	physicsSystem.OnStart(world);
 
 	while (isRunning)
 	{
@@ -124,6 +128,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
+		physicsSystem.OnUpdate(world, deltaTime);
 		animationSystem.OnUpdate(world, deltaTime);
  		renderingSystem.OnRender(world, deltaTime);
 

@@ -4,7 +4,7 @@ namespace Maize {
 
 	SpriteSheetManager::SpriteSheetManager(Renderer& renderer) : m_Renderer(renderer) { }
 
-	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix)
+	void SpriteSheetManager::AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix)
 	{
 		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
@@ -24,12 +24,12 @@ namespace Maize {
 		}
 	}
 
-	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& spriteName)
+	void SpriteSheetManager::AddSpriteFromSheet(Point position, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& spriteName)
 	{
 		// load and add/pre-add texture with sprites corresponding to that texture
 		if (m_SpriteSheets.contains(texturePath))
 		{
-			SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
+			Rect spriteRect = { position.x, position.y, size.x, size.y };
 
 			m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 		}
@@ -41,7 +41,7 @@ namespace Maize {
 			{
 				m_Textures[texturePath] = std::move(texture);
 
-				SDL_Rect spriteRect = { position.x, position.y, size.x, size.y };
+				Rect spriteRect = { position.x, position.y, size.x, size.y };
 
 				m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 			}
@@ -132,7 +132,7 @@ namespace Maize {
 		return Texture(newTexture);
 	}
 
-	void SpriteSheetManager::AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix)
+	void SpriteSheetManager::AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix)
 	{
 		std::unordered_map<std::string, Sprite> spriteMap;
 		uint32_t index = 0;
@@ -143,7 +143,7 @@ namespace Maize {
 			for (int32_t y = spriteStartPosition.y; y <= spriteEndPosition.y; y++)
 			{
 				std::string spriteName = std::format("{}{}", prefix, index);
-				SDL_Rect spriteRect = { x * size.x, y * size.y, size.x, size.y };
+				Rect spriteRect = { x * size.x, y * size.y, size.x, size.y };
 
 				m_SpriteSheets[texturePath].try_emplace(spriteName, spriteName, spriteRect, pivot, ppu, m_Textures[texturePath]);
 				index++;

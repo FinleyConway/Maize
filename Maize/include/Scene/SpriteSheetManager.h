@@ -3,7 +3,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <string>
-#include <vector>
 #include <format>
 #include <iostream>
 #include <unordered_map>
@@ -12,6 +11,7 @@
 #include "Core/Texture.h"
 #include "Core/Point.h"
 #include "Core/Sprite.h"
+#include "Core/Rect.h"
 
 namespace Maize {
 
@@ -20,8 +20,8 @@ namespace Maize {
 	public:
 		explicit SpriteSheetManager(Renderer& renderer);
 
-        void AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix);
-		void AddSpriteFromSheet(Point position, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& spriteName);
+        void AddSpritesFromSheet(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix);
+		void AddSpriteFromSheet(Point position, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& spriteName);
 
 		const Sprite* GetSprite(const std::string& texturePath, const std::string& spriteName);
 
@@ -34,7 +34,7 @@ namespace Maize {
         Renderer& m_Renderer;
 
         Texture LoadTexture(const std::string& filePath) const;
-		void AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, uint32_t ppu, const std::string& texturePath, const std::string& prefix);
+		void AddSprites(Point spriteStartPosition, Point spriteEndPosition, Point size, Point pivot, float ppu, const std::string& texturePath, const std::string& prefix);
 	};
 
 }

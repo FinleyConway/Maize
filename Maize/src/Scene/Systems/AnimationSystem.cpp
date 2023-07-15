@@ -39,6 +39,4 @@ namespace Maize {
 		}
 	}
 
-	void AnimationSystem::OnRender(ECS::EntityWorld& registry, float dt) { return; }
-
 }

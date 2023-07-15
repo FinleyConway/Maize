@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Scene/Systems/ISystem.h"
+#include "Scene/Systems/System.h"
 #include "Scene/Components.h"
 #include "Core/AnimationClip.h"
 
 namespace Maize {
 
-	class AnimationSystem : public ISystem
+	class AnimationSystem : public System
 	{
 	public:
 		void OnUpdate(ECS::EntityWorld& registry, float dt) override;
-		void OnRender(ECS::EntityWorld& registry, float dt) override;
 	};
 
 }

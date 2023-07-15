@@ -48,6 +48,9 @@
     <ClCompile Include="src\Core\RectF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Systems\PhysicsSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Components\Transform.h">
@@ -68,7 +71,7 @@
     <ClInclude Include="include\Core\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\ISystem.h">
+    <ClInclude Include="include\Scene\Systems\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\PointF.h">
@@ -93,6 +96,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\RectF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\Systems\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
