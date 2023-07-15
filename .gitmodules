@@ -12,3 +12,7 @@
 [submodule "Dependencies/box2d"]
 	path = Dependencies/box2d
 	url = https://github.com/erincatto/box2d.git
+[submodule "Dependencies/SDL_mixer"]
+	path = Dependencies/SDL_mixer
+	url = https://github.com/libsdl-org/SDL_mixer.git
+	branch = release-2.6.x
