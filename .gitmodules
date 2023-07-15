@@ -9,3 +9,6 @@
 	path = Dependencies/SDL_image
 	url = https://github.com/libsdl-org/SDL_image.git
 	branch = release-2.6.x
+[submodule "Dependencies/box2d"]
+	path = Dependencies/box2d
+	url = https://github.com/erincatto/box2d.git
