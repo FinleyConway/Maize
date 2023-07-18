@@ -2,9 +2,10 @@
 
 namespace Maize {
 
-	PhysicsSystem::PhysicsSystem(PointF gravity)
+	PhysicsSystem::PhysicsSystem(ECS::EntityWorld& registry, PointF gravity) : m_ContactListener(registry)
 	{
-		m_World = new b2World({ gravity.x, gravity.y });
+		m_World = std::make_unique<b2World>(b2Vec2(gravity.x, gravity.y));
+		m_World->SetContactListener(&m_ContactListener);
 	}
 
 	void PhysicsSystem::OnStart(ECS::EntityWorld& registry)
@@ -17,14 +18,15 @@ namespace Maize {
 			bodyDef.type = static_cast<b2BodyType>(rigidbody.type);
 			bodyDef.position.Set(transform.position.x, transform.position.y);
 			bodyDef.angle = transform.angle;
+			bodyDef.userData.pointer = entity;
 
 			b2Body* body = m_World->CreateBody(&bodyDef);
 			body->SetFixedRotation(rigidbody.fixedRotation);
 			rigidbody.body = body;
 
-			if (registry.HasComponent<SquareCollider>(entity))
+			if (registry.HasComponent<SquareColliderComponent>(entity))
 			{
-				const auto& square = registry.GetComponent<SquareCollider>(entity);
+				const auto& square = registry.GetComponent<SquareColliderComponent>(entity);
 
 				b2PolygonShape squareShape;
 				squareShape.SetAsBox((square.size.x / 2) * transform.scale.x,
@@ -33,6 +35,7 @@ namespace Maize {
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &squareShape;
+				fixtureDef.isSensor = square.isTrigger;
 				fixtureDef.density = square.density;
 				fixtureDef.friction = square.friction;
 				fixtureDef.restitution = square.restitution;
@@ -40,9 +43,9 @@ namespace Maize {
 				body->CreateFixture(&fixtureDef);
 			}
 
-			if (registry.HasComponent<CircleCollider>(entity))
+			if (registry.HasComponent<CircleColliderComponent>(entity))
 			{
-				const auto& circle = registry.GetComponent<CircleCollider>(entity);
+				const auto& circle = registry.GetComponent<CircleColliderComponent>(entity);
 
 				b2CircleShape circleShape;
 				circleShape.m_p.Set(circle.offset.x, circle.offset.y);
@@ -75,6 +78,15 @@ namespace Maize {
 			transform.position.x = position.x;
 			transform.position.y = position.y;
 			transform.angle = body->GetAngle();
+		}
+	}
+
+	void PhysicsSystem::OnEndFrame(ECS::EntityWorld& registry)
+	{
+		// clean up collision contact components
+		for (const auto entity : registry.GetEntityGroup<CollisionContactComponent>()) 
+		{
+			registry.RemoveComponent<CollisionContactComponent>(entity);
 		}
 	}
 

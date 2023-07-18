@@ -58,13 +58,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_mixer\include;$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_mixer\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -76,21 +76,22 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL_mixer\include;$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(ProjectDir)include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependencies\SDL_mixer\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL_image\VisualC\x64\Release;$(SolutionDir)Dependencies\SDL\VisualC\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\RectF.cpp" />
     <ClCompile Include="src\Core\Rect.cpp" />
     <ClCompile Include="src\Core\AnimationClip.cpp" />
+    <ClCompile Include="src\Scene\CollisionContactListener.cpp" />
     <ClCompile Include="src\Scene\SpriteSheetManager.cpp" />
     <ClCompile Include="src\Core\Point.cpp" />
     <ClCompile Include="src\Core\PointF.cpp" />
@@ -110,6 +111,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Scene\CollisionContactListener.h" />
     <ClInclude Include="include\Core\AnimationClip.h" />
     <ClInclude Include="include\Core\Point.h" />
     <ClInclude Include="include\Core\PointF.h" />
@@ -126,6 +128,7 @@
     <ClInclude Include="include\Scene\Systems\AnimationSystem.h" />
     <ClInclude Include="include\Scene\Systems\PhysicsSystem.h" />
     <ClInclude Include="include\Scene\Systems\System.h" />
+    <ClInclude Include="include\Scene\Systems\TestCollisionEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scene\Systems\RenderingSystem.h" />

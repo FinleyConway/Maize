@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include <EntityWorld.h>
+#include <SDL_mixer.h>
 
 #include "Core/Window.h"
 #include "Core/Renderer.h"
@@ -13,6 +14,7 @@
 #include "Scene/Systems/AnimationSystem.h"
 #include "Scene/Systems/RenderingSystem.h"
 #include "Scene/Systems/PhysicsSystem.h"
+#include "Scene/Systems/TestCollisionEvent.h"
 
 using namespace Maize;
 using namespace ECS;
@@ -24,7 +26,7 @@ auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sp
 	auto& spriteC = world.AddComponent<SpriteComponent>(entity);
 	auto& anim = world.AddComponent<AnimationComponent>(entity);
 	auto& rigidbody = world.AddComponent<RigidbodyComponent>(entity);
-	auto& square = world.AddComponent<SquareCollider>(entity);
+	auto& square = world.AddComponent<SquareColliderComponent>(entity);
 
 	transform.position = position;
 
@@ -40,6 +42,8 @@ auto CreateTestEntity(ECS::EntityWorld& world, PointF position, const Sprite* sp
 	rigidbody.fixedRotation = false;
 
 	square.size = Point(1, 1);
+
+	return entity;
 }
 
 auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
@@ -52,14 +56,17 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 
 	camera.viewport = Rect(0, 0, 1280, 720);
 	camera.bounds = window.Size();
-	camera.size = 10;
 
 	return entity;
 }
 
+// https://www.reddit.com/r/EntityComponentSystem/comments/tq1ctn/something_i_dont_get_about_ecs/
+// http://www.iforce2d.net/b2dtut/collision-callbacks
+
 int main(int argc, char* argv[])
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { return 1; }
+	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0) { return -1; }
 
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 	Renderer renderer(window);
@@ -95,18 +102,25 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<AnimationComponent>();
 	world.RegisterComponent<CameraComponent>();
 	world.RegisterComponent<RigidbodyComponent>();
-	world.RegisterComponent<SquareCollider>();
-	world.RegisterComponent<CircleCollider>();
+	world.RegisterComponent<SquareColliderComponent>();
+	world.RegisterComponent<CircleColliderComponent>();
+	world.RegisterComponent<CollisionContactComponent>();
+	world.RegisterComponent<TempTag>();
 
-	CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
-	CreateTestEntity(world, { 0, 3.5f }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
+	auto entity = CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
+	world.AddComponent<TempTag>(entity);
 
-	CreateCameraEntity(world, window);
+	CreateTestEntity(world, { 0, 3 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
+
+	auto camera = CreateCameraEntity(world, window);
+	auto& ad = world.GetComponent<CameraComponent>(camera);
+	ad.size = 10;
 
 	// test main loop
 	AnimationSystem animationSystem;
 	RenderingSystem renderingSystem(renderer);
-	PhysicsSystem physicsSystem(PointF(0, 9.81f));
+	PhysicsSystem physicsSystem(world, PointF(0, 9.81f));
+	TestCollisionEvent testCollisionEvent;
 
 	bool isRunning = true;
 	SDL_Event event;
@@ -126,12 +140,24 @@ int main(int argc, char* argv[])
 			{
 				isRunning = false;
 			}
+
+			if (event.wheel.y == 1)
+			{
+				ad.size++;
+			}
+			if (event.wheel.y == -1)
+			{
+				ad.size--;
+			}
 		}
+
 
 		physicsSystem.OnUpdate(world, deltaTime);
 		animationSystem.OnUpdate(world, deltaTime);
+		testCollisionEvent.OnUpdate(world, deltaTime);
  		renderingSystem.OnRender(world, deltaTime);
 
+		physicsSystem.OnEndFrame(world);
 		prevTime = currentTime;
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <EntityWorld.h>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -55,27 +56,42 @@ namespace Maize {
 		void* body = nullptr;
 	};
 
-	struct SquareCollider
+	struct SquareColliderComponent
 	{
 		PointF offset = { 0, 0 };
 		PointF size = PointF(0.5f, 0.5f);
 
+		bool isTrigger = false;
+
 		float density = 1.0f;
 		float friction = 0.5f;
 		float restitution = 0.0f;
 		float restitutionThreshold = 0.5f;
 	};
 
-	struct CircleCollider
+	struct CircleColliderComponent
 	{
 		PointF offset = { 0, 0 };
 		float radius = 0.5f;
 
+		bool isTrigger = false;
+
 		float density = 1.0f;
 		float friction = 0.5f;
 		float restitution = 0.0f;
 		float restitutionThreshold = 0.5f;
 	};
+
+	struct CollisionContactComponent
+	{
+		enum class CollidingEvent { Enter, Exit };
+
+		CollidingEvent collideEvent = CollidingEvent::Enter;
+		ECS::Entity entity;
+		void* body = nullptr;
+	};
+
+	struct TestTag { };
 
 	struct AudioSource
 	{
