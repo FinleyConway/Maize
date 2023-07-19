@@ -110,6 +110,9 @@
     <ClInclude Include="include\Scene\Systems\TestCollisionEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Scene\Systems\AudioSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scene\Systems\RenderingSystem.h" />

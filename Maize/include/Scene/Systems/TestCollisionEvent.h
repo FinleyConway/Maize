@@ -12,7 +12,7 @@ namespace Maize {
 	public:
 		void OnUpdate(ECS::EntityWorld& registry, float dt) override
 		{
-			for (const auto entity : registry.GetEntityGroup<CollisionContactComponent, TempTag>())
+			for (const auto entity : registry.GetEntityGroup<CollisionContactComponent, TestTag>())
 			{
 				const auto& [collisionData] = registry.GetComponents<CollisionContactComponent>(entity);
 

@@ -126,6 +126,7 @@
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Scene\SpriteSheetManager.h" />
     <ClInclude Include="include\Scene\Systems\AnimationSystem.h" />
+    <ClInclude Include="include\Scene\Systems\AudioSystem.h" />
     <ClInclude Include="include\Scene\Systems\PhysicsSystem.h" />
     <ClInclude Include="include\Scene\Systems\System.h" />
     <ClInclude Include="include\Scene\Systems\TestCollisionEvent.h" />

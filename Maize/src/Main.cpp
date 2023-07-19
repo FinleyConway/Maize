@@ -60,13 +60,11 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 	return entity;
 }
 
-// https://www.reddit.com/r/EntityComponentSystem/comments/tq1ctn/something_i_dont_get_about_ecs/
-// http://www.iforce2d.net/b2dtut/collision-callbacks
-
 int main(int argc, char* argv[])
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { return 1; }
-	if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0) { return -1; }
+	if (~IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) return 1;
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) { return -1; }
 
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 	Renderer renderer(window);
@@ -105,10 +103,10 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<SquareColliderComponent>();
 	world.RegisterComponent<CircleColliderComponent>();
 	world.RegisterComponent<CollisionContactComponent>();
-	world.RegisterComponent<TempTag>();
+	world.RegisterComponent<TestTag>();
 
 	auto entity = CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
-	world.AddComponent<TempTag>(entity);
+	world.AddComponent<TestTag>(entity);
 
 	CreateTestEntity(world, { 0, 3 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
 
@@ -161,6 +159,7 @@ int main(int argc, char* argv[])
 		prevTime = currentTime;
 	}
 
+	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
 

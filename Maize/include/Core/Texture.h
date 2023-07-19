@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Point.h"
+#include "Colour.h"
 
 namespace Maize {
 
@@ -20,9 +21,19 @@ namespace Maize {
 			SDL_SetTextureAlphaMod(m_Texture.get(), alpha);
 		}
 
+		void SetAlpha(Colour colour)
+		{
+			SDL_SetTextureAlphaMod(m_Texture.get(), colour.a);
+		}
+
 		void SetColour(uint8_t r, uint8_t g, uint8_t b)
 		{
 			SDL_SetTextureColorMod(m_Texture.get(), r, g, b);
+		}
+
+		void SetColour(Colour colour)
+		{
+			SDL_SetTextureColorMod(m_Texture.get(), colour.r, colour.g, colour.b);
 		}
 
 		Point Size() const 

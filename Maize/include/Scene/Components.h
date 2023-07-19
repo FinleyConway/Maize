@@ -11,6 +11,7 @@
 #include "Core/Rect.h"
 #include "Core/Texture.h"
 #include "Core/AnimationClip.h"
+#include "Core/Colour.h"
 
 namespace Maize {
 
@@ -24,7 +25,7 @@ namespace Maize {
 	struct SpriteComponent
 	{
 		const Sprite* sprite = nullptr;
-		SDL_Colour colour = { 255, 255, 255, 255 };
+		Colour colour = Colour(255, 255, 255);
 		bool flipX = false;
 		bool flipY = false;
 	};
@@ -92,10 +93,5 @@ namespace Maize {
 	};
 
 	struct TestTag { };
-
-	struct AudioSource
-	{
-
-	};
 
 }
