@@ -12,6 +12,7 @@
 #include "Scene/Components.h"
 #include "Scene/SpriteSheetManager.h"
 #include "Scene/SoundManager.h"
+#include "Scene/InputHandler.h"
 #include "Scene/Systems/AnimationSystem.h"
 #include "Scene/Systems/RenderingSystem.h"
 #include "Scene/Systems/PhysicsSystem.h"
@@ -80,6 +81,8 @@ int main(int argc, char* argv[])
 	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 16, 16 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
 	spriteManager.AddSpritesFromSheet({ 0, 1 }, { 3, 1 }, { 32, 32 }, { 16, 16 }, 32, "Assets/AnimationTest.png", "PlayerWalking");
 
+	InputHandler inputHandler;
+
 	AnimationClip playerIdle;
 	playerIdle.AddFrame(0, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), 100);
 	playerIdle.AddFrame(1, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle1"), 100);
@@ -123,15 +126,9 @@ int main(int argc, char* argv[])
 	sound.minDistance = 1;
 	sound.maxDistance = 9;
 
-	auto mouseEntity = world.CreateEntity();
-	auto& transform = world.AddComponent<TransformComponent>(mouseEntity);
-	transform.position = PointF(8, 4);
-
-	auto& sprite = world.AddComponent<SpriteComponent>(mouseEntity);
-	sprite.sprite = spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0");
-	world.AddComponent<AudioListenerComponent>(mouseEntity);
-
 	auto camera = CreateCameraEntity(world, window);
+	world.AddComponent<AudioListenerComponent>(camera);
+	world.AddComponent<SpriteComponent>(camera).sprite = spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0");
 	auto& ad = world.GetComponent<CameraComponent>(camera);
 	ad.size = 10;
 
@@ -161,19 +158,31 @@ int main(int argc, char* argv[])
 				isRunning = false;
 			}
 
-			if (event.wheel.y == 1)
-			{
-				ad.size++;
-			}
-			if (event.wheel.y == -1)
-			{
-				ad.size--;
-			}
+			inputHandler.PollEvent(event);
 		}
 
 		physicsSystem.OnUpdate(world, deltaTime);
 
 		testCollisionEvent.OnUpdate(world, deltaTime);
+
+		PointF direction = PointF(0, 0);
+		if (inputHandler.GetKey(SDL_SCANCODE_W))
+		{
+			direction.y -= 2;
+		}
+		if (inputHandler.GetKey(SDL_SCANCODE_S))
+		{
+			direction.y += 2;
+		}
+		if (inputHandler.GetKey(SDL_SCANCODE_A))
+		{
+			direction.x -= 2;
+		}
+		if (inputHandler.GetKey(SDL_SCANCODE_D))
+		{
+			direction.x += 2;
+		}
+		world.GetComponent<TransformComponent>(camera).position += direction * deltaTime * 5;
 
 		animationSystem.OnUpdate(world, deltaTime);
 		audioSystem.OnUpdate(world, deltaTime);

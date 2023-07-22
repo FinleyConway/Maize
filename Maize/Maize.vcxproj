@@ -128,6 +128,7 @@
     <ClInclude Include="include\Core\Texture.h" />
     <ClInclude Include="include\Core\Window.h" />
     <ClInclude Include="include\Scene\Components.h" />
+    <ClInclude Include="include\Scene\InputHandler.h" />
     <ClInclude Include="include\Scene\Scene.h" />
     <ClInclude Include="include\Scene\SoundManager.h" />
     <ClInclude Include="include\Scene\SpriteSheetManager.h" />

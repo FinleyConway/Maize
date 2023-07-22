@@ -13,6 +13,8 @@
 #include "Core/Point.h"
 #include "Core/Rect.h"
 
+#include "Scene/InputHandler.h"
+
 namespace Maize {
 
 	struct TransformComponent
@@ -109,6 +111,11 @@ namespace Maize {
 	{
 		bool pauseAudio = false;
 		uint8_t masterVolume = 128; // min: 0 max: 128
+	};
+
+	struct InputComponent
+	{
+		InputHandler& input;
 	};
 
 	struct DummyComponent 

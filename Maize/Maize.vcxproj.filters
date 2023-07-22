@@ -131,6 +131,9 @@
     <ClInclude Include="include\Scene\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Scene\InputHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Scene\Systems\RenderingSystem.h" />

@@ -69,7 +69,7 @@ namespace Maize {
 
 		PointF direction = (source.position - listener.position).Normalized();
 		float angle = std::atan2f(direction.y, direction.x) * (180.0f / 3.14f);
-		angle += 90.0f; // make it so 0 is up
+		angle -= 90.0f; // make it so 0 is up
 
 		uint8_t leftPan = 255 - static_cast<uint8_t>(angle * 255.0f / 360.0f);
 		uint8_t rightPan = static_cast<uint8_t>(angle * 255.0f / 360.0f);
