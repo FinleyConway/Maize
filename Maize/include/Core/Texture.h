@@ -43,17 +43,15 @@ namespace Maize {
 			return Point(x, y);
 		}
 
-		operator SDL_Texture*() const { return m_Texture.get(); }
-
-	private:
-		friend class SpriteSheetManager;
-
-		std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_Texture = { nullptr, &SDL_DestroyTexture };
-
 		bool IsValid() const
 		{
 			return m_Texture != nullptr;
 		}
+
+		operator SDL_Texture*() const { return m_Texture.get(); }
+
+	private:
+		std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_Texture = { nullptr, &SDL_DestroyTexture };
 	};
 
 }

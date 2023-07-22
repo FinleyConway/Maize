@@ -163,7 +163,7 @@ namespace Maize {
 
         SDL_RendererFlip flip = FlipSprite(sprite);
 
-        SDL_Colour colour = renderData.sprite->colour;
+        Colour colour = renderData.sprite->colour;
         spriteData->Tex().SetColour(colour.r, colour.g, colour.b);
         spriteData->Tex().SetAlpha(colour.a);
 

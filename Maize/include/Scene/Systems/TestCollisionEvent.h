@@ -12,9 +12,9 @@ namespace Maize {
 	public:
 		void OnUpdate(ECS::EntityWorld& registry, float dt) override
 		{
-			for (const auto entity : registry.GetEntityGroup<CollisionContactComponent, TestTag>())
+			for (const auto entity : registry.GetEntityGroup<CollisionContactComponent, DummyComponent>())
 			{
-				const auto& [collisionData] = registry.GetComponents<CollisionContactComponent>(entity);
+				const auto& [collisionData, dummy] = registry.GetComponents<CollisionContactComponent, DummyComponent>(entity);
 
 				b2Body* body = (b2Body*)collisionData.body;
 
@@ -30,9 +30,17 @@ namespace Maize {
 
 						animationC.currentState = "Walking";
 					}
+
+					if (registry.HasComponent<AudioSourceComponent>(otherEntity))
+					{
+						auto& audio = registry.GetComponent<AudioSourceComponent>(otherEntity);
+
+						audio.audioClips.push_back(dummy.clip);
+					}
 				}
 				else if (collisionData.collideEvent == CollisionContactComponent::CollidingEvent::Exit)
 				{
+
 					body->SetLinearVelocity({ 0, 0 });
 				}
 			}

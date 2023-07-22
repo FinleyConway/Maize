@@ -11,9 +11,11 @@
 
 #include "Scene/Components.h"
 #include "Scene/SpriteSheetManager.h"
+#include "Scene/SoundManager.h"
 #include "Scene/Systems/AnimationSystem.h"
 #include "Scene/Systems/RenderingSystem.h"
 #include "Scene/Systems/PhysicsSystem.h"
+#include "Scene/Systems/AudioSystem.h"
 #include "Scene/Systems/TestCollisionEvent.h"
 
 using namespace Maize;
@@ -62,13 +64,17 @@ auto CreateCameraEntity(ECS::EntityWorld& world, const Window& window)
 
 int main(int argc, char* argv[])
 {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { return 1; }
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) return 1; 
 	if (~IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) return 1;
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) { return -1; }
+	if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) return 1;
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) return 1;
 
 	Window window("Test", { 100, 100 }, { 1280, 720 }, 0);
 	Renderer renderer(window);
 	renderer.SetViewport(Point(0, 0), Point(1280, 720));
+
+	SoundManager soundManager;
+	soundManager.AddSound("Fart", "Assets/perfect-fart.mp3");
 
 	SpriteSheetManager spriteManager(renderer);
 	spriteManager.AddSpritesFromSheet({ 0, 0 }, { 3, 0 }, { 32, 32 }, { 16, 16 }, 32, "Assets/AnimationTest.png", "PlayerIdle");
@@ -103,12 +109,27 @@ int main(int argc, char* argv[])
 	world.RegisterComponent<SquareColliderComponent>();
 	world.RegisterComponent<CircleColliderComponent>();
 	world.RegisterComponent<CollisionContactComponent>();
-	world.RegisterComponent<TestTag>();
+	world.RegisterComponent<AudioListenerComponent>();
+	world.RegisterComponent<AudioSourceComponent>();
+	world.RegisterComponent<DummyComponent>();
 
 	auto entity = CreateTestEntity(world, { 0, 0 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Dynamic);
-	world.AddComponent<TestTag>(entity);
+	auto& dummy = world.AddComponent<DummyComponent>(entity);
+	dummy.clip = soundManager.GetSound("Fart");
 
-	CreateTestEntity(world, { 0, 3 }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
+	auto entity2 = CreateTestEntity(world, { 0, 1.5f }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
+	auto& sound = world.AddComponent<AudioSourceComponent>(entity2);
+	sound.spatial = true;
+	sound.minDistance = 1;
+	sound.maxDistance = 9;
+
+	auto mouseEntity = world.CreateEntity();
+	auto& transform = world.AddComponent<TransformComponent>(mouseEntity);
+	transform.position = PointF(8, 4);
+
+	auto& sprite = world.AddComponent<SpriteComponent>(mouseEntity);
+	sprite.sprite = spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0");
+	world.AddComponent<AudioListenerComponent>(mouseEntity);
 
 	auto camera = CreateCameraEntity(world, window);
 	auto& ad = world.GetComponent<CameraComponent>(camera);
@@ -118,6 +139,7 @@ int main(int argc, char* argv[])
 	AnimationSystem animationSystem;
 	RenderingSystem renderingSystem(renderer);
 	PhysicsSystem physicsSystem(world, PointF(0, 9.81f));
+	AudioSystem audioSystem;
 	TestCollisionEvent testCollisionEvent;
 
 	bool isRunning = true;
@@ -149,16 +171,20 @@ int main(int argc, char* argv[])
 			}
 		}
 
-
 		physicsSystem.OnUpdate(world, deltaTime);
-		animationSystem.OnUpdate(world, deltaTime);
+
 		testCollisionEvent.OnUpdate(world, deltaTime);
+
+		animationSystem.OnUpdate(world, deltaTime);
+		audioSystem.OnUpdate(world, deltaTime);
+
  		renderingSystem.OnRender(world, deltaTime);
 
 		physicsSystem.OnEndFrame(world);
 		prevTime = currentTime;
 	}
 
+	Mix_CloseAudio();
 	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();

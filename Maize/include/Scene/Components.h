@@ -1,17 +1,17 @@
 #pragma once
 
-#include <SDL.h>
 #include <EntityWorld.h>
+#include <unordered_map>
 #include <vector>
 #include <string>
-#include <unordered_map>
 #include <map>
 
+#include "Core/AnimationClip.h"
+#include "Core/SoundClip.h"
+#include "Core/Texture.h"
+#include "Core/Colour.h"
 #include "Core/Point.h"
 #include "Core/Rect.h"
-#include "Core/Texture.h"
-#include "Core/AnimationClip.h"
-#include "Core/Colour.h"
 
 namespace Maize {
 
@@ -92,6 +92,28 @@ namespace Maize {
 		void* body = nullptr;
 	};
 
-	struct TestTag { };
+	struct AudioSourceComponent
+	{
+		std::vector<const SoundClip*> audioClips; // queue multiple sounds each frame
+
+		uint8_t volume = 128; // min: 0 max: 128
+		bool mute = false;
+		bool loop = false;
+
+		bool spatial = false;
+		float minDistance = 1;
+		float maxDistance = 255; 
+	};
+
+	struct AudioListenerComponent
+	{
+		bool pauseAudio = false;
+		uint8_t masterVolume = 128; // min: 0 max: 128
+	};
+
+	struct DummyComponent 
+	{ 
+		const SoundClip* clip;
+	};
 
 }

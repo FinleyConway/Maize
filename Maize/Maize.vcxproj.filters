@@ -54,6 +54,15 @@
     <ClCompile Include="src\Scene\CollisionContactListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Colour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Systems\AudioSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SoundManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Components\Transform.h">
@@ -110,7 +119,16 @@
     <ClInclude Include="include\Scene\Systems\TestCollisionEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Core\Colour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Core\SoundClip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\Scene\Systems\AudioSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -127,5 +145,8 @@
     <Image Include="Assets\AnimationTest.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Assets\perfect-fart.mp3" />
   </ItemGroup>
 </Project>

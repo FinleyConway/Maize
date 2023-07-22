@@ -88,14 +88,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Colour.cpp" />
     <ClCompile Include="src\Core\RectF.cpp" />
     <ClCompile Include="src\Core\Rect.cpp" />
     <ClCompile Include="src\Core\AnimationClip.cpp" />
     <ClCompile Include="src\Scene\CollisionContactListener.cpp" />
+    <ClCompile Include="src\Scene\SoundManager.cpp" />
     <ClCompile Include="src\Scene\SpriteSheetManager.cpp" />
     <ClCompile Include="src\Core\Point.cpp" />
     <ClCompile Include="src\Core\PointF.cpp" />
     <ClCompile Include="src\Scene\Systems\AnimationSystem.cpp" />
+    <ClCompile Include="src\Scene\Systems\AudioSystem.cpp" />
     <ClCompile Include="src\Scene\Systems\PhysicsSystem.cpp" />
     <ClCompile Include="src\Scene\Systems\RenderingSystem.cpp" />
     <ClCompile Include="src\Core\Renderer.cpp" />
@@ -111,6 +114,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Core\Colour.h" />
+    <ClInclude Include="include\Core\SoundClip.h" />
     <ClInclude Include="include\Scene\CollisionContactListener.h" />
     <ClInclude Include="include\Core\AnimationClip.h" />
     <ClInclude Include="include\Core\Point.h" />
@@ -124,6 +129,7 @@
     <ClInclude Include="include\Core\Window.h" />
     <ClInclude Include="include\Scene\Components.h" />
     <ClInclude Include="include\Scene\Scene.h" />
+    <ClInclude Include="include\Scene\SoundManager.h" />
     <ClInclude Include="include\Scene\SpriteSheetManager.h" />
     <ClInclude Include="include\Scene\Systems\AnimationSystem.h" />
     <ClInclude Include="include\Scene\Systems\AudioSystem.h" />
@@ -138,6 +144,9 @@
     <Image Include="Assets\AnimationTest.png" />
     <Image Include="Assets\Corn.png" />
     <Image Include="Assets\PixelTest.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Assets\perfect-fart.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
