@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
 	auto entity2 = CreateTestEntity(world, { 0, 1.5f }, spriteManager.GetSprite("Assets/AnimationTest.png", "PlayerIdle0"), playerIdle, playerWalking, RigidbodyComponent::BodyType::Static);
 	auto& sound = world.AddComponent<AudioSourceComponent>(entity2);
 	sound.spatial = true;
-	sound.minDistance = 1;
+	sound.minDistance = 3;
 	sound.maxDistance = 9;
 
 	auto camera = CreateCameraEntity(world, window);

@@ -18,7 +18,7 @@ namespace Maize {
 
 					if (!audio.mute && !audio.audioClips.empty())
 					{
-						PlayAudioClips(audio, listenerTransform, sourceTransform);
+						PlayAudioClips(audio, listenerTransform, sourceTransform, dt);
 					}
 				}
 			}
@@ -37,7 +37,7 @@ namespace Maize {
 		return -1;
 	}
 
-	void AudioSystem::PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source) const
+	void AudioSystem::PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source, float dt) const
 	{
 		auto it = audio.audioClips.begin();
 		while (it != audio.audioClips.end())
@@ -48,7 +48,7 @@ namespace Maize {
 
 				if (audio.spatial)
 				{
-					PlayPositionalSound(listener, source, audio, clip);
+					PlayPositionalSound(listener, source, audio, clip, dt);
 				}
 				else
 				{
@@ -61,26 +61,36 @@ namespace Maize {
 		}
 	}
 
-	void AudioSystem::PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip) const
+	void AudioSystem::PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip, float dt) const
 	{
+		// calculate attenuation factor based on distance within min and max distances
 		float distanceFromListener = PointF::Distance(listener.position, source.position);
 		float attenuationFactor = CalculateAttenuation(distanceFromListener, audio.minDistance, audio.maxDistance);
 		float finalVolume = audio.volume * attenuationFactor;
 
+		// calculate the angle based on the direction
 		PointF direction = (source.position - listener.position).Normalized();
 		float angle = std::atan2f(direction.y, direction.x) * (180.0f / 3.14f);
-		angle -= 90.0f; // make it so 0 is up
+		angle -= 90.0f;
 
-		uint8_t leftPan = 255 - static_cast<uint8_t>(angle * 255.0f / 360.0f);
-		uint8_t rightPan = static_cast<uint8_t>(angle * 255.0f / 360.0f);
+		// Smooth panning based on angle
+		float panValue = std::sin(angle * 3.14f / 180.0f);
+		float distanceFactor = 1.0f - std::max(0.0f, std::min(1.0f, (distanceFromListener - audio.minDistance) / (audio.maxDistance - audio.minDistance)));
+		panValue *= (1.0f - distanceFactor * distanceFactor);
 
+		// Calculate left and right pan
+		uint8_t leftPan = static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, 127.0f + panValue * 127.0f)));
+		uint8_t rightPan = static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, 127.0f - panValue * 127.0f)));
+
+		// get a free audio channel to play the sound
 		int32_t channel = GetFreeChannel();
 
-		// play sound at a direction and depth
+		// play sound with direction and depth
 		Mix_SetPanning(channel, leftPan, rightPan);
-		Mix_Volume(channel, static_cast<uint8_t>(finalVolume));
-		Mix_PlayChannel(channel, *clip, audio.loop ? -1 : 0);
+		Mix_Volume(channel, static_cast<uint8_t>(finalVolume)); 
+		Mix_PlayChannel(channel, *clip, audio.loop ? -1 : 0); 
 	}
+
 
 	void AudioSystem::PlaySound(const AudioSourceComponent& audio, const SoundClip* clip) const
 	{
