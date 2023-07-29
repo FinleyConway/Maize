@@ -16,13 +16,9 @@ namespace Maize {
 	class RenderingSystem : public System
 	{
 	public:
-		RenderingSystem(Renderer& renderer);
-
 		void OnRender(ECS::EntityWorld& registry, float dt) override;
 
 	private:
-		Renderer& m_Renderer;
-
 		struct CameraData
 		{
 			const TransformComponent& transform;

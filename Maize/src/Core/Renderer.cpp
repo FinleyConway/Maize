@@ -2,6 +2,8 @@
 
 namespace Maize {
 
+	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> Renderer::m_Renderer = { nullptr, &SDL_DestroyRenderer };
+
 	Renderer::Renderer(const Window& window, int32_t index, uint32_t flags)
 	{
 		m_Renderer.reset(SDL_CreateRenderer(window, index, flags));
@@ -73,7 +75,7 @@ namespace Maize {
 		SDL_RenderClear(m_Renderer.get());
 	}
 
-	void Renderer::RenderSprite(const Texture& texture, const Rect& spritePosition, const Rect& screenPosition, float angle, PointF point, SDL_RendererFlip flip) const
+	void Renderer::RenderSprite(const Texture& texture, const Rect& spritePosition, const Rect& screenPosition, float angle, PointF point, SDL_RendererFlip flip)
 	{
 		SDL_RenderCopyEx(m_Renderer.get(), texture, spritePosition, screenPosition, angle, point, flip);
 	}

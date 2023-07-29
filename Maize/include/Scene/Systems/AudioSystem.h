@@ -18,8 +18,8 @@ namespace Maize {
 
 	private:
 		int32_t GetFreeChannel() const;
-		void PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source, float dt) const;
-		void PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip, float dt) const;
+		void PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source) const;
+		void PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip) const;
 		void PlaySound(const AudioSourceComponent& audio, const SoundClip* clip) const;
 		float CalculateAttenuation(float distance, float minDistance, float maxDistance) const;
 

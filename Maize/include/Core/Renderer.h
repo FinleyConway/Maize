@@ -28,13 +28,13 @@ namespace Maize {
 		SDL_Rect GetViewPort() const;
 
 		void Clear() const;
-		void RenderSprite(const Texture& texture, const Rect& spritePosition, const Rect& screenPosition, float angle, PointF point, SDL_RendererFlip flip) const;
+		static void RenderSprite(const Texture& texture, const Rect& spritePosition, const Rect& screenPosition, float angle, PointF point, SDL_RendererFlip flip);
 		void Present() const;
 
 		operator SDL_Renderer*() const;
 
 	private:
-		std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_Renderer{ nullptr, &SDL_DestroyRenderer };
+		static std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> m_Renderer;
 	};
 
 }

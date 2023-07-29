@@ -10,6 +10,7 @@ namespace Maize {
 
 	void PhysicsSystem::OnStart(ECS::EntityWorld& registry)
 	{
+		// init bodies for box2d
 		for (const auto& entity : registry.GetEntityGroup<TransformComponent, RigidbodyComponent>())
 		{
 			const auto& [transform, rigidbody] = registry.GetComponents<TransformComponent, RigidbodyComponent>(entity);
@@ -68,6 +69,7 @@ namespace Maize {
 
 		m_World->Step(dt, velocityIterations, positionIterations);
 
+		// update entity components from box2d
 		for (const auto& entity : registry.GetEntityGroup<TransformComponent, RigidbodyComponent>())
 		{
 			const auto& [transform, rigidbody] = registry.GetComponents<TransformComponent, RigidbodyComponent>(entity);

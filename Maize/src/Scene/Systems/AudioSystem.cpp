@@ -8,8 +8,10 @@ namespace Maize {
 		{
 			const auto& [listenerTransform, audioListener] = registry.GetComponents<TransformComponent, AudioListenerComponent>(listener);
 
+			// set master volume
 			Mix_MasterVolume(audioListener.masterVolume);
 
+			// prevent music from being played if its paused
 			if (!audioListener.pauseAudio)
 			{
 				for (const auto entity : registry.GetEntityGroup<TransformComponent, AudioSourceComponent>())
@@ -18,7 +20,7 @@ namespace Maize {
 
 					if (!audio.mute && !audio.audioClips.empty())
 					{
-						PlayAudioClips(audio, listenerTransform, sourceTransform, dt);
+						PlayAudioClips(audio, listenerTransform, sourceTransform);
 					}
 				}
 			}
@@ -29,6 +31,7 @@ namespace Maize {
 	{
 		int32_t channels = Mix_AllocateChannels(-1);
 
+		// returns a non in use channel
 		for (int32_t i = 0; i < channels; i++)
 		{
 			if (Mix_Playing(i) != 1) return i;
@@ -37,18 +40,20 @@ namespace Maize {
 		return -1;
 	}
 
-	void AudioSystem::PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source, float dt) const
+	void AudioSystem::PlayAudioClips(AudioSourceComponent& audio, const TransformComponent& listener, const TransformComponent& source) const
 	{
 		auto it = audio.audioClips.begin();
 		while (it != audio.audioClips.end())
 		{
+			// prevent invalid sounds from playing
 			if ((*it) != nullptr)
 			{
 				const SoundClip* clip = (*it);
 
+				// play audio 2d / 3d audio
 				if (audio.spatial)
 				{
-					PlayPositionalSound(listener, source, audio, clip, dt);
+					PlayPositionalSound(listener, source, audio, clip);
 				}
 				else
 				{
@@ -61,7 +66,7 @@ namespace Maize {
 		}
 	}
 
-	void AudioSystem::PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip, float dt) const
+	void AudioSystem::PlayPositionalSound(const TransformComponent& listener, const TransformComponent& source, const AudioSourceComponent& audio, const SoundClip* clip) const
 	{
 		// calculate attenuation factor based on distance within min and max distances
 		float distanceFromListener = PointF::Distance(listener.position, source.position);
@@ -73,12 +78,12 @@ namespace Maize {
 		float angle = std::atan2f(direction.y, direction.x) * (180.0f / 3.14f);
 		angle -= 90.0f;
 
-		// Smooth panning based on angle
+		// smooth panning based on angle
 		float panValue = std::sin(angle * 3.14f / 180.0f);
 		float distanceFactor = 1.0f - std::max(0.0f, std::min(1.0f, (distanceFromListener - audio.minDistance) / (audio.maxDistance - audio.minDistance)));
 		panValue *= (1.0f - distanceFactor * distanceFactor);
 
-		// Calculate left and right pan
+		// calculate left and right pan
 		uint8_t leftPan = static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, 127.0f + panValue * 127.0f)));
 		uint8_t rightPan = static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, 127.0f - panValue * 127.0f)));
 
@@ -91,9 +96,9 @@ namespace Maize {
 		Mix_PlayChannel(channel, *clip, audio.loop ? -1 : 0); 
 	}
 
-
 	void AudioSystem::PlaySound(const AudioSourceComponent& audio, const SoundClip* clip) const
 	{
+		// get a free audio channel to play the sound
 		int32_t channel = GetFreeChannel();
 
 		Mix_VolumeChunk(*clip, audio.volume);

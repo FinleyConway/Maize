@@ -2,15 +2,8 @@
 
 namespace Maize {
 
-	RenderingSystem::RenderingSystem(Renderer& renderer) :
-		m_Renderer(renderer)
-	{
-	}
-
 	void RenderingSystem::OnRender(ECS::EntityWorld& registry, float dt)
     {
-        m_Renderer.Clear();
-
         // iterate through the camera entities
         for (const auto& cameraEntity : registry.GetEntityGroup<TransformComponent, CameraComponent>())
         {
@@ -18,8 +11,6 @@ namespace Maize {
 
             RenderSprites(registry, CameraData(cameraTransform, camera));
         }
-
-        m_Renderer.Present();
     }
 
     void RenderingSystem::RenderSprites(ECS::EntityWorld& registry, const CameraData& cameraData)
@@ -163,11 +154,12 @@ namespace Maize {
 
         SDL_RendererFlip flip = FlipSprite(sprite);
 
+        // set texture properties
         Colour colour = renderData.sprite->colour;
         spriteData->Tex().SetColour(colour.r, colour.g, colour.b);
         spriteData->Tex().SetAlpha(colour.a);
 
-        m_Renderer.RenderSprite(spriteData->Tex(), spriteData->Position(), spriteScreenPos, spriteTransform.angle, spriteData->Pivot(), flip);
+        Renderer::RenderSprite(spriteData->Tex(), spriteData->Position(), spriteScreenPos, spriteTransform.angle, spriteData->Pivot(), flip);
     }
 
 }
