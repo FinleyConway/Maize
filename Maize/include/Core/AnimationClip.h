@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Sprite.h"
+#include "Renderer/Sprite.h"
 
 namespace Maize {
 

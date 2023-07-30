@@ -8,10 +8,10 @@
 
 #include "Core/AnimationClip.h"
 #include "Core/SoundClip.h"
-#include "Core/Texture.h"
+#include "Renderer/Texture.h"
 #include "Core/Colour.h"
-#include "Core/Point.h"
-#include "Core/Rect.h"
+#include "Math/Point.h"
+#include "Math/Rect.h"
 
 #include "Scene/InputHandler.h"
 

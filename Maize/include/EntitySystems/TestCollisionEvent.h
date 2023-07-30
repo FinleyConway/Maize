@@ -2,7 +2,7 @@
 
 #include <box2d.h>
 
-#include "Scene/Systems/System.h"
+#include "System.h"
 #include "Scene/Components.h"
 
 namespace Maize {

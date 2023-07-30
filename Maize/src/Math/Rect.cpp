@@ -1,4 +1,4 @@
-#include "Core/Rect.h"
+#include "Math/Rect.h"
 
 namespace Maize {
 

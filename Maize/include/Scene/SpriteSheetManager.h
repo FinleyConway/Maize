@@ -7,11 +7,11 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "Core/Renderer.h"
-#include "Core/Texture.h"
-#include "Core/Point.h"
-#include "Core/Sprite.h"
-#include "Core/Rect.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/Texture.h"
+#include "Math/Point.h"
+#include "Renderer/Sprite.h"
+#include "Math/Rect.h"
 
 namespace Maize {
 

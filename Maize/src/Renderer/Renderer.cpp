@@ -1,4 +1,4 @@
-#include "Core/Renderer.h"
+#include "Renderer/Renderer.h"
 
 namespace Maize {
 

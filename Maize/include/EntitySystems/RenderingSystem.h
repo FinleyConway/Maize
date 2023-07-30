@@ -5,11 +5,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Core/Point.h"
-#include "Core/Rect.h"
-#include "Core/Renderer.h"
+#include "Math/Point.h"
+#include "Math/Rect.h"
+#include "Renderer/Renderer.h"
 #include "Scene/Components.h"
-#include "Scene/Systems/System.h"
+#include "System.h"
 
 namespace Maize {
 

@@ -21,34 +21,34 @@
     <ClCompile Include="src\Core\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer.cpp">
+    <ClCompile Include="src\Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Systems\RenderingSystem.cpp">
+    <ClCompile Include="src\EntitySystems\RenderingSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\PointF.cpp">
+    <ClCompile Include="src\Math\PointF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Point.cpp">
+    <ClCompile Include="src\Math\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\SpriteSheetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Systems\AnimationSystem.cpp">
+    <ClCompile Include="src\EntitySystems\AnimationSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\AnimationClip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Rect.cpp">
+    <ClCompile Include="src\Math\Rect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\RectF.cpp">
+    <ClCompile Include="src\Math\RectF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Systems\PhysicsSystem.cpp">
+    <ClCompile Include="src\EntitySystems\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\CollisionContactListener.cpp">
@@ -57,7 +57,7 @@
     <ClCompile Include="src\Core\Colour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Systems\AudioSystem.cpp">
+    <ClCompile Include="src\EntitySystems\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\SoundManager.cpp">
@@ -77,46 +77,46 @@
     <ClInclude Include="include\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Renderer.h">
+    <ClInclude Include="include\Renderer\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Texture.h">
+    <ClInclude Include="include\Renderer\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\System.h">
+    <ClInclude Include="include\EntitySystems\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\PointF.h">
+    <ClInclude Include="include\Math\PointF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Point.h">
+    <ClInclude Include="include\Math\Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Scene\SpriteSheetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\AnimationSystem.h">
+    <ClInclude Include="include\EntitySystems\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\AnimationClip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Sprite.h">
+    <ClInclude Include="include\Renderer\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\Rect.h">
+    <ClInclude Include="include\Math\Rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Core\RectF.h">
+    <ClInclude Include="include\Math\RectF.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\PhysicsSystem.h">
+    <ClInclude Include="include\EntitySystems\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Scene\CollisionContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\TestCollisionEvent.h">
+    <ClInclude Include="include\EntitySystems\TestCollisionEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Core\Colour.h">
@@ -125,7 +125,7 @@
     <ClInclude Include="include\Core\SoundClip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene\Systems\AudioSystem.h">
+    <ClInclude Include="include\EntitySystems\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Scene\SoundManager.h">
@@ -139,7 +139,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\Scene\Systems\RenderingSystem.h" />
+    <None Include="include\EntitySystems\RenderingSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Corn.png">

@@ -3,8 +3,8 @@
 #include <SDL.h>
 #include <memory>
 
-#include "Point.h"
-#include "Colour.h"
+#include "Math/Point.h"
+#include "Core/Colour.h"
 
 namespace Maize {
 

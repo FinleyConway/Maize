@@ -1,4 +1,4 @@
-#include "Scene/Systems/RenderingSystem.h"
+#include "EntitySystems/RenderingSystem.h"
 
 namespace Maize {
 

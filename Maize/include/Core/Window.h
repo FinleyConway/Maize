@@ -5,7 +5,7 @@
 #include <memory>
 #include <iostream>
 
-#include "Point.h"
+#include "Math/Point.h"
 
 namespace Maize {
 

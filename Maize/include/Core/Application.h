@@ -4,9 +4,11 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
-#include "Point.h"
 #include "Window.h"
-#include "Renderer.h"
+#include "Math/Point.h"
+#include "Renderer/Renderer.h"
+
+int main(int argc, char** argv);
 
 namespace Maize {
 
@@ -14,10 +16,18 @@ namespace Maize {
 	{
 	public:
 		Application();
+		virtual ~Application() = default;
+
+		static Application& Get() { return *s_Instance; }
+
+		Window& GetWindow() { return m_Window; }
 
 		void Close();
 
 	private:
+		static Application* s_Instance;
+		friend int ::main(int argc, char** argv);
+
 		Window m_Window = { "Test", Point(50, 50), Point(640, 480), 0 };
 		Renderer m_Renderer;
 

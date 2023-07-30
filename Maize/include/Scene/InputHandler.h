@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include <array>
 
-#include "Core/Point.h"
+#include "Math/Point.h"
 
 namespace Maize {
 

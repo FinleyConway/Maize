@@ -4,10 +4,10 @@
 #include <algorithm>
 #include <cmath>
 
-#include "Scene/Systems/System.h"
+#include "System.h"
 #include "Scene/Components.h"
 #include "Core/SoundClip.h"
-#include "Core/Point.h"
+#include "Math/Point.h"
 
 namespace Maize {
 

@@ -4,8 +4,8 @@
 #include <string>
 
 #include "Texture.h"
-#include "Point.h"
-#include "Rect.h"
+#include "Math/Point.h"
+#include "Math/Rect.h"
 
 namespace Maize {
 
