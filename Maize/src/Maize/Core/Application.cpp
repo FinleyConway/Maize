@@ -18,6 +18,14 @@ namespace Maize {
 		PushOverlay(m_ImGuiLayer);
 	}
 
+	Application::~Application()
+	{
+		SDL_CloseAudio();
+		Mix_Quit();
+		IMG_Quit();
+		SDL_Quit();
+	}
+
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
@@ -69,6 +77,9 @@ namespace Maize {
 
 		while (SDL_PollEvent(&event))
 		{
+			for (Layer * layer : m_LayerStack)
+				layer->OnEvent(event);
+
 			if (event.type == SDL_QUIT)
 			{
 				m_Running = false;

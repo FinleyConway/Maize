@@ -95,6 +95,9 @@
       <Project>{cd98ef28-68e1-4cb6-9fd2-7ee8b136a017}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Sandbox.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

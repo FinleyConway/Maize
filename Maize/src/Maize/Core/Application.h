@@ -19,7 +19,7 @@ namespace Maize {
 	{
 	public:
 		Application();
-		virtual ~Application() = default;
+		virtual ~Application();
 
 		static Application& Get() { return *s_Instance; }
 
@@ -37,7 +37,7 @@ namespace Maize {
 		static Application* s_Instance;
 		friend int ::main(int argc, char* argv[]);
 
-		Window m_Window = { "Test", Point(50, 50), Point(640, 480), 0 };
+		Window m_Window = { "Test", Point(50, 50), Point(640*2, 480*2), 0 };
 		Renderer m_Renderer;
 
 		LayerStack m_LayerStack;
@@ -50,6 +50,7 @@ namespace Maize {
 		void OnEvent();
 	};
 
+	// init engine 
 	Application* CreateApplication();
 
 }
