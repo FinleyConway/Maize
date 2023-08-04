@@ -11,6 +11,20 @@ namespace Maize {
 		}
 	}
 
+	void Window::PollEvent()
+	{
+		SDL_Event sdlEvent;
+
+		while (SDL_PollEvent(&sdlEvent))
+		{
+			if (sdlEvent.type == SDL_QUIT)
+			{
+				WindowCloseEvent event;
+				m_WindowData.eventCallback(event);
+			}
+		}
+	}
+
 	std::string Window::Title() const
 	{
 		return SDL_GetWindowTitle(m_Window.get());

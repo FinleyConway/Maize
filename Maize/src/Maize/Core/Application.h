@@ -4,12 +4,15 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
+#include "Maize/Events/EventDispatcher.h"
+#include "Maize/Events/WindowEvents.h"
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/ImGui/ImGuiLayer.h"
 #include "Maize/Core/LayerStack.h"
 #include "Maize/Core/Window.h"
 #include "Maize/Math/Point.h"
 #include "Maize/Core/Layer.h"
+
 
 int main(int argc, char* argv[]);
 
@@ -22,6 +25,8 @@ namespace Maize {
 		virtual ~Application();
 
 		static Application& Get() { return *s_Instance; }
+
+		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* layer);
@@ -47,7 +52,8 @@ namespace Maize {
 		bool m_Minimized = false;
 
 		void Run();
-		void OnEvent();
+
+		bool OnWindowClose(WindowCloseEvent& e);
 	};
 
 	// init engine 

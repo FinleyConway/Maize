@@ -14,6 +14,8 @@ namespace Maize {
 
 		s_Instance = this;
 
+		m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 	}
@@ -24,6 +26,12 @@ namespace Maize {
 		Mix_Quit();
 		IMG_Quit();
 		SDL_Quit();
+	}
+
+	void Application::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
 	}
 
 	void Application::PushLayer(Layer* layer)
@@ -52,7 +60,7 @@ namespace Maize {
 
 			if (!m_Minimized)
 			{
-				OnEvent();
+				m_Window.PollEvent();
 
 				for (Layer* layer : m_LayerStack)
 					layer->OnUpdate(delta);
@@ -71,20 +79,10 @@ namespace Maize {
 		}
 	}
 
-	void Application::OnEvent()
+	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		SDL_Event event;
-
-		while (SDL_PollEvent(&event))
-		{
-			for (Layer * layer : m_LayerStack)
-				layer->OnEvent(event);
-
-			if (event.type == SDL_QUIT)
-			{
-				m_Running = false;
-			}
-		}
+		m_Running = false;
+		return true;
 	}
 
 }
