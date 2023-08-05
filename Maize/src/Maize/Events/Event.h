@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SDL.h>
-
 namespace Maize {
 
 	#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_sdlrenderer2.h"
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdlrenderer2.h>
 
 #include "Maize/Core/Layer.h"
 
@@ -16,7 +16,6 @@ namespace Maize {
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnEvent(SDL_Event& event) override;
 
 		void Begin();
 		void End();

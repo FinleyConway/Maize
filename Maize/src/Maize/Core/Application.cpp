@@ -32,6 +32,11 @@ namespace Maize {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
+		{
+			(*it)->OnEvent(e);
+		}
 	}
 
 	void Application::PushLayer(Layer* layer)

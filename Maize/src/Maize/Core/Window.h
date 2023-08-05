@@ -5,6 +5,7 @@
 #include <memory>
 #include <iostream>
 #include <functional>
+#include <imgui_impl_sdl2.h>
 
 #include "Maize/Events/WindowEvents.h"
 #include "Maize/Events/Event.h"

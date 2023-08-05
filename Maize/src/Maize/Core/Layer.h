@@ -1,7 +1,8 @@
 #pragma once
 
-#include <SDL.h>
 #include <string>
+
+#include "Maize/Events/Event.h"
 
 namespace Maize {
 
@@ -15,7 +16,7 @@ namespace Maize {
 		virtual void OnDetach() {}
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
-		virtual void OnEvent(SDL_Event& event) {}
+		virtual void OnEvent(Event& event) {}
 
 		const std::string& Name() const { return m_DebugName; }
 

@@ -17,6 +17,8 @@ namespace Maize {
 
 		while (SDL_PollEvent(&sdlEvent))
 		{
+			ImGui_ImplSDL2_ProcessEvent(&sdlEvent); // kinda sucks that it has to be here but it is what it is
+
 			if (sdlEvent.type == SDL_QUIT)
 			{
 				WindowCloseEvent event;
