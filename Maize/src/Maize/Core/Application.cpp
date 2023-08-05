@@ -4,7 +4,8 @@ namespace Maize {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() : 
+	Application::Application(const ApplicationSpecification& specification) :
+		m_Window(specification.name),
 		m_Renderer(m_Window)
 	{
 		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) return;

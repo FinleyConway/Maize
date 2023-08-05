@@ -8,7 +8,7 @@ namespace Maize {
 	class MaizeOil : public Application
 	{
 	public:
-		MaizeOil()
+		MaizeOil(const ApplicationSpecification& specification) : Application(specification)
 		{
 			PushLayer(new Sandbox());
 		}
@@ -16,7 +16,10 @@ namespace Maize {
 
 	Application* CreateApplication()
 	{
-		return new MaizeOil();
+		ApplicationSpecification specification;
+		specification.name = "MaizeOil";
+
+		return new MaizeOil(specification);
 	}
 
 }

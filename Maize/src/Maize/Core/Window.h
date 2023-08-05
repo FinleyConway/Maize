@@ -18,22 +18,19 @@ namespace Maize {
 	public:
 		using EventCallBackFn = std::function<void(Event&)>;
 
-		Window(const std::string& title, Point windowPosition, Point windowSize, uint32_t flags);
+		Window(const std::string& title, Point windowSize = Point(640, 480));
 
-		void SetEventCallback(const EventCallBackFn& callback) { m_WindowData.eventCallback = callback; }
-		void PollEvent();
-
-		std::string Title() const;
+		std::string Title() const { return m_WindowData.title; }
 		void Title(const std::string& title) const;
 
-		Point Position() const;
-		void Position(Point position) const;
+		uint32_t GetWidth() const { return m_WindowData.width; }
+		uint32_t GetHeight() const { return m_WindowData.height; }
 
-		Point Size() const;
-		void Size(Point size) const;
+		void SetEventCallback(const EventCallBackFn& callback) { m_WindowData.eventCallback = callback; }
+		void SetVSync(bool enable);
+		bool IsVSync() const { return m_WindowData.vSync; }
 
-		void Maximize() const;
-		void Minimize() const;
+		void PollEvent();
 
 		operator SDL_Window* () const;
 

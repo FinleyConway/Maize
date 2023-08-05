@@ -2,13 +2,28 @@
 
 namespace Maize {
 
-	Window::Window(const std::string& title, Point windowPosition, Point windowSize, uint32_t flags)
+	Window::Window(const std::string& title, Point windowSize)
 	{
-		m_Window.reset(SDL_CreateWindow(title.c_str(), windowPosition.x, windowPosition.y, windowSize.x, windowSize.y, flags));
+		m_Window.reset(SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
 		if (m_Window == nullptr)
 		{
 			std::cout << "Failed to create window: " << SDL_GetError() << std::endl;
 		}
+
+		m_WindowData.title = title;
+		m_WindowData.width = windowSize.x;
+		m_WindowData.height = windowSize.y;
+
+		SetVSync(true);
+	}
+
+	void Window::SetVSync(bool enable)
+	{
+		if (enable)
+			SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
+		else
+			SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
+		m_WindowData.vSync = enable;
 	}
 
 	void Window::PollEvent()
@@ -27,48 +42,9 @@ namespace Maize {
 		}
 	}
 
-	std::string Window::Title() const
-	{
-		return SDL_GetWindowTitle(m_Window.get());
-	}
-
 	void Window::Title(const std::string& title) const
 	{
 		SDL_SetWindowTitle(m_Window.get(), title.c_str());
-	}
-
-	Point Window::Position() const
-	{
-		int x, y;
-		SDL_GetWindowPosition(m_Window.get(), &x, &y);
-		return { x, y };
-	}
-
-	void Window::Position(Point position) const
-	{
-		SDL_SetWindowPosition(m_Window.get(), position.x, position.y);
-	}
-
-	Point Window::Size() const
-	{
-		int x, y;
-		SDL_GetWindowSize(m_Window.get(), &x, &y);
-		return { x, y };
-	}
-
-	void Window::Size(Point size) const
-	{
-		SDL_SetWindowSize(m_Window.get(), size.x, size.y);
-	}
-
-	void Window::Maximize() const
-	{
-		SDL_MaximizeWindow(m_Window.get());
-	}
-
-	void Window::Minimize() const
-	{
-		SDL_MinimizeWindow(m_Window.get());
 	}
 
 	Window::operator SDL_Window* () const

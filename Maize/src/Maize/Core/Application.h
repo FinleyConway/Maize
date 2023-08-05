@@ -18,10 +18,15 @@ int main(int argc, char* argv[]);
 
 namespace Maize {
 
+	struct ApplicationSpecification
+	{
+		std::string name = "Maize";
+	};
+
 	class Application
 	{
 	public:
-		Application();
+		Application(const ApplicationSpecification& specification);
 		virtual ~Application();
 
 		static Application& Get() { return *s_Instance; }
@@ -42,7 +47,7 @@ namespace Maize {
 		static Application* s_Instance;
 		friend int ::main(int argc, char* argv[]);
 
-		Window m_Window = { "Test", Point(50, 50), Point(640*2, 480*2), 0 };
+		Window m_Window;
 		Renderer m_Renderer;
 
 		LayerStack m_LayerStack;
