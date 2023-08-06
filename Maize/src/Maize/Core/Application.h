@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 
+#include "Maize/Events/InputPollingLayer.h"
 #include "Maize/Events/EventDispatcher.h"
 #include "Maize/Events/WindowEvents.h"
 #include "Maize/Renderer/Renderer.h"
@@ -49,8 +50,10 @@ namespace Maize {
 		Window m_Window;
 		Renderer m_Renderer;
 
+
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
+		InputPollingLayer* m_Input;
 
 		bool m_Running = true;
 		bool m_Minimized = false;

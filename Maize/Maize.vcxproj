@@ -96,6 +96,8 @@
     <ClCompile Include="..\Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Maize\Core\Application.cpp" />
+    <ClCompile Include="src\Maize\Core\Input.cpp" />
+    <ClCompile Include="src\Maize\Events\InputPollingLayer.cpp" />
     <ClCompile Include="src\Maize\Renderer\Colour.cpp" />
     <ClCompile Include="src\Maize\Core\LayerStack.cpp" />
     <ClCompile Include="src\Maize\ImGui\ImGuiLayer.cpp" />
@@ -127,6 +129,8 @@
     <ClInclude Include="..\Dependencies\imgui\backends\imgui_impl_sdl2.h" />
     <ClInclude Include="..\Dependencies\imgui\backends\imgui_impl_sdlrenderer2.h" />
     <ClInclude Include="src\Maize\Core\Application.h" />
+    <ClInclude Include="src\Maize\Core\Input.h" />
+    <ClInclude Include="src\Maize\Events\InputPollingLayer.h" />
     <ClInclude Include="src\Maize\Renderer\Colour.h" />
     <ClInclude Include="src\Maize\Core\KeyCode.h" />
     <ClInclude Include="src\Maize\Core\MouseCode.h" />

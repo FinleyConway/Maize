@@ -18,7 +18,9 @@ namespace Maize {
 		m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		m_ImGuiLayer = new ImGuiLayer();
+		m_Input = new InputPollingLayer();
 		PushOverlay(m_ImGuiLayer);
+		PushLayer(m_Input);
 	}
 
 	Application::~Application()
@@ -79,6 +81,7 @@ namespace Maize {
 					layer->OnRender();
 
 				m_ImGuiLayer->End();
+				m_Input->End();
 
 				m_Renderer.Present();
 			}
