@@ -39,10 +39,51 @@ namespace Maize {
 				WindowCloseEvent event;
 				m_WindowData.eventCallback(event);
 			}
+			else if (sdlEvent.type == SDL_WINDOWEVENT)
+			{
+				if (sdlEvent.window.type == SDL_WINDOWEVENT_RESIZED)
+				{
+					m_WindowData.width = sdlEvent.window.data1;
+					m_WindowData.height = sdlEvent.window.data2;
+
+					WindowResizeEvent event(sdlEvent.window.data1, sdlEvent.window.data2);
+					m_WindowData.eventCallback(event);
+				}
+			}
+			else if (sdlEvent.type == SDL_KEYDOWN)
+			{
+				KeyPressedEvent event((KeyCode)sdlEvent.key.keysym.sym);
+				m_WindowData.eventCallback(event);
+			}
+			else if (sdlEvent.type == SDL_KEYUP)
+			{
+				KeyReleasedEvent event((KeyCode)sdlEvent.key.keysym.sym);
+				m_WindowData.eventCallback(event);
+			}
+			else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+			{
+				MouseButtonPressedEvent event((MouseCode)sdlEvent.button.button);
+				m_WindowData.eventCallback(event);
+			}
+			else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+			{
+				MouseButtonReleasedEvent event((MouseCode)sdlEvent.button.button);
+				m_WindowData.eventCallback(event);
+			}
+			else if (sdlEvent.type == SDL_MOUSEMOTION)
+			{
+				MouseMovedEvent event((float)sdlEvent.motion.x, (float)sdlEvent.motion.y);
+				m_WindowData.eventCallback(event);
+			}
+			else if (sdlEvent.type == SDL_MOUSEWHEEL)
+			{
+				MouseScrolledEvent event(sdlEvent.wheel.preciseX, sdlEvent.wheel.preciseY);
+				m_WindowData.eventCallback(event);
+			}
 		}
 	}
 
-	void Window::Title(const std::string& title) const
+	void Window::SetTitle(const std::string& title) const
 	{
 		SDL_SetWindowTitle(m_Window.get(), title.c_str());
 	}

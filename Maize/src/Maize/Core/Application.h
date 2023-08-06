@@ -13,7 +13,6 @@
 #include "Maize/Math/Point.h"
 #include "Maize/Core/Layer.h"
 
-
 int main(int argc, char* argv[]);
 
 namespace Maize {

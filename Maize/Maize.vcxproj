@@ -128,10 +128,14 @@
     <ClInclude Include="..\Dependencies\imgui\backends\imgui_impl_sdlrenderer2.h" />
     <ClInclude Include="src\Maize\Core\Application.h" />
     <ClInclude Include="src\Maize\Core\Colour.h" />
+    <ClInclude Include="src\Maize\Core\KeyCode.h" />
+    <ClInclude Include="src\Maize\Core\MouseCode.h" />
     <ClInclude Include="src\Maize\Events\Event.h" />
     <ClInclude Include="src\Maize\Core\LayerStack.h" />
     <ClInclude Include="src\Maize\Core\SoundClip.h" />
     <ClInclude Include="src\Maize\Events\EventDispatcher.h" />
+    <ClInclude Include="src\Maize\Events\KeyEvent.h" />
+    <ClInclude Include="src\Maize\Events\MouseEvent.h" />
     <ClInclude Include="src\Maize\Events\WindowEvents.h" />
     <ClInclude Include="src\Maize\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Maize.h" />

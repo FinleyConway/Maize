@@ -9,7 +9,7 @@ namespace Maize {
 	public:
 		WindowCloseEvent() = default;
 
-		EVENT_CLASS_TYPE(WindowClose);
+		EVENT_CLASS_TYPE(WindowClose)
 	};
 
 	class WindowResizeEvent : public Event
@@ -20,7 +20,7 @@ namespace Maize {
 		uint32_t Width() const { return m_Width; }
 		uint32_t Height() const { return m_Height; }
 
-		EVENT_CLASS_TYPE(WindowResize);
+		EVENT_CLASS_TYPE(WindowResize)
 
 	private:
 		uint32_t m_Width;
