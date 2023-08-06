@@ -54,7 +54,7 @@
     <ClCompile Include="src\Maize\Scene\CollisionContactListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Maize\Core\Colour.cpp">
+    <ClCompile Include="src\Maize\Renderer\Colour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Maize\EntitySystems\AudioSystem.cpp">
@@ -143,7 +143,7 @@
     <ClInclude Include="src\Maize\Scene\CollisionContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Maize\Core\Colour.h">
+    <ClInclude Include="src\Maize\Renderer\Colour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Maize\Core\SoundClip.h">

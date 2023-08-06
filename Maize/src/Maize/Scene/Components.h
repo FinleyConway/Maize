@@ -10,7 +10,7 @@
 #include "Maize/Core/AnimationClip.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Core/SoundClip.h"
-#include "Maize/Core/Colour.h"
+#include "Maize/Renderer/Colour.h"
 #include "Maize/Math/Point.h"
 #include "Maize/Math/Rect.h"
 

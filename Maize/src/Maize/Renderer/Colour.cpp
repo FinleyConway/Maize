@@ -1,4 +1,4 @@
-#include "Maize/Core/Colour.h"
+#include "Maize/Renderer/Colour.h"
 
 namespace Maize {
 
