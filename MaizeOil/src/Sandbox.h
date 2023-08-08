@@ -9,26 +9,7 @@ class Sandbox : public Maize::Layer
 public:
 	void OnUpdate(float deltaTime) override
 	{
-		PointF direction;
-
-		if (Input::GetButton(KeyCode::W))
-		{
-			direction.y = 1;
-		}
-		if (Input::GetButton(KeyCode::S))
-		{
-			direction.y = -1;
-		}
-		if (Input::GetButton(KeyCode::A))
-		{
-			direction.x = 1;
-		}
-		if (Input::GetButton(KeyCode::D))
-		{
-			direction.x = -1;
-		}
-
-		std::cout << direction.x << " " << direction.y << std::endl;
+		std::cout << deltaTime << std::endl;
 	}
 
 	void OnRender() override

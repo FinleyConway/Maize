@@ -61,17 +61,21 @@ namespace Maize {
 
 	void Application::Run()
 	{
+		float lastFrameTime = SDL_GetTicks() / 1000.0f;
+		float deltaTime = 0.0f;
+
 		while (m_Running)
 		{
-			// temp - will make a time class
-			float delta = 0.01666666666f;
+			float currentTime = SDL_GetTicks() / 1000.0f;
+			deltaTime = currentTime - lastFrameTime;
+			lastFrameTime = currentTime;
 
 			if (!m_Minimized)
 			{
 				m_Window.PollEvent();
 
 				for (Layer* layer : m_LayerStack)
-					layer->OnUpdate(delta);
+					layer->OnUpdate(deltaTime);
 
 				m_ImGuiLayer->Begin();
 
