@@ -29,7 +29,7 @@ namespace Maize {
 		bool IsVSync() const { return m_WindowData.vSync; }
 
 		void SetEventCallback(const EventCallBackFn& callback) { m_WindowData.eventCallback = callback; }
-		void SetTitle(const std::string& title) const;
+		void SetTitle(const std::string& title);
 		void SetVSync(bool enable);
 
 		void PollEvent();

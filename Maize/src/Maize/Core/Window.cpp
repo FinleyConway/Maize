@@ -83,8 +83,9 @@ namespace Maize {
 		}
 	}
 
-	void Window::SetTitle(const std::string& title) const
+	void Window::SetTitle(const std::string& title)
 	{
+		m_WindowData.title = title;
 		SDL_SetWindowTitle(m_Window.get(), title.c_str());
 	}
 
