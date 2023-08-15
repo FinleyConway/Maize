@@ -12,6 +12,9 @@ namespace Maize {
 
 	void ImGuiLayer::OnEvent(Event& e)
 	{
+		const ImGuiIO& io = ImGui::GetIO();
+		e.handled |= io.WantCaptureMouse;
+		e.handled |= io.WantCaptureKeyboard;
 	}
 
 	void ImGuiLayer::OnDetach()

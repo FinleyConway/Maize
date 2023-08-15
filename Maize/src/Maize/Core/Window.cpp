@@ -64,9 +64,6 @@ namespace Maize {
 			else if (e.type == sf::Event::MouseMoved)
 			{
 				MouseMovedEvent event(e.mouseMove.x, e.mouseMove.y);
-
-				std::cout << e.mouseMove.x << " " << e.mouseMove.y <<  std::endl;
-
 				m_WindowData.eventCallback(event);
 			}
 			else if (e.type == sf::Event::MouseWheelScrolled)

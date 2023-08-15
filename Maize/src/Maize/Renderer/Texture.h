@@ -16,7 +16,6 @@ namespace Maize {
 
             if (!texture.m_Texture.loadFromFile(filePath))
             {
-                std::cerr << "Failed to load texture from file: " << filePath << std::endl;
                 texture.m_IsValid = false;
             }
             texture.m_IsValid = true;

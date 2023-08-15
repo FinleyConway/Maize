@@ -11,25 +11,30 @@ namespace Maize {
 	{
 	public:
 		Sprite() = default;
-		Sprite(const Rect& rect, PointF pivot, Texture& texture) :
+		Sprite(const Rect& rect, PointF pivot, const Texture* texture) :
 			m_Pivot(pivot),
 			m_Texture(texture)
 		{
-			m_Sprite.setTextureRect(rect);
+			if (texture != nullptr)
+			{
+				m_Sprite.setTextureRect(rect);
+				m_Sprite.setTexture(*texture);
+			}
 		}
 
 		void SetColour(Colour colour) { m_Sprite.setColor(colour); }
+		void SetPosition(PointF position) { m_Sprite.setPosition(position); }
 
 		Rect GetTexturePosition() const { return m_Sprite.getTextureRect(); }
 		PointF GetPivot() const { return m_Pivot; }
-		const Texture& GetTexture() const { return m_Texture; }
+		const Texture* GetTexture() const { return m_Texture; }
 		Colour GetColour() const { return m_Sprite.getColor(); }
 
 		operator const sf::Sprite& () const { return m_Sprite; }
 
 	private:
-		PointF m_Pivot = { 0, 0 };
-		Texture& m_Texture;
+		PointF m_Pivot = PointF(0, 0);
+		const Texture* m_Texture = nullptr;
 		sf::Sprite m_Sprite;
 	};
 
