@@ -1,19 +1,19 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/Window.hpp>
 
 namespace Maize {
 
     enum class MouseCode
     {
         // main buttons
-        Left = SDL_BUTTON_LEFT,
-        Middle = SDL_BUTTON_MIDDLE,
-        Right = SDL_BUTTON_RIGHT,
+        Left = sf::Mouse::Left,
+        Middle = sf::Mouse::Middle,
+        Right = sf::Mouse::Right,
 
         // side buttons
-        Alt1 = SDL_BUTTON_X1,
-        Alt2 = SDL_BUTTON_X2,
+        Alt1 = sf::Mouse::XButton1,
+        Alt2 = sf::Mouse::XButton2,
     };
 
 }

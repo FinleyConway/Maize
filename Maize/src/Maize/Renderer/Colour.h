@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 namespace Maize {
 
@@ -9,6 +9,7 @@ namespace Maize {
 	public:
 		Colour() = default;
 		explicit Colour(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255);
+		Colour(const sf::Color& colour);
 
 		uint8_t r = 255;
 		uint8_t g = 255;
@@ -24,6 +25,8 @@ namespace Maize {
 		const static Colour magenta;
 		const static Colour red;
 		const static Colour white;
+
+		operator sf::Color () const;
 	};
 
 }

@@ -8,7 +8,6 @@
 	path = Dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
-
 [submodule "Dependencies/imgui-sfml"]
 	path = Dependencies/imgui-sfml
 	url = https://github.com/SFML/imgui-sfml.git

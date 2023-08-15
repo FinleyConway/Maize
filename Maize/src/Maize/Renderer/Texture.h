@@ -1,57 +1,39 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/Graphics/Texture.hpp>
 #include <memory>
-
-#include "Maize/Math/Point.h"
-#include "Maize/Renderer/Colour.h"
 
 namespace Maize {
 
-	struct Texture
-	{
-	public:
-		Texture() = default;
-		explicit Texture(SDL_Texture* texture) : m_Texture(texture, &SDL_DestroyTexture)
-		{
-		}
+    struct Texture
+    {
+    public:
+        Texture() = default;
 
-		void SetAlpha(uint8_t alpha)
-		{
-			SDL_SetTextureAlphaMod(m_Texture.get(), alpha);
-		}
+        static Texture Create(const std::string& filePath)
+        {
+            Texture texture;
 
-		void SetAlpha(Colour colour)
-		{
-			SDL_SetTextureAlphaMod(m_Texture.get(), colour.a);
-		}
+            if (!texture.m_Texture.loadFromFile(filePath))
+            {
+                std::cerr << "Failed to load texture from file: " << filePath << std::endl;
+                texture.m_IsValid = false;
+            }
+            texture.m_IsValid = true;
 
-		void SetColour(uint8_t r, uint8_t g, uint8_t b)
-		{
-			SDL_SetTextureColorMod(m_Texture.get(), r, g, b);
-		}
+            return texture;
+        }
 
-		void SetColour(Colour colour)
-		{
-			SDL_SetTextureColorMod(m_Texture.get(), colour.r, colour.g, colour.b);
-		}
+        bool IsValid() const { return m_IsValid; }
+        uint32_t GetWidth() const { return m_Texture.getSize().x; }
+        uint32_t GetHeight() const { return m_Texture.getSize().y; }
 
-		Point Size() const 
-		{ 
-			int32_t x, y;
-			SDL_QueryTexture(m_Texture.get(), nullptr, nullptr, &x, &y);
-			return Point(x, y);
-		}
+        operator sf::Texture& () { return m_Texture; }
+        operator const sf::Texture& () const { return m_Texture; }
 
-		bool IsValid() const
-		{
-			return m_Texture != nullptr;
-		}
-
-		operator SDL_Texture*() const { return m_Texture.get(); }
-
-	private:
-		std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_Texture = { nullptr, &SDL_DestroyTexture };
-	};
+    private:
+        sf::Texture m_Texture;
+        bool m_IsValid = false;
+    };
 
 }

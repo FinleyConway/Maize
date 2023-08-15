@@ -11,7 +11,7 @@ namespace Maize {
 
     PointF::PointF(float x, float y) : x(x), y(y) {}
 
-    PointF::PointF(SDL_FPoint point) : x(point.x), y(point.y) {}
+    PointF::PointF(const sf::Vector2f& point) : x(point.x), y(point.y) {}
 
     float PointF::Angle(PointF from, PointF to)
     {
@@ -85,19 +85,9 @@ namespace Maize {
         return PointF(x / magnitude, y / magnitude);
     }
 
-    PointF::operator SDL_FPoint() const
+    PointF::operator sf::Vector2f () const
     {
-        return { x, y };
-    }
-
-    PointF::operator const SDL_FPoint* () const
-    {
-        return reinterpret_cast<const SDL_FPoint*>(this);
-    }
-
-    PointF::operator const SDL_Point* () const
-    {
-        return reinterpret_cast<const SDL_Point*>(this);
+        return sf::Vector2f(x, y);
     }
 
     PointF PointF::operator+(PointF other) const

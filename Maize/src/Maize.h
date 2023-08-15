@@ -5,7 +5,6 @@
 
 #include "Maize/ImGui/ImGuiLayer.h"
 
-#include "Maize/Core/Input.h"
 #include "Maize/Core/KeyCode.h"
 #include "Maize/Core/MouseCode.h"
 

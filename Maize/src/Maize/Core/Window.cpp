@@ -1,15 +1,12 @@
 #include "Maize/Core/Window.h"
 
+#include <imgui-SFML.h>
+
 namespace Maize {
 
-	Window::Window(const std::string& title, Point windowSize)
+	Window::Window(const std::string& title, Point windowSize) :
+		m_Window(sf::VideoMode(windowSize.x, windowSize.y), title)
 	{
-		m_Window.reset(SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowSize.x, windowSize.y, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
-		if (m_Window == nullptr)
-		{
-			std::cout << "Failed to create window: " << SDL_GetError() << std::endl;
-		}
-
 		m_WindowData.title = title;
 		m_WindowData.width = windowSize.x;
 		m_WindowData.height = windowSize.y;
@@ -19,79 +16,91 @@ namespace Maize {
 
 	void Window::SetVSync(bool enable)
 	{
-		if (enable)
-			SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
-		else
-			SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
+		m_Window.setVerticalSyncEnabled(enable);
 		m_WindowData.vSync = enable;
 	}
 
 	void Window::PollEvent()
 	{
-		SDL_Event sdlEvent;
+		sf::Event e;
 
-		while (SDL_PollEvent(&sdlEvent))
+		while (m_Window.pollEvent(e))
 		{
-			ImGui_ImplSDL2_ProcessEvent(&sdlEvent); // kinda sucks that it has to be here but it is what it is
+			ImGui::SFML::ProcessEvent(m_Window, e);
 
-			if (sdlEvent.type == SDL_QUIT)
+			if (e.type == sf::Event::Closed)
 			{
 				WindowCloseEvent event;
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_WINDOWEVENT)
+			else if (e.type == sf::Event::Resized)
 			{
-				if (sdlEvent.window.type == SDL_WINDOWEVENT_RESIZED)
-				{
-					m_WindowData.width = sdlEvent.window.data1;
-					m_WindowData.height = sdlEvent.window.data2;
+				m_WindowData.width = e.size.width;
+				m_WindowData.height = e.size.height;
 
-					WindowResizeEvent event(sdlEvent.window.data1, sdlEvent.window.data2);
-					m_WindowData.eventCallback(event);
-				}
-			}
-			else if (sdlEvent.type == SDL_KEYDOWN)
-			{
-				KeyPressedEvent event((KeyCode)sdlEvent.key.keysym.sym);
+				WindowResizeEvent event(e.size.width, e.size.height);
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_KEYUP)
+			else if (e.type == sf::Event::KeyPressed)
 			{
-				KeyReleasedEvent event((KeyCode)sdlEvent.key.keysym.sym);
+				KeyPressedEvent event((KeyCode)e.key.code);
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_MOUSEBUTTONDOWN)
+			else if (e.type == sf::Event::KeyReleased)
 			{
-				MouseButtonPressedEvent event((MouseCode)sdlEvent.button.button);
+				KeyReleasedEvent event((KeyCode)e.key.code);
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_MOUSEBUTTONUP)
+			else if (e.type == sf::Event::MouseButtonPressed)
 			{
-				MouseButtonReleasedEvent event((MouseCode)sdlEvent.button.button);
+				MouseButtonPressedEvent event((MouseCode)e.mouseButton.button);
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_MOUSEMOTION)
+			else if (e.type == sf::Event::MouseButtonReleased)
 			{
-				MouseMovedEvent event((float)sdlEvent.motion.x, (float)sdlEvent.motion.y);
+				MouseButtonReleasedEvent event((MouseCode)e.mouseButton.button);
 				m_WindowData.eventCallback(event);
 			}
-			else if (sdlEvent.type == SDL_MOUSEWHEEL)
+			else if (e.type == sf::Event::MouseMoved)
 			{
-				MouseScrolledEvent event(sdlEvent.wheel.preciseX, sdlEvent.wheel.preciseY);
+				MouseMovedEvent event(e.mouseMove.x, e.mouseMove.y);
+
+				std::cout << e.mouseMove.x << " " << e.mouseMove.y <<  std::endl;
+
+				m_WindowData.eventCallback(event);
+			}
+			else if (e.type == sf::Event::MouseWheelScrolled)
+			{
+				MouseScrolledEvent event(e.mouseWheelScroll.x, e.mouseWheelScroll.y);
 				m_WindowData.eventCallback(event);
 			}
 		}
 	}
 
+	void Window::Clear(Colour colour)
+	{
+		m_Window.clear(colour);
+	}
+
+	void Window::Render(const sf::Drawable& drawable)
+	{
+		m_Window.draw(drawable, sf::RenderStates::Default);
+	}
+
+	void Window::Present()
+	{
+		m_Window.display();
+	}
+
 	void Window::SetTitle(const std::string& title)
 	{
 		m_WindowData.title = title;
-		SDL_SetWindowTitle(m_Window.get(), title.c_str());
+		m_Window.setTitle(title);
 	}
 
-	Window::operator SDL_Window* () const
+	Window::operator sf::RenderWindow& ()
 	{
-		return m_Window.get();
+		return m_Window;
 	}
 
 }

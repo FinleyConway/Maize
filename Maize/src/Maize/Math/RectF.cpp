@@ -6,8 +6,6 @@ namespace Maize {
 
 	RectF::RectF(float x, float y, float w, float h) : x(x), y(y), width(w), height(h) { }
 
-	RectF::RectF(const SDL_FRect& rect) : x(rect.x), y(rect.y), width(rect.y), height(rect.h) { }
-
 	float RectF::XMax() const
 	{
 		return x + width;
@@ -72,11 +70,6 @@ namespace Maize {
 	{
 		return (x < other.x + other.width && x + width > other.x &&
 			y < other.y + other.height && y + height > other.y);
-	}
-
-	RectF::operator SDL_FRect() const
-	{
-		return SDL_FRect(x, y, width, height);
 	}
 
 	bool RectF::operator==(const RectF& other) const

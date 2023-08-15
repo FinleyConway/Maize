@@ -5,30 +5,14 @@ namespace Maize {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application(const ApplicationSpecification& specification) :
-		m_Window(specification.name),
-		m_Renderer(m_Window)
+		m_Window(specification.name)
 	{
-		if (SDL_Init(SDL_INIT_EVERYTHING) < 0) return;
-		if (~IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) return;
-		if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3) return;
-		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) return;
-
 		s_Instance = this;
 
 		m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		m_ImGuiLayer = new ImGuiLayer();
-		m_Input = new InputPollingLayer();
 		PushOverlay(m_ImGuiLayer);
-		PushLayer(m_Input);
-	}
-
-	Application::~Application()
-	{
-		SDL_CloseAudio();
-		Mix_Quit();
-		IMG_Quit();
-		SDL_Quit();
 	}
 
 	void Application::OnEvent(Event& e)
@@ -61,12 +45,14 @@ namespace Maize {
 
 	void Application::Run()
 	{
-		float lastFrameTime = SDL_GetTicks() / 1000.0f;
+		sf::Clock clock;
+
+		float lastFrameTime = sf::Time(clock.getElapsedTime()).asSeconds();
 		float deltaTime = 0.0f;
 
 		while (m_Running)
 		{
-			float currentTime = SDL_GetTicks() / 1000.0f;
+			float currentTime = sf::Time(clock.getElapsedTime()).asSeconds();
 			deltaTime = currentTime - lastFrameTime;
 			lastFrameTime = currentTime;
 
@@ -74,20 +60,19 @@ namespace Maize {
 			{
 				m_Window.PollEvent();
 
+				m_ImGuiLayer->Begin(clock.restart());
+
 				for (Layer* layer : m_LayerStack)
 					layer->OnUpdate(deltaTime);
 
-				m_ImGuiLayer->Begin();
-
-				m_Renderer.Clear();
+				m_Window.Clear(Colour::grey);
 
 				for (Layer* layer : m_LayerStack)
 					layer->OnRender();
 
 				m_ImGuiLayer->End();
-				m_Input->End();
 
-				m_Renderer.Present();
+				m_Window.Present();
 			}
 		}
 	}

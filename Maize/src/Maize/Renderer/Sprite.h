@@ -1,10 +1,8 @@
 #pragma once
 
-#include <SDL.h>
-#include <string>
-
 #include "Maize/Renderer/Texture.h"
-#include "Maize/Math/Point.h"
+#include "Maize/Renderer/Colour.h"
+#include "Maize/Math/PointF.h"
 #include "Maize/Math/Rect.h"
 
 namespace Maize {
@@ -13,21 +11,26 @@ namespace Maize {
 	{
 	public:
 		Sprite() = default;
-		Sprite(const std::string& name, const Rect& position, PointF pivot, float ppu, Texture& texture) :
-			m_Name(name), m_Position(position), m_Pivot(pivot), m_PixelPerUnit(ppu), m_Texture(texture) { }
+		Sprite(const Rect& rect, PointF pivot, Texture& texture) :
+			m_Pivot(pivot),
+			m_Texture(texture)
+		{
+			m_Sprite.setTextureRect(rect);
+		}
 
-		const std::string& Name() const { return m_Name; }
-		Rect Position() const { return m_Position; }
-		PointF Pivot() const { return m_Pivot; }
-		float PPU() const { return m_PixelPerUnit; }
-		Texture& Tex() const { return m_Texture; }
+		void SetColour(Colour colour) { m_Sprite.setColor(colour); }
+
+		Rect GetTexturePosition() const { return m_Sprite.getTextureRect(); }
+		PointF GetPivot() const { return m_Pivot; }
+		const Texture& GetTexture() const { return m_Texture; }
+		Colour GetColour() const { return m_Sprite.getColor(); }
+
+		operator const sf::Sprite& () const { return m_Sprite; }
 
 	private:
-		std::string m_Name = "";
-		Rect m_Position = { 0, 0, 0, 0 };
 		PointF m_Pivot = { 0, 0 };
-		float m_PixelPerUnit = 100;
 		Texture& m_Texture;
+		sf::Sprite m_Sprite;
 	};
 
 }

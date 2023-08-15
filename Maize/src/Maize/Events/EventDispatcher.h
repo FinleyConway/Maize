@@ -14,7 +14,7 @@ namespace Maize {
 		{
 			if (m_Event.GetEventType() == TEvent::GetStaticType())
 			{
-				func(static_cast<TEvent&>(m_Event));
+				m_Event.handled |= func(static_cast<TEvent&>(m_Event));
 				return true;
 			}
 
