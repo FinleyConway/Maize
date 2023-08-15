@@ -1,20 +1,14 @@
 #pragma once
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-
-#include "Maize/Events/InputPollingLayer.h"
 #include "Maize/Events/EventDispatcher.h"
 #include "Maize/Events/WindowEvents.h"
-#include "Maize/Renderer/Renderer.h"
 #include "Maize/ImGui/ImGuiLayer.h"
 #include "Maize/Core/LayerStack.h"
 #include "Maize/Core/Window.h"
 #include "Maize/Math/Point.h"
 #include "Maize/Core/Layer.h"
 
-int main(int argc, char* argv[]);
+int main();
 
 namespace Maize {
 
@@ -26,8 +20,7 @@ namespace Maize {
 	class Application
 	{
 	public:
-		Application(const ApplicationSpecification& specification);
-		virtual ~Application();
+		explicit Application(const ApplicationSpecification& specification);
 
 		static Application& Get() { return *s_Instance; }
 
@@ -37,7 +30,6 @@ namespace Maize {
 		void PushOverlay(Layer* layer);
 
 		Window& GetWindow() { return m_Window; }
-		Renderer& GetRenderer() { return m_Renderer; }
 
 		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
@@ -45,15 +37,12 @@ namespace Maize {
 
 	private:
 		static Application* s_Instance;
-		friend int ::main(int argc, char* argv[]);
+		friend int ::main();
 
 		Window m_Window;
-		Renderer m_Renderer;
-
 
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer;
-		InputPollingLayer* m_Input;
 
 		bool m_Running = true;
 		bool m_Minimized = false;

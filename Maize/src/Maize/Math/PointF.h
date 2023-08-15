@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/System/Vector2.hpp>
 #include <cmath>
 
 namespace Maize {
@@ -10,7 +10,7 @@ namespace Maize {
 	public:
 		PointF() = default;
 		PointF(float x, float y);
-		PointF(SDL_FPoint point);
+		PointF(const sf::Vector2f& point);
 
 		float x = 0;
 		float y = 0;
@@ -34,9 +34,7 @@ namespace Maize {
 		float Magnitude() const;
 		PointF Normalized() const;
 
-		operator SDL_FPoint() const;
-		operator const SDL_FPoint* () const;
-		operator const SDL_Point* () const;
+		operator sf::Vector2f () const;
 
 		PointF operator+(PointF other) const;
 		PointF operator-(PointF other) const;

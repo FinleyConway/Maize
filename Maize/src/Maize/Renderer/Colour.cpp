@@ -16,4 +16,13 @@ namespace Maize {
 	{
 	}
 
+	Colour::Colour(const sf::Color& colour) : r(colour.r), g(colour.g), b(colour.b), a(colour.a)
+	{
+	}
+
+	Colour::operator sf::Color() const
+	{
+		return sf::Color(r, g, b, a);
+	}
+
 }

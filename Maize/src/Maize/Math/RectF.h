@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "Maize/Math/Point.h"
 
@@ -11,7 +11,6 @@ namespace Maize {
 	public:
 		RectF() = default;
 		RectF(float x, float y, float w, float h);
-		RectF(const SDL_FRect& rect);
 
 		float x = 0;
 		float y = 0;
@@ -34,8 +33,6 @@ namespace Maize {
 
 		bool Contains(PointF point) const;
 		bool Overlaps(RectF other) const;
-
-		operator SDL_FRect() const;
 
 		bool operator==(const RectF& other) const;
 	};

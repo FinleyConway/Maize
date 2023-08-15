@@ -1,8 +1,7 @@
 #pragma once
 
 #include <imgui.h>
-#include <imgui_impl_sdl2.h>
-#include <imgui_impl_sdlrenderer2.h>
+#include <imgui-SFML.h>
 
 #include "Maize/Core/Layer.h"
 
@@ -15,12 +14,11 @@ namespace Maize {
 		~ImGuiLayer() = default;
 
 		void OnAttach() override;
+		void OnEvent(Event& e) override;
 		void OnDetach() override;
 
-		void Begin();
-		void End();
-
-	private:
+		void Begin(sf::Time time) const;
+		void End() const;
 	};
 
 }

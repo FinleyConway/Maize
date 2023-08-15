@@ -4,13 +4,11 @@
 
 extern Maize::Application* Maize::CreateApplication();
 
-int main(int argc, char* argv[])
+int main()
 {
 	auto app = Maize::CreateApplication();
 
 	app->Run();
 
 	delete app;
-
-	return 0;
 }

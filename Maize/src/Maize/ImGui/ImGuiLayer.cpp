@@ -6,40 +6,32 @@ namespace Maize {
 
 	void ImGuiLayer::OnAttach()
 	{
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-
-		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-		ImGui::StyleColorsDark();
-
 		Application& app = Application::Get();
+		ImGui::SFML::Init(app.GetWindow());
+	}
 
-		ImGui_ImplSDL2_InitForSDLRenderer(app.GetWindow(), app.GetRenderer());
-		ImGui_ImplSDLRenderer2_Init(app.GetRenderer());
+	void ImGuiLayer::OnEvent(Event& e)
+	{
+		const ImGuiIO& io = ImGui::GetIO();
+		e.handled |= io.WantCaptureMouse;
+		e.handled |= io.WantCaptureKeyboard;
 	}
 
 	void ImGuiLayer::OnDetach()
 	{
-		ImGui_ImplSDLRenderer2_Shutdown();
-		ImGui_ImplSDL2_Shutdown();
-		ImGui::DestroyContext();
+		ImGui::SFML::Shutdown();
 	}
 
-	void ImGuiLayer::Begin()
+	void ImGuiLayer::Begin(sf::Time time) const
 	{
-		ImGui_ImplSDLRenderer2_NewFrame();
-		ImGui_ImplSDL2_NewFrame();
-		ImGui::NewFrame();
+		Application& app = Application::Get();
+		ImGui::SFML::Update(app.GetWindow(), time);
 	}
 
-	void ImGuiLayer::End()
+	void ImGuiLayer::End() const
 	{
-		ImGui::Render();
-		ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+		Application& app = Application::Get();
+		ImGui::SFML::Render(app.GetWindow());
 	}
 
 }

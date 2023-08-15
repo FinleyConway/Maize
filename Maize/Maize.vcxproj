@@ -55,10 +55,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)Dependencies\imgui\backends;$(SolutionDir)Dependencies\imgui;$(SolutionDir)Dependencies\SDL_mixer\include;$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)imgui;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;$(SolutionDir)Dependencies\SFML-2.6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -73,10 +73,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(SolutionDir)Dependencies\imgui\backends;$(SolutionDir)Dependencies\imgui;$(SolutionDir)Dependencies\SDL_mixer\include;$(SolutionDir)Dependencies\SDL_image;$(SolutionDir)Dependencies\SDL\include;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)imgui;$(SolutionDir)Dependencies\box2d\include\box2d;$(SolutionDir)Dependencies\EntityComponentSystem\EntityComponentSystem\include;$(SolutionDir)Dependencies\SFML-2.6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,32 +88,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Dependencies\imgui\backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\backends\imgui_impl_sdlrenderer2.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\imgui.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\imgui-SFML.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Maize\Core\Application.cpp" />
-    <ClCompile Include="src\Maize\Core\Input.cpp" />
-    <ClCompile Include="src\Maize\Events\InputPollingLayer.cpp" />
     <ClCompile Include="src\Maize\Renderer\Colour.cpp" />
     <ClCompile Include="src\Maize\Core\LayerStack.cpp" />
     <ClCompile Include="src\Maize\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Maize\Math\RectF.cpp" />
     <ClCompile Include="src\Maize\Math\Rect.cpp" />
-    <ClCompile Include="src\Maize\Core\AnimationClip.cpp" />
-    <ClCompile Include="src\Maize\Scene\CollisionContactListener.cpp" />
-    <ClCompile Include="src\Maize\Scene\SoundManager.cpp" />
-    <ClCompile Include="src\Maize\Scene\SpriteSheetManager.cpp" />
     <ClCompile Include="src\Maize\Math\Point.cpp" />
     <ClCompile Include="src\Maize\Math\PointF.cpp" />
-    <ClCompile Include="src\Maize\EntitySystems\AnimationSystem.cpp" />
-    <ClCompile Include="src\Maize\EntitySystems\AudioSystem.cpp" />
-    <ClCompile Include="src\Maize\EntitySystems\PhysicsSystem.cpp" />
-    <ClCompile Include="src\Maize\EntitySystems\RenderingSystem.cpp" />
-    <ClCompile Include="src\Maize\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Maize\Core\Window.cpp" />
     <ClCompile Include="src\Maize\Core\EntryPoint.h" />
   </ItemGroup>
@@ -126,46 +114,36 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Dependencies\imgui\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="..\Dependencies\imgui\backends\imgui_impl_sdlrenderer2.h" />
+    <ClInclude Include="imgui\imconfig-SFML.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui-SFML.h" />
+    <ClInclude Include="imgui\imgui-SFML_export.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="src\Maize\Core\Application.h" />
-    <ClInclude Include="src\Maize\Core\Input.h" />
-    <ClInclude Include="src\Maize\Events\InputPollingLayer.h" />
     <ClInclude Include="src\Maize\Renderer\Colour.h" />
     <ClInclude Include="src\Maize\Core\KeyCode.h" />
     <ClInclude Include="src\Maize\Core\MouseCode.h" />
     <ClInclude Include="src\Maize\Events\Event.h" />
     <ClInclude Include="src\Maize\Core\LayerStack.h" />
-    <ClInclude Include="src\Maize\Core\SoundClip.h" />
     <ClInclude Include="src\Maize\Events\EventDispatcher.h" />
     <ClInclude Include="src\Maize\Events\KeyEvent.h" />
     <ClInclude Include="src\Maize\Events\MouseEvent.h" />
     <ClInclude Include="src\Maize\Events\WindowEvents.h" />
     <ClInclude Include="src\Maize\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Maize.h" />
-    <ClInclude Include="src\Maize\Scene\CollisionContactListener.h" />
-    <ClInclude Include="src\Maize\Core\AnimationClip.h" />
     <ClInclude Include="src\Maize\Math\Point.h" />
     <ClInclude Include="src\Maize\Math\PointF.h" />
     <ClInclude Include="include\Components\Transform.h" />
     <ClInclude Include="src\Maize\Math\Rect.h" />
     <ClInclude Include="src\Maize\Math\RectF.h" />
-    <ClInclude Include="src\Maize\Renderer\Renderer.h" />
     <ClInclude Include="src\Maize\Renderer\Sprite.h" />
     <ClInclude Include="src\Maize\Renderer\Texture.h" />
     <ClInclude Include="src\Maize\Core\Window.h" />
-    <ClInclude Include="src\Maize\Scene\Components.h" />
-    <ClInclude Include="src\Maize\Scene\InputHandler.h" />
-    <ClInclude Include="src\Maize\Scene\SoundManager.h" />
-    <ClInclude Include="src\Maize\Scene\SpriteSheetManager.h" />
-    <ClInclude Include="src\Maize\EntitySystems\AnimationSystem.h" />
-    <ClInclude Include="src\Maize\EntitySystems\AudioSystem.h" />
-    <ClInclude Include="src\Maize\EntitySystems\PhysicsSystem.h" />
-    <ClInclude Include="src\Maize\EntitySystems\System.h" />
     <ClInclude Include="src\Maize\Core\Layer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\Maize\EntitySystems\RenderingSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

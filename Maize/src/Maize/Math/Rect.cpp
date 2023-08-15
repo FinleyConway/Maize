@@ -6,7 +6,13 @@ namespace Maize {
 
 	Rect::Rect(int32_t x, int32_t y, int32_t w, int32_t h) : x(x), y(y), width(w), height(h) { }
 
-	Rect::Rect(const SDL_Rect& rect) : x(rect.x), y(rect.y), width(rect.w), height(rect.h) { }
+	Rect::Rect(const sf::IntRect& rect) : 
+		x(rect.getPosition().x), 
+		y(rect.getPosition().y), 
+		width(rect.getSize().x),
+		height(rect.getSize().y) 
+	{ 
+	}
 
 	int32_t Rect::XMax() const
 	{
@@ -74,23 +80,18 @@ namespace Maize {
 			y < other.y + other.height && y + height > other.y);
 	}
 
-	Rect::operator SDL_Rect() const
+	Rect::operator sf::IntRect () const
 	{
-		return SDL_Rect(x, y, width, height);
+		return sf::IntRect(x, y, width, height);
 	}
 
-	Rect::operator const SDL_Rect* () const
-	{
-		return reinterpret_cast<const SDL_Rect*>(this);
-	}
-
-	Rect::operator RectF() const
+	Rect::operator RectF () const
 	{
 		RectF sdlRect;
-		sdlRect.x = static_cast<float>(x);
-		sdlRect.y = static_cast<float>(y);
-		sdlRect.width = static_cast<float>(width);
-		sdlRect.height = static_cast<float>(height);
+		sdlRect.x = float(x);
+		sdlRect.y = float(y);
+		sdlRect.width = float(width);
+		sdlRect.height = float(height);
 		return sdlRect;
 	}
 

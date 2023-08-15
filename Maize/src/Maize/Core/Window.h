@@ -1,15 +1,15 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <memory>
 #include <iostream>
 #include <functional>
-#include <imgui_impl_sdl2.h>
 
 #include "Maize/Events/WindowEvents.h"
 #include "Maize/Events/MouseEvent.h"
 #include "Maize/Events/KeyEvent.h"
+#include "Maize/Renderer/Colour.h"
 #include "Maize/Events/Event.h"
 
 #include "Maize/Math/Point.h"
@@ -21,7 +21,7 @@ namespace Maize {
 	public:
 		using EventCallBackFn = std::function<void(Event&)>;
 
-		Window(const std::string& title, Point windowSize = Point(640, 480));
+		Window(const std::string& title, Point windowSize = Point(1280, 920));
 
 		std::string GetTitle() const { return m_WindowData.title; }
 		uint32_t GetWidth() const { return m_WindowData.width; }
@@ -34,12 +34,16 @@ namespace Maize {
 
 		void PollEvent();
 
-		operator SDL_Window* () const;
+		void Clear(Colour colour);
+		void Render(const sf::Drawable& drawable);
+		void Present();
+
+		operator sf::RenderWindow& ();
 
 	private:
-		friend class Renderer;
+		friend class PollingEvent;
 
-		std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> m_Window{ nullptr, &SDL_DestroyWindow };
+		sf::RenderWindow m_Window;
 
 		struct WindowData
 		{

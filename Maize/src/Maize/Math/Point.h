@@ -1,12 +1,9 @@
 #pragma once
 
-#include <SDL.h>
+#include <SFML/System/Vector2.hpp>
 #include <cmath>
 
 #include "Maize/Math/PointF.h"
-
-#define intCast(value) static_cast<int32_t>(value)
-#define floatCast(value) static_cast<float>(value)
 
 namespace Maize {
 
@@ -15,7 +12,7 @@ namespace Maize {
 	public:
 		Point() = default;
 		Point(int32_t x, int32_t y);
-		Point(SDL_Point point);
+		Point(const sf::Vector2i& point);
 
 		int32_t x = 0;
 		int32_t y = 0;
@@ -37,8 +34,7 @@ namespace Maize {
 		static Point Max(Point other1, Point other2);
 		static Point Min(Point other1, Point other2);
 
-		operator SDL_Point() const;
-		operator const SDL_Point* () const;
+		operator sf::Vector2i () const;
 		operator PointF() const;
 
 		Point operator+(Point other) const;

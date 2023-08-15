@@ -1,6 +1,5 @@
 #include "Maize/Math/Point.h"
 
-
 namespace Maize {
 
     const Point Point::one = Point(1, 1);
@@ -12,7 +11,7 @@ namespace Maize {
 
     Point::Point(int32_t x, int32_t y) : x(x), y(y) {}
 
-    Point::Point(SDL_Point point) : x(point.x), y(point.y) {}
+    Point::Point(const sf::Vector2i& point) : x(point.x), y(point.y) {}
 
     void Point::Clamp(Point min, Point max)
     {
@@ -22,29 +21,29 @@ namespace Maize {
 
     float Point::Magnitude() const
     {
-        return std::sqrt(floatCast(x * x + y * y));
+        return std::sqrt(float(x * x + y * y));
     }
 
     float Point::Distance(Point a, Point b)
     {
-        float dx = floatCast(b.x - a.x);
-        float dy = floatCast(b.y - a.y);
+        float dx = float(b.x - a.x);
+        float dy = float(b.y - a.y);
         return std::sqrt(dx * dx + dy * dy);
     }
 
     Point Point::CeilToInt(Point other)
     {
-        return Point(intCast(std::ceil(other.x)), intCast(std::ceil(other.y)));
+        return Point(int(std::ceil(other.x)), int(std::ceil(other.y)));
     }
 
     Point Point::FloorToInt(Point other)
     {
-        return Point(intCast(std::floor(other.x)), intCast(std::floor(other.y)));
+        return Point(int(std::floor(other.x)), int(std::floor(other.y)));
     }
 
     Point Point::RoundToInt(Point other)
     {
-        return Point(intCast(std::round(other.x)), intCast(std::round(other.y)));
+        return Point(int(std::round(other.x)), int(std::round(other.y)));
     }
 
     Point Point::Max(Point other1, Point other2)
@@ -61,19 +60,14 @@ namespace Maize {
         return Point(x, y);
     }
 
-    Point::operator SDL_Point() const
+    Point::operator sf::Vector2i() const
     {
-        return { x, y };
-    }
-
-    Point::operator const SDL_Point* () const
-    {
-        return reinterpret_cast<const SDL_Point*>(this);
+        return sf::Vector2i(x, y);
     }
 
     Point::operator PointF() const
     {
-        return PointF(floatCast(x), floatCast(y));
+        return PointF(float(x), float(y));
     }
 
     Point Point::operator+(Point other) const
@@ -88,12 +82,12 @@ namespace Maize {
 
     Point Point::operator*(float scalar) const
     {
-        return Point(intCast(x * scalar), intCast(y * scalar));
+        return Point(int(x * scalar), int(y * scalar));
     }
 
     Point Point::operator/(float scalar) const
     {
-        return Point(intCast(x / scalar), intCast(y / scalar));
+        return Point(int(x / scalar), int(y / scalar));
     }
 
     Point& Point::operator+=(Point other)
@@ -112,15 +106,15 @@ namespace Maize {
 
     Point& Point::operator*=(float scalar)
     {
-        x = intCast(x * scalar);
-        y = intCast(y * scalar);
+        x = int(x * scalar);
+        y = int(y * scalar);
         return *this;
     }
 
     Point& Point::operator/=(float scalar)
     {
-        x = intCast(x / scalar);
-        y = intCast(y / scalar);
+        x = int(x / scalar);
+        y = int(y / scalar);
         return *this;
     }
 

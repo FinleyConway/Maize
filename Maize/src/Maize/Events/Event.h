@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace Maize {
 
 	#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
@@ -16,6 +18,8 @@ namespace Maize {
 	class Event
 	{
 	public:
+		bool handled = false;
+
 		virtual ~Event() = default;
 		virtual EventType GetEventType() const = 0;
 	};
