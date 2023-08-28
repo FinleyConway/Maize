@@ -1,58 +1,31 @@
 #pragma once
 
-#include "Maize/Events/EventDispatcher.h"
-#include "Maize/Events/WindowEvents.h"
-#include "Maize/ImGui/ImGuiLayer.h"
-#include "Maize/Core/LayerStack.h"
-#include "Maize/Core/Window.h"
-#include "Maize/Math/Point.h"
-#include "Maize/Core/Layer.h"
+#include <string>
 
 int main();
 
 namespace Maize {
 
-	struct ApplicationSpecification
-	{
-		std::string name = "Maize";
-	};
+    struct ApplicationSpecification
+    {
+        std::string name = "Maize";
+    };
 
-	class Application
-	{
-	public:
-		explicit Application(const ApplicationSpecification& specification);
+    class Application
+    {
+    public:
+        explicit Application(const ApplicationSpecification& specification);
 
-		static Application& Get() { return *s_Instance; }
+    private:
+        friend int ::main();
 
-		void OnEvent(Event& e);
+        void Run();
 
-		void PushLayer(Layer* layer);
-		void PushOverlay(Layer* layer);
+    private:
+        bool m_IsRunning = true;
+        bool m_Minimized = false;
+    };
 
-		Window& GetWindow() { return m_Window; }
+    Application* CreateApplication();
 
-		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-
-		void Close();
-
-	private:
-		static Application* s_Instance;
-		friend int ::main();
-
-		Window m_Window;
-
-		LayerStack m_LayerStack;
-		ImGuiLayer* m_ImGuiLayer;
-
-		bool m_Running = true;
-		bool m_Minimized = false;
-
-		void Run();
-
-		bool OnWindowClose(WindowCloseEvent& e);
-	};
-
-	// init engine 
-	Application* CreateApplication();
-
-}
+} // Maize
