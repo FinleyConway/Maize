@@ -2,13 +2,11 @@
 
 #include "Maize/Core/Application.h"
 
-extern Maize::Application* Maize::CreateApplication();
-
 int main()
 {
-	auto app = Maize::CreateApplication();
+    auto app = Maize::CreateApplication();
 
-	app->Run();
+    app->Run();
 
-	delete app;
+    delete app;
 }
