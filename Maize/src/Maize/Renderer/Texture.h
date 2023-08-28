@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/Texture.hpp>
+#include <cstdint>
 #include <memory>
 
 namespace Maize {
@@ -10,15 +11,18 @@ namespace Maize {
     public:
         Texture() = default;
 
-        static Texture Create(const std::string& filePath)
+        static std::shared_ptr<Texture> Create(const std::string& filePath)
         {
-            Texture texture;
+            auto texture = std::make_shared<Texture>();
 
-            if (!texture.m_Texture.loadFromFile(filePath))
+            if (!texture->m_Texture.loadFromFile(filePath))
             {
-                texture.m_IsValid = false;
+                texture->m_IsValid = false;
             }
-            texture.m_IsValid = true;
+            else
+            {
+                texture->m_IsValid = true;
+            }
 
             return texture;
         }
@@ -35,4 +39,4 @@ namespace Maize {
         bool m_IsValid = false;
     };
 
-}
+} // Maize

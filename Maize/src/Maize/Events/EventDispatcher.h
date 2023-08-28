@@ -4,25 +4,25 @@
 
 namespace Maize {
 
-	class EventDispatcher
-	{
-	public:
-		explicit EventDispatcher(Event& event) : m_Event(event) { }
+    class EventDispatcher
+    {
+    public:
+        explicit EventDispatcher(Event& event) : m_Event(event) { }
 
-		template <typename TEvent, typename TFunction>
-		bool Dispatch(TFunction&& func) 
-		{
-			if (m_Event.GetEventType() == TEvent::GetStaticType())
-			{
-				m_Event.handled |= func(static_cast<TEvent&>(m_Event));
-				return true;
-			}
+        template <typename TEvent, typename TFunction>
+        bool Dispatch(TFunction&& func)
+        {
+            if (m_Event.GetEventType() == TEvent::GetStaticType())
+            {
+                m_Event.handled |= func(static_cast<TEvent&>(m_Event));
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-	private:
-		Event& m_Event;
-	};
+    private:
+        Event& m_Event;
+    };
 
-}
+} // Maize

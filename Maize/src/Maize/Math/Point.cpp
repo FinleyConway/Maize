@@ -21,13 +21,13 @@ namespace Maize {
 
     float Point::Magnitude() const
     {
-        return std::sqrt(float(x * x + y * y));
+        return std::sqrt(x * x + y * y);
     }
 
     float Point::Distance(Point a, Point b)
     {
-        float dx = float(b.x - a.x);
-        float dy = float(b.y - a.y);
+        float dx = b.x - a.x;
+        float dy = b.y - a.y;
         return std::sqrt(dx * dx + dy * dy);
     }
 
@@ -82,12 +82,12 @@ namespace Maize {
 
     Point Point::operator*(float scalar) const
     {
-        return Point(int(x * scalar), int(y * scalar));
+        return Point(x * scalar, y * scalar);
     }
 
     Point Point::operator/(float scalar) const
     {
-        return Point(int(x / scalar), int(y / scalar));
+        return Point(x / scalar, y / scalar);
     }
 
     Point& Point::operator+=(Point other)
@@ -106,8 +106,8 @@ namespace Maize {
 
     Point& Point::operator*=(float scalar)
     {
-        x = int(x * scalar);
-        y = int(y * scalar);
+        x = x * scalar;
+        y = y * scalar;
         return *this;
     }
 
@@ -123,4 +123,4 @@ namespace Maize {
         return x == other.x && y == other.y;
     }
 
-}
+} // Maize

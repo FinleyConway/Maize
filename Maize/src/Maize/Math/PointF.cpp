@@ -146,4 +146,4 @@ namespace Maize {
         return dx < 1e-5 && dy < 1e-5;
     }
 
-}
+} // Maize

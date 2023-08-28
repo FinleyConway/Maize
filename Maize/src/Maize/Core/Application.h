@@ -1,6 +1,11 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+#include "Maize/Core/Window.h"
+#include "Maize/Core/LayerStack.h"
+#include "Maize/Events/EventDispatcher.h"
 
 int main();
 
@@ -16,16 +21,35 @@ namespace Maize {
     public:
         explicit Application(const ApplicationSpecification& specification);
 
+        static Application& Get() { return *s_Instance; }
+
+        void PushLayer(Layer* layer);
+        void PushOverlay(Layer* layer);
+
+        Window& GetWindow() { return m_Window; }
+
+        void Close() { m_IsRunning = false; }
+
     private:
         friend int ::main();
 
         void Run();
+        void OnEvent(Event& e);
+
+        bool OnWindowClose(const WindowCloseEvent& e);
 
     private:
+        static Application* s_Instance;
+
+        Window m_Window;
+
+        LayerStack m_LayerStack;
+
         bool m_IsRunning = true;
         bool m_Minimized = false;
     };
 
-    Application* CreateApplication();
+    // to be used init maize
+    std::unique_ptr<Application> CreateApplication();
 
 } // Maize
