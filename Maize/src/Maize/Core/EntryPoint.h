@@ -5,8 +5,5 @@
 int main()
 {
     auto app = Maize::CreateApplication();
-
     app->Run();
-
-    delete app;
 }

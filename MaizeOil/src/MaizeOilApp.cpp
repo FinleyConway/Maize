@@ -11,12 +11,12 @@ namespace Maize {
         }
     };
 
-    Application* CreateApplication()
+    std::unique_ptr<Application> CreateApplication()
     {
         ApplicationSpecification specification;
         specification.name = "MaizeOil";
 
-        return new MaizeOil(specification);
+        return std::make_unique<MaizeOil>(specification);
     }
 
 }
