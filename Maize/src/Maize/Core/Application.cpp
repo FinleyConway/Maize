@@ -10,6 +10,9 @@ namespace Maize {
         s_Instance = this;
 
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
+        m_ImGuiLayer = new ImGuiLayer();
+        PushOverlay(m_ImGuiLayer);
     }
 
     void Application::OnEvent(Event& e)
@@ -53,13 +56,17 @@ namespace Maize {
 
             if (!m_Minimized)
             {
+                m_ImGuiLayer->Begin(m_Window, deltaTime);
+
                 for (Layer* layer : m_LayerStack)
                     layer->OnUpdate(deltaTime);
 
-                m_Window.Clear();
+                m_Window.Clear(Colour::grey);
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnRender();
+
+                m_ImGuiLayer->End(m_Window);
 
                 m_Window.Display();
             }

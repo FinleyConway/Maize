@@ -1,6 +1,7 @@
 project(src/Maize)
 
-add_library(Maize src/Maize/Core/Application.cpp src/Maize/Core/Application.h
+add_library(Maize STATIC src/Maize/Core/Application.cpp
+        src/Maize/Core/Application.h
         src/Maize/Core/EntryPoint.h
         src/Maize.h
         src/Maize/Core/Window.cpp
@@ -28,6 +29,8 @@ add_library(Maize src/Maize/Core/Application.cpp src/Maize/Core/Application.h
         src/Maize/Renderer/Texture.h
         src/Maize/Renderer/Sprite.h
         src/Maize/Renderer/Colour.cpp
-        src/Maize/Renderer/Colour.h)
+        src/Maize/Renderer/Colour.h
+        src/Maize/ImGui/ImGuiLayer.cpp
+        src/Maize/ImGui/ImGuiLayer.h)
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

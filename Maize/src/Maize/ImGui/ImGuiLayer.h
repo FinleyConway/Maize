@@ -2,23 +2,24 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
+#include <iostream>
 
+#include "Maize/Core/Window.h"
 #include "Maize/Core/Layer.h"
 
 namespace Maize {
 
-	class ImGuiLayer : public Layer
-	{
-	public:
-		ImGuiLayer() : Layer("ImGuiLayer") { }
-		~ImGuiLayer() = default;
+    class ImGuiLayer : public Layer
+    {
+    public:
+        ~ImGuiLayer() = default;
 
-		void OnAttach() override;
-		void OnEvent(Event& e) override;
-		void OnDetach() override;
+        void OnAttach() override;
+        void OnEvent(Event& e) override;
+        void OnDetach() override;
 
-		void Begin(sf::Time time) const;
-		void End() const;
-	};
+        void Begin(Window& window, float deltaTime) const;
+        void End(Window& window) const;
+    };
 
-}
+} // Maize

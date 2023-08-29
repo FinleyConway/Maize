@@ -5,8 +5,11 @@
 #include <cstdint>
 #include <string>
 
-#include "Maize/Events/Event.h"
 #include "Maize/Events/WindowEvents.h"
+#include "Maize/Events/MouseEvents.h"
+#include "Maize/Events/KeyEvents.h"
+#include "Maize/Events/Event.h"
+#include "Maize/Renderer/Colour.h"
 
 namespace Maize {
 
@@ -28,7 +31,7 @@ namespace Maize {
 
         void PollEvent();
 
-        void Clear();
+        void Clear(Colour clearColour);
         void Render(const sf::Drawable& drawable);
         void Display();
 
