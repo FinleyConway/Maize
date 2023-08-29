@@ -1,14 +1,61 @@
 cmake_minimum_required(VERSION 3.26)
 project(Maize)
 
+include(FetchContent)
+
+# Set C++ standard to 20
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR Maize/vendors/SFML-2.6.0/lib/cmake/SFML)
+# Disable building shared libraries, use static linking
+set(BUILD_SHARED_LIBS OFF)
 
-find_package(SFML 2.6.0 COMPONENTS system window graphics audio network REQUIRED)
+# Fetch SFML library
+FetchContent_Declare(
+        SFML
+        GIT_REPOSITORY https://github.com/SFML/SFML.git
+        GIT_TAG 2.6.0
+)
 
+# Fetch ImGui library
+FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG docking
+)
+
+# Fetch ImGui-SFML library
+FetchContent_Declare(
+        imgui-sfml
+        GIT_REPOSITORY https://github.com/SFML/imgui-sfml.git
+        GIT_TAG 2.6.x
+)
+
+# Set SFML_DIR to point to sfml_BINARY_DIR
+set(SFML_DIR "${sfml_BINARY_DIR}")
+
+
+FetchContent_MakeAvailable(SFML)
+FetchContent_MakeAvailable(imgui)
+
+# Set options
+set(IMGUI_DIR ${imgui_SOURCE_DIR})
+option(IMGUI_SFML_FIND_SFML "Use find_package to find SFML" OFF)
+option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" ON)
+
+FetchContent_MakeAvailable(imgui-sfml)
+
+# Add subdirectories for your projects
 add_subdirectory(Maize)
 add_subdirectory(MaizeOil)
 
-target_link_libraries(Maize PUBLIC sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
+# Link libraries to the Maize target
+target_link_libraries(Maize
+        PUBLIC
+        sfml-graphics
+        sfml-window
+        sfml-system
+        sfml-audio
+        sfml-network
+        ImGui-SFML::ImGui-SFML
+)

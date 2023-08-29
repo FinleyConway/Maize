@@ -1,5 +1,7 @@
 #include "Maize/Core/Window.h"
 
+#include <imgui-SFML.h>
+
 namespace Maize {
 
     Window::Window(const std::string &title, uint32_t width, uint32_t height) :
@@ -30,6 +32,8 @@ namespace Maize {
 
         while (m_Window.pollEvent(e))
         {
+            ImGui::SFML::ProcessEvent(m_Window, e);
+
             if (e.type == sf::Event::Closed)
             {
                 WindowCloseEvent event;
@@ -43,12 +47,42 @@ namespace Maize {
                 WindowResizeEvent event(e.size.width, e.size.height);
                 m_WindowData.eventCallback(event);
             }
+            else if (e.type == sf::Event::KeyPressed)
+            {
+                KeyPressedEvent event((KeyCode)e.key.code);
+                m_WindowData.eventCallback(event);
+            }
+            else if (e.type == sf::Event::KeyReleased)
+            {
+                KeyReleasedEvent event((KeyCode)e.key.code);
+                m_WindowData.eventCallback(event);
+            }
+            else if (e.type == sf::Event::MouseButtonPressed)
+            {
+                MouseButtonPressedEvent event((MouseCode)e.mouseButton.button);
+                m_WindowData.eventCallback(event);
+            }
+            else if (e.type == sf::Event::MouseButtonReleased)
+            {
+                MouseButtonReleasedEvent event((MouseCode)e.mouseButton.button);
+                m_WindowData.eventCallback(event);
+            }
+            else if (e.type == sf::Event::MouseMoved)
+            {
+                MouseMovedEvent event(e.mouseMove.x, e.mouseMove.y);
+                m_WindowData.eventCallback(event);
+            }
+            else if (e.type == sf::Event::MouseWheelMoved)
+            {
+                MouseScrolledEvent event(0, e.mouseWheel.delta);
+                m_WindowData.eventCallback(event);
+            }
         }
     }
 
-    void Window::Clear()
+    void Window::Clear(Colour clearColour)
     {
-        m_Window.clear();
+        m_Window.clear(clearColour);
     }
 
     void Window::Render(const sf::Drawable &drawable)

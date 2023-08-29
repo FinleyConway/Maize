@@ -6,6 +6,7 @@
 #include "Maize/Core/Window.h"
 #include "Maize/Core/LayerStack.h"
 #include "Maize/Events/EventDispatcher.h"
+#include "Maize/ImGui/ImGuiLayer.h"
 
 int main();
 
@@ -27,6 +28,7 @@ namespace Maize {
         void PushOverlay(Layer* layer);
 
         Window& GetWindow() { return m_Window; }
+        ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
         void Close() { m_IsRunning = false; }
 
@@ -44,6 +46,7 @@ namespace Maize {
         Window m_Window;
 
         LayerStack m_LayerStack;
+        ImGuiLayer* m_ImGuiLayer;
 
         bool m_IsRunning = true;
         bool m_Minimized = false;
