@@ -34,8 +34,6 @@ namespace Maize {
     void ImGuiLayer::Begin(Window& window, float deltaTime) const
     {
         ImGui::SFML::Update(window, sf::seconds(deltaTime));
-
-        ImGui::ShowDemoWindow();
     }
 
     void ImGuiLayer::End(Window& window) const

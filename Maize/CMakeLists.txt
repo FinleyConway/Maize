@@ -31,6 +31,8 @@ add_library(Maize STATIC src/Maize/Core/Application.cpp
         src/Maize/Renderer/Colour.cpp
         src/Maize/Renderer/Colour.h
         src/Maize/ImGui/ImGuiLayer.cpp
-        src/Maize/ImGui/ImGuiLayer.h)
+        src/Maize/ImGui/ImGuiLayer.h
+        src/Maize/Renderer/Camera.h
+        src/Maize/Renderer/EditorCamera.h)
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

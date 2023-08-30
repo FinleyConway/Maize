@@ -6,6 +6,8 @@
 #include "Maize/Core/KeyCodes.h"
 #include "Maize/Core/Input.h"
 
+#include "Maize/Renderer/EditorCamera.h"
+
 #include "Maize/Math/Point.h"
 #include "Maize/Math/PointF.h"
 #include "Maize/Math/Rect.h"

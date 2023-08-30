@@ -31,9 +31,15 @@ FetchContent_Declare(
         GIT_TAG 2.6.x
 )
 
+# Fetch Nlohmann Json
+FetchContent_Declare(
+        nlohmann_json
+        GIT_REPOSITORY https://github.com/nlohmann/json.git
+        GIT_TAG v3.11.2
+)
+
 # Set SFML_DIR to point to sfml_BINARY_DIR
 set(SFML_DIR "${sfml_BINARY_DIR}")
-
 
 FetchContent_MakeAvailable(SFML)
 FetchContent_MakeAvailable(imgui)
@@ -44,6 +50,7 @@ option(IMGUI_SFML_FIND_SFML "Use find_package to find SFML" OFF)
 option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" ON)
 
 FetchContent_MakeAvailable(imgui-sfml)
+FetchContent_MakeAvailable(nlohmann_json)
 
 # Add subdirectories for your projects
 add_subdirectory(Maize)
@@ -58,4 +65,5 @@ target_link_libraries(Maize
         sfml-audio
         sfml-network
         ImGui-SFML::ImGui-SFML
+        nlohmann_json::nlohmann_json
 )
