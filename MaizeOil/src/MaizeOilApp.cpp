@@ -1,5 +1,6 @@
-#include <Maize.h>
 #include <Maize/Core/EntryPoint.h>
+
+#include "Sandbox.h"
 
 namespace Maize {
 
@@ -8,6 +9,7 @@ namespace Maize {
     public:
         explicit MaizeOil(const ApplicationSpecification& specification) : Application(specification)
         {
+            PushLayer(new Sandbox());
         }
     };
 
@@ -19,4 +21,4 @@ namespace Maize {
         return std::make_unique<MaizeOil>(specification);
     }
 
-}
+} // Maize
