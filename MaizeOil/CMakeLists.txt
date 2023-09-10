@@ -14,18 +14,8 @@ add_executable(MaizeOil src/MaizeOilApp.cpp
         src/Sandbox.h
         src/CartesianGrid.cpp
         src/CartesianGrid.h
+        src/TilemapEditor/Tileset/Tileset.cpp
         src/TilemapEditor/Tileset/Tileset.h
-        src/TilemapEditor/Tileset/TilesetSerializer.cpp
-        src/TilemapEditor/Tileset/TilesetSerializer.h
-        src/TilemapEditor/Tileset/TilesetManager.h
-        src/TilemapEditor/Tilemap/TilemapSerializer.cpp
-        src/TilemapEditor/Tilemap/TilemapSerializer.h
-        src/TilemapEditor/Tilemap/Tilemap.cpp
-        src/TilemapEditor/Tilemap/Tilemap.h
-        src/TilemapEditor/TilemapWindow.cpp
-        src/TilemapEditor/TilemapWindow.h
-        src/TilemapEditor/Tileset/TileAtlas.cpp
-        src/TilemapEditor/Tileset/TileAtlas.h
         src/TilemapEditor/Tileset/TilesetWindow.cpp
         src/TilemapEditor/Tileset/TilesetWindow.h)
 

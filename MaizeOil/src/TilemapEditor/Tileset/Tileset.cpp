@@ -1,8 +1,15 @@
-#include "TileAtlas.h"
+#include "Tileset.h"
 
 namespace Maize {
 
-    bool TileAtlas::SetTexture(const std::string &textureFilePath)
+    Tileset::Tileset()
+    {
+        // set default name and texture
+        SetTexture("Resources/Icons/default-image.png");
+        SetName("Default");
+    }
+
+    bool Tileset::SetTexture(const std::string &textureFilePath)
     {
         auto texture = Texture::Create(textureFilePath);
 
@@ -17,7 +24,7 @@ namespace Maize {
         return false;
     }
 
-    void TileAtlas::InitEmptyTiles()
+    void Tileset::InitEmptyTiles()
     {
         int32_t sizeX = (int32_t)m_Texture->GetWidth() / m_TileSizeX;
         int32_t sizeY = (int32_t)m_Texture->GetHeight() / m_TileSizeY;
@@ -35,7 +42,7 @@ namespace Maize {
         }
     }
 
-    void TileAtlas::AutoSetTiles(bool includeTransparent)
+    void Tileset::AutoSetTiles(bool includeTransparent)
     {
         int32_t sizeX = (int32_t)m_Texture->GetWidth() / m_TileSizeX;
         int32_t sizeY = (int32_t)m_Texture->GetHeight() / m_TileSizeY;
@@ -67,7 +74,7 @@ namespace Maize {
         }
     }
 
-    Tile2 *TileAtlas::GetTile(int32_t index)
+    Tile2 *Tileset::GetTile(int32_t index)
     {
         if (index >= 0 && index < m_Tiles.size())
         {

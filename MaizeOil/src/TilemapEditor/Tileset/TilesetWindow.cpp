@@ -2,41 +2,47 @@
 
 namespace Maize {
 
+    TilesetWindow::TilesetWindow()
+    {
+        m_IconAdd = Texture::Create("Resources/Icons/plus.png");
+        m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
+    }
+
     void TilesetWindow::Window()
     {
         ImGui::Begin("Tileset");
 
-        float mainWindowWidth = ImGui::GetWindowContentRegionWidth();
+        float mainWindowWidth = ImGui::GetWindowWidth();
 
         ImGui::Columns(3, "TilesetColumns", true);
 
-        ImGui::BeginChild("Atlases", {0, mainWindowWidth / 2});
-        SelectAtlas();
+        ImGui::BeginChild("Tilesets", {0, mainWindowWidth / 2});
+        SelectTileset();
         ImGui::EndChild();
 
         if (ImGui::ImageButton(*m_IconAdd, {16, 16}))
         {
-            AddAtlas();
+            AddTileset();
         }
         ImGui::SameLine();
         if (ImGui::ImageButton(*m_IconRemove, {16, 16}))
         {
-            if (m_SelectedAtlas != nullptr)
+            if (m_SelectedTileset != nullptr)
             {
-                RemoveAtlas(m_SelectedAtlas->GetID());
+                RemoveTileset(m_SelectedTileset->GetID());
             }
         }
 
         ImGui::NextColumn();
 
-        ImGui::BeginChild("Current Atlas", {0, mainWindowWidth / 2});
-        ShowCurrentAtlas();
+        ImGui::BeginChild("Current Tileset", {0, mainWindowWidth / 2});
+        ShowCurrentTileset();
         ImGui::EndChild();
 
         ImGui::NextColumn();
 
-        ImGui::BeginChild("Show Atlas Tiles");
-        HandleAtlasTiles();
+        ImGui::BeginChild("Show Tileset Tiles");
+        HandleTilesetTiles();
         ImGui::EndChild();
 
         ImGui::Columns(2);
@@ -44,74 +50,73 @@ namespace Maize {
         ImGui::End();
     }
 
-    TileAtlas& TilesetWindow::AddAtlas()
+    Tileset& TilesetWindow::AddTileset()
     {
-        m_Atlases.emplace_back();
-        auto& atlas = m_Atlases.back();
-        atlas.SetID(CreateID()); // temp
-        m_SelectedAtlas = &atlas;
+        m_Tilesets.emplace_back();
+        auto& tileset = m_Tilesets.back();
+        tileset.SetID(CreateID()); // temp
+        m_SelectedTileset = &tileset;
 
-        return atlas;
+        return tileset;
     }
 
-    void TilesetWindow::RemoveAtlas(int32_t atlasID)
+    void TilesetWindow::RemoveTileset(int32_t tilesetID)
     {
-        for (auto it = m_Atlases.rbegin(); it != m_Atlases.rend(); ++it)
+        for (auto it = m_Tilesets.rbegin(); it != m_Tilesets.rend(); ++it)
         {
-            if (it->GetID() == atlasID)
+            if (it->GetID() == tilesetID)
             {
                 auto eraseIt = it.base() - 1;
 
-                m_Atlases.erase(eraseIt);
-                m_SelectedAtlas = m_Atlases.empty() ? nullptr : &m_Atlases.back();
+                m_Tilesets.erase(eraseIt);
+                m_SelectedTileset = m_Tilesets.empty() ? nullptr : &m_Tilesets.back();
 
                 break;
             }
         }
     }
 
-    void TilesetWindow::SelectAtlas()
+    void TilesetWindow::SelectTileset()
     {
         auto windowSize = ImGui::GetContentRegionAvail();
 
-        for (auto &atlas: m_Atlases)
+        for (auto &tileset: m_Tilesets)
         {
-            if (atlas.GetTexture() != nullptr)
-                ImGui::Image(*atlas.GetTexture(), {64, 64});
+            if (tileset.GetTexture() != nullptr)
+                ImGui::Image(*tileset.GetTexture(), {64, 64});
 
             ImGui::SameLine(0, 0.1f);
 
-            std::string text = std::format("{} (ID: {})", atlas.GetName(), atlas.GetID());
+            std::string text = std::format("{} (ID: {})", tileset.GetName(), tileset.GetID());
 
             if (ImGui::Button(text.c_str(), {windowSize.x - 64, 64}))
             {
-                m_SelectedAtlas = &atlas;
+                m_SelectedTileset = &tileset;
             }
         }
     }
 
-    void TilesetWindow::ShowCurrentAtlas()
+    void TilesetWindow::ShowCurrentTileset()
     {
-        if (m_SelectedAtlas != nullptr)
+        if (m_SelectedTileset != nullptr)
         {
-            int32_t id = m_SelectedAtlas->GetID();
-            std::string name = m_SelectedAtlas->GetName();
+            int32_t id = m_SelectedTileset->GetID();
+            std::string name = m_SelectedTileset->GetName();
             const uint32_t bufferSize = 128;
             char buffer[bufferSize];
             strncpy(buffer, name.c_str(), bufferSize);
-            int32_t tileSizeX = m_SelectedAtlas->GetTileSizeX();
-            int32_t tileSizeY = m_SelectedAtlas->GetTileSizeY();
+            int32_t tileSizeX = m_SelectedTileset->GetTileSizeX();
+            int32_t tileSizeY = m_SelectedTileset->GetTileSizeY();
 
-            ImGui::Text("Atlas");
             if (ImGui::InputInt("ID", &id))
             {
                 if (id < 0) id = 0;
-                m_SelectedAtlas->SetID(id);
+                m_SelectedTileset->SetID(id);
             }
 
             if (ImGui::InputText("Name", buffer, bufferSize))
             {
-                m_SelectedAtlas->SetName(buffer);
+                m_SelectedTileset->SetName(buffer);
             }
 
             TextureSelector();
@@ -119,22 +124,22 @@ namespace Maize {
             if (ImGui::InputInt("Tile Size X", &tileSizeX))
             {
                 if (tileSizeX < 1) tileSizeX = 1;
-                m_SelectedAtlas->SetTileSizeX(tileSizeX);
+                m_SelectedTileset->SetTileSizeX(tileSizeX);
             }
 
             if (ImGui::InputInt("Tile Size Y", &tileSizeY))
             {
                 if (tileSizeY < 1) tileSizeY = 1;
-                m_SelectedAtlas->SetTileSizeY(tileSizeY);
+                m_SelectedTileset->SetTileSizeY(tileSizeY);
             }
         }
     }
 
     void TilesetWindow::TextureSelector()
     {
-        if (m_SelectedAtlas->GetTexture() != nullptr)
+        if (m_SelectedTileset->GetTexture() != nullptr)
         {
-            ImGui::Image(*m_SelectedAtlas->GetTexture(), {64, 64});
+            ImGui::Image(*m_SelectedTileset->GetTexture(), {64, 64});
             ImGui::SameLine();
 
             if (ImGui::Button("Select Texture"))
@@ -143,7 +148,7 @@ namespace Maize {
 
                 if (!file.empty())
                 {
-                    m_SelectedAtlas->SetTexture(file[0]);
+                    m_SelectedTileset->SetTexture(file[0]);
                     ImGui::OpenPopup("AutoTilesPopup");
                 }
             }
@@ -160,22 +165,22 @@ namespace Maize {
 
             if (ImGui::Button("Yes"))
             {
-                m_SelectedAtlas->Clear();
-                m_SelectedAtlas->AutoSetTiles(false);
+                m_SelectedTileset->Clear();
+                m_SelectedTileset->AutoSetTiles(false);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
             if (ImGui::Button("No"))
             {
-                m_SelectedAtlas->Clear();
-                m_SelectedAtlas->AutoSetTiles(true);
+                m_SelectedTileset->Clear();
+                m_SelectedTileset->AutoSetTiles(true);
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
             if (ImGui::Button("Ignore"))
             {
-                m_SelectedAtlas->Clear();
-                m_SelectedAtlas->InitEmptyTiles();
+                m_SelectedTileset->Clear();
+                m_SelectedTileset->InitEmptyTiles();
                 ImGui::CloseCurrentPopup();
             }
 
@@ -183,13 +188,13 @@ namespace Maize {
         }
     }
 
-    void TilesetWindow::HandleAtlasTiles()
+    void TilesetWindow::HandleTilesetTiles()
     {
-        if (m_SelectedAtlas == nullptr) return;
+        if (m_SelectedTileset == nullptr) return;
 
-        const auto* texture = m_SelectedAtlas->GetTexture();
-        int32_t tilesetSizeX = (int32_t)texture->GetWidth() / m_SelectedAtlas->GetTileSizeX();
-        int32_t tilesetSizeY = (int32_t)texture->GetHeight() / m_SelectedAtlas->GetTileSizeY();
+        const auto* texture = m_SelectedTileset->GetTexture();
+        int32_t tilesetSizeX = (int32_t)texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
+        int32_t tilesetSizeY = (int32_t)texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
         float scaleFactor = 2.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
         float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
@@ -202,7 +207,7 @@ namespace Maize {
             for (int32_t y = 0; y < tilesetSizeY; y++)
             {
                 int32_t index = x + y * tilesetSizeX;
-                auto* tile = m_SelectedAtlas->GetTile(index);
+                auto* tile = m_SelectedTileset->GetTile(index);
 
                 if (tile == nullptr) continue;
 
@@ -210,7 +215,7 @@ namespace Maize {
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                auto buttonSize = ImVec2(m_SelectedAtlas->GetTileSizeX() * scaleFactor, m_SelectedAtlas->GetTileSizeY() * scaleFactor);
+                auto buttonSize = ImVec2(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state
