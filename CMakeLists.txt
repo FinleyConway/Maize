@@ -38,6 +38,13 @@ FetchContent_Declare(
         GIT_TAG v3.11.2
 )
 
+# Fetch Portable File Dialogs
+FetchContent_Declare(
+        pfd
+        GIT_REPOSITORY https://github.com/samhocevar/portable-file-dialogs.git
+        GIT_TAG 0.1.0
+)
+
 # Set SFML_DIR to point to sfml_BINARY_DIR
 set(SFML_DIR "${sfml_BINARY_DIR}")
 
@@ -51,10 +58,15 @@ option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" ON)
 
 FetchContent_MakeAvailable(imgui-sfml)
 FetchContent_MakeAvailable(nlohmann_json)
+FetchContent_MakeAvailable(pfd)
 
 # Add subdirectories for your projects
 add_subdirectory(Maize)
 add_subdirectory(MaizeOil)
+
+message(${pfd_SOURCE_DIR})
+
+target_include_directories(Maize PUBLIC ${pfd_SOURCE_DIR})
 
 # Link libraries to the Maize target
 target_link_libraries(Maize
