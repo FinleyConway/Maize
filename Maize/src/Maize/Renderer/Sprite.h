@@ -18,7 +18,7 @@ namespace Maize {
         {
             if (texture != nullptr)
             {
-                m_Sprite.setOrigin(pivot);
+                SetPivot(pivot);
                 m_Sprite.setTextureRect(rect);
                 m_Sprite.setTexture(*texture);
             }

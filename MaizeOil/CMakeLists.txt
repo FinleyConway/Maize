@@ -23,7 +23,11 @@ add_executable(MaizeOil src/MaizeOilApp.cpp
         src/TilemapEditor/Tilemap/Tilemap.cpp
         src/TilemapEditor/Tilemap/Tilemap.h
         src/TilemapEditor/TilemapWindow.cpp
-        src/TilemapEditor/TilemapWindow.h)
+        src/TilemapEditor/TilemapWindow.h
+        src/TilemapEditor/Tileset/TileAtlas.cpp
+        src/TilemapEditor/Tileset/TileAtlas.h
+        src/TilemapEditor/Tileset/TilesetWindow.cpp
+        src/TilemapEditor/Tileset/TilesetWindow.h)
 
 target_link_libraries(MaizeOil PRIVATE Maize)
 
