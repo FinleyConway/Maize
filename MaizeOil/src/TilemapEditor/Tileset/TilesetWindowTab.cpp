@@ -1,56 +1,57 @@
-#include "TilesetWindow.h"
+#include "TilesetWindowTab.h"
 
 namespace Maize {
 
-    TilesetWindow::TilesetWindow()
+    TilesetWindowTab::TilesetWindowTab(std::vector<Tileset>& tilesets) : m_Tilesets(tilesets)
     {
         m_IconAdd = Texture::Create("Resources/Icons/plus.png");
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
     }
 
-    void TilesetWindow::Window()
+    void TilesetWindowTab::Window()
     {
-        ImGui::Begin("Tileset");
-
-        float mainWindowWidth = ImGui::GetWindowWidth();
-
-        ImGui::Columns(3, "TilesetColumns", true);
-
-        ImGui::BeginChild("Tilesets", {0, mainWindowWidth / 2});
-        SelectTileset();
-        ImGui::EndChild();
-
-        if (ImGui::ImageButton(*m_IconAdd, {16, 16}))
+        if (ImGui::BeginTabItem("Tileset"))
         {
-            AddTileset();
-        }
-        ImGui::SameLine();
-        if (ImGui::ImageButton(*m_IconRemove, {16, 16}))
-        {
-            if (m_SelectedTileset != nullptr)
+            float mainWindowWidth = ImGui::GetWindowWidth();
+
+            if (ImGui::ImageButton(*m_IconAdd, {16, 16}))
             {
-                RemoveTileset(m_SelectedTileset->GetID());
+                AddTileset();
             }
+            ImGui::SameLine();
+            if (ImGui::ImageButton(*m_IconRemove, {16, 16}))
+            {
+                if (m_SelectedTileset != nullptr)
+                {
+                    RemoveTileset(m_SelectedTileset->GetID());
+                }
+            }
+
+            ImGui::Columns(3, "TilesetColumns", true);
+
+            ImGui::BeginChild("Tilesets", {0, mainWindowWidth / 2});
+            SelectTileset();
+            ImGui::EndChild();
+
+            ImGui::NextColumn();
+
+            ImGui::BeginChild("Current Tileset", {0, mainWindowWidth / 2});
+            ShowCurrentTileset();
+            ImGui::EndChild();
+
+            ImGui::NextColumn();
+
+            ImGui::BeginChild("Show Tileset Tiles");
+            HandleTilesetTiles();
+            ImGui::EndChild();
+
+            ImGui::Columns(2);
+
+            ImGui::EndTabItem();
         }
-
-        ImGui::NextColumn();
-
-        ImGui::BeginChild("Current Tileset", {0, mainWindowWidth / 2});
-        ShowCurrentTileset();
-        ImGui::EndChild();
-
-        ImGui::NextColumn();
-
-        ImGui::BeginChild("Show Tileset Tiles");
-        HandleTilesetTiles();
-        ImGui::EndChild();
-
-        ImGui::Columns(2);
-
-        ImGui::End();
     }
 
-    Tileset& TilesetWindow::AddTileset()
+    Tileset& TilesetWindowTab::AddTileset()
     {
         m_Tilesets.emplace_back();
         auto& tileset = m_Tilesets.back();
@@ -60,7 +61,7 @@ namespace Maize {
         return tileset;
     }
 
-    void TilesetWindow::RemoveTileset(int32_t tilesetID)
+    void TilesetWindowTab::RemoveTileset(int32_t tilesetID)
     {
         for (auto it = m_Tilesets.rbegin(); it != m_Tilesets.rend(); ++it)
         {
@@ -76,27 +77,33 @@ namespace Maize {
         }
     }
 
-    void TilesetWindow::SelectTileset()
+    void TilesetWindowTab::SelectTileset()
     {
         auto windowSize = ImGui::GetContentRegionAvail();
 
         for (auto &tileset: m_Tilesets)
         {
-            if (tileset.GetTexture() != nullptr)
-                ImGui::Image(*tileset.GetTexture(), {64, 64});
+            std::string text = std::format("{} (ID: {})", tileset.GetName(), tileset.GetID());
+            auto buttonPos = ImGui::GetCursorScreenPos();
+
+            if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
+            {
+                m_SelectedTileset = &tileset;
+            }
 
             ImGui::SameLine(0, 0.1f);
 
-            std::string text = std::format("{} (ID: {})", tileset.GetName(), tileset.GetID());
+            ImGui::SetNextItemAllowOverlap();
+            ImGui::SetCursorScreenPos({ buttonPos.x, buttonPos.y });
 
-            if (ImGui::Button(text.c_str(), {windowSize.x - 64, 64}))
+            if (tileset.GetTexture() != nullptr)
             {
-                m_SelectedTileset = &tileset;
+                ImGui::Image(*tileset.GetTexture(), {64, 64});
             }
         }
     }
 
-    void TilesetWindow::ShowCurrentTileset()
+    void TilesetWindowTab::ShowCurrentTileset()
     {
         if (m_SelectedTileset != nullptr)
         {
@@ -135,7 +142,7 @@ namespace Maize {
         }
     }
 
-    void TilesetWindow::TextureSelector()
+    void TilesetWindowTab::TextureSelector()
     {
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
@@ -157,7 +164,7 @@ namespace Maize {
         SetAutomaticTiles();
     }
 
-    void TilesetWindow::SetAutomaticTiles()
+    void TilesetWindowTab::SetAutomaticTiles()
     {
         if (ImGui::BeginPopupModal("AutoTilesPopup"))
         {
@@ -188,16 +195,46 @@ namespace Maize {
         }
     }
 
-    void TilesetWindow::HandleTilesetTiles()
+    void TilesetWindowTab::HandleTilesetTiles()
     {
-        if (m_SelectedTileset == nullptr) return;
+        if (m_SelectedTileset == nullptr || !m_SelectedTileset->HasTexture()) return;
+
+        ImGui::BeginChild("Tileset", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const auto* texture = m_SelectedTileset->GetTexture();
         int32_t tilesetSizeX = (int32_t)texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
         int32_t tilesetSizeY = (int32_t)texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
-        float scaleFactor = 2.0f;
+        static float scaleFactor = 4.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
         float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
+
+        float scrollX = 0.0f;
+        float scrollY = 0.0f;
+
+        ImGuiIO& io = ImGui::GetIO();
+
+        if (io.MouseWheel != 0)
+        {
+            float scrollDelta = io.MouseWheel;
+            if (scrollDelta > 0.0f)
+            {
+                scaleFactor++;
+            }
+            else if (scrollDelta < 0.0f)
+            {
+                scaleFactor--;
+            }
+        }
+
+        if (scaleFactor >= 10) scaleFactor = 10;
+        if (scaleFactor <= 1) scaleFactor = 1;
+
+        if (ImGui::IsMouseDragging(2, 0.0f))
+        {
+            ImVec2 delta = ImGui::GetIO().MouseDelta;
+            scrollX -= delta.x;
+            scrollY -= delta.y;
+        }
 
         auto imagePos = ImGui::GetCursorScreenPos();
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
@@ -252,7 +289,13 @@ namespace Maize {
             }
 
             ImGui::NewLine();
+
         }
+
+        ImGui::SetScrollX(ImGui::GetScrollX() + scrollX);
+        ImGui::SetScrollY(ImGui::GetScrollY() + scrollY);
+
+        ImGui::EndChild();
     }
 
 } // Maize

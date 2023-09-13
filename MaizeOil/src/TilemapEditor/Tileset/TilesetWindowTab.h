@@ -5,10 +5,10 @@
 
 namespace Maize {
 
-    class TilesetWindow
+    class TilesetWindowTab
     {
     public:
-        TilesetWindow();
+        explicit TilesetWindowTab(std::vector<Tileset>& tilesets);
 
         void Window();
 
@@ -29,7 +29,7 @@ namespace Maize {
         void HandleTilesetTiles();
 
     private:
-        std::vector<Tileset> m_Tilesets;
+        std::vector<Tileset>& m_Tilesets;
         Tileset* m_SelectedTileset = nullptr;
 
         std::shared_ptr<Texture> m_IconAdd, m_IconRemove;

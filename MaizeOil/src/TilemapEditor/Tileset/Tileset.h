@@ -2,15 +2,13 @@
 
 #include <Maize.h>
 
-#include <utility>
-
 namespace Maize {
 
-    class Tile2 // temp name until i replace previous tileset implementation
+    class Tile
     {
     public:
-        Tile2() = default;
-        Tile2(int32_t tilesetID, int32_t index, Sprite sprite, bool included = false) :
+        Tile() = default;
+        Tile(int32_t tilesetID, int32_t index, Sprite sprite, bool included = false) :
         m_TilesetID(tilesetID),
         m_Index(index),
         m_Sprite(std::move(sprite)),
@@ -47,6 +45,8 @@ namespace Maize {
 
         const std::string& GetFilePath() { return m_FilePath; }
 
+        bool HasTexture() { return m_HasTexture; }
+
         bool SetTexture(const std::string& textureFilePath);
         const Texture* GetTexture() const { return m_Texture.get(); }
 
@@ -58,7 +58,7 @@ namespace Maize {
 
         void InitEmptyTiles();
         void AutoSetTiles(bool includeTransparent);
-        Tile2* GetTile(int32_t index);
+        Tile* GetTile(int32_t index);
 
         void Clear() { m_Tiles.clear(); }
 
@@ -69,8 +69,9 @@ namespace Maize {
         std::shared_ptr<Texture> m_Texture;
         int32_t m_TileSizeX = 16;
         int32_t m_TileSizeY = 16;
+        bool m_HasTexture = false;
 
-        std::vector<Tile2> m_Tiles;
+        std::vector<Tile> m_Tiles;
     };
 
 } // Maize

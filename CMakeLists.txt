@@ -21,14 +21,14 @@ FetchContent_Declare(
 FetchContent_Declare(
         imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG docking
+        GIT_TAG v1.89.9-docking
 )
 
 # Fetch ImGui-SFML library
 FetchContent_Declare(
         imgui-sfml
         GIT_REPOSITORY https://github.com/SFML/imgui-sfml.git
-        GIT_TAG 2.6.x
+        GIT_TAG v2.6
 )
 
 # Fetch Nlohmann Json

@@ -2,14 +2,13 @@
 
 namespace Maize {
 
-    const TileMapTile CartesianGrid::sc_InvalidTile = TileMapTile();
+    const TilemapTile CartesianGrid::sc_InvalidTile = TilemapTile();
 
     CartesianGrid::CartesianGrid(Point defaultSize, int32_t resizeIncrements) :
             m_Grid(defaultSize.x * defaultSize.y),
             m_CurrentSize(defaultSize),
             m_ResizeIncrements(resizeIncrements)
     {
-
     }
 
     void CartesianGrid::SetTile(Point position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize)
@@ -22,7 +21,7 @@ namespace Maize {
         if (adjustedX >= 0 && adjustedX < m_CurrentSize.x &&
             adjustedY >= 0 && adjustedY < m_CurrentSize.y)
         {
-            m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TileMapTile(tilesetID, index, flipX, flipY, rotation);
+            m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(tilesetID, index, flipX, flipY, rotation);
         }
             // resize grid and place tile
         else
@@ -32,7 +31,7 @@ namespace Maize {
                 ResizeGrid(position);
                 adjustedX = position.x + m_CurrentSize.x / 2;
                 adjustedY = position.y + m_CurrentSize.y / 2;
-                m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TileMapTile(tilesetID, index, flipX, flipY, rotation);
+                m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(tilesetID, index, flipX, flipY, rotation);
             }
         }
     }
@@ -50,7 +49,7 @@ namespace Maize {
         }
     }
 
-    const TileMapTile& CartesianGrid::GetTile(Point position) const
+    const TilemapTile& CartesianGrid::GetTile(Point position) const
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -66,16 +65,15 @@ namespace Maize {
         return m_Grid[m_CurrentSize.x * adjustedY + adjustedX];
     }
 
-    std::vector<std::pair<const TileMapTile&, Point>> CartesianGrid::GetSurroundingTiles(Point initPosition) const
+    std::vector<std::pair<const TilemapTile&, Point>> CartesianGrid::GetSurroundingTiles(Point initPosition) const
     {
-        std::vector<std::pair<const TileMapTile&, Point>> surrounding;
+        std::vector<std::pair<const TilemapTile&, Point>> surrounding;
 
-        static std::array<Point, 8> adjacentOffsets =
-                {
-                        Point(-1, -1), Point(0, -1), Point(1, -1),
-                        Point(-1,  0),             Point(1,  0),
-                        Point(-1,  1), Point(0,  1), Point(1,  1)
-                };
+        static std::array<Point, 8> adjacentOffsets = {
+                Point(-1, -1), Point(0, -1), Point(1, -1),
+                Point(-1,  0),                     Point(1,  0),
+                Point(-1,  1), Point(0,  1), Point(1,  1)
+        };
 
         for (const auto& offset : adjacentOffsets)
         {
@@ -121,60 +119,43 @@ namespace Maize {
         return true;
     }
 
-    Point CartesianGrid::ConvertScreenToGrid(PointF mousePosition, uint32_t cellSize)
+    Point CartesianGrid::ConvertScreenToGrid(PointF mousePosition, int32_t cellSize)
     {
         return Point(
-                static_cast<int32_t>(std::floor(mousePosition.x / cellSize)),
-                static_cast<int32_t>(std::floor(mousePosition.y / cellSize))
+                static_cast<int32_t>(std::floor(mousePosition.x / static_cast<float>(cellSize))),
+                static_cast<int32_t>(std::floor(mousePosition.y / static_cast<float>(cellSize)))
         );
     }
 
-    PointF CartesianGrid::ConvertGridToScreen(Point gridPosition, uint32_t cellSize)
+    PointF CartesianGrid::ConvertGridToScreen(Point gridPosition, int32_t cellSize)
     {
         return PointF(
-                gridPosition.x * static_cast<float>(cellSize),
-                gridPosition.y * static_cast<float>(cellSize)
+                static_cast<float>(gridPosition.x) * static_cast<float>(cellSize),
+                static_cast<float>(gridPosition.y) * static_cast<float>(cellSize)
         );
     }
 
     void CartesianGrid::ResizeGrid(Point newTilePosition)
     {
-        int32_t adjustedX = newTilePosition.x + m_CurrentSize.x / 2;
-        int32_t adjustedY = newTilePosition.y + m_CurrentSize.y / 2;
+        // calculate the new size of the grid
+        int32_t newWidth = std::max(newTilePosition.x + 1 + m_ResizeIncrements, m_CurrentSize.x);
+        int32_t newHeight = std::max(newTilePosition.y + 1 + m_ResizeIncrements, m_CurrentSize.y);
 
-        int32_t offsetX = 0;
-        int32_t offsetY = 0;
+        // calculate the offsets to center the new tile position
+        int32_t offsetX = (newWidth - m_CurrentSize.x) / 2;
+        int32_t offsetY = (newHeight - m_CurrentSize.y) / 2;
 
-        if (adjustedX < 0)
-        {
-            offsetX = (-adjustedX / m_ResizeIncrements + 1) * m_ResizeIncrements;
-        }
-        else if (adjustedX >= m_CurrentSize.x)
-        {
-            offsetX = ((adjustedX - m_CurrentSize.x) / m_ResizeIncrements + 1) * m_ResizeIncrements;
-        }
+        // create a new grid with the updated size
+        std::vector<TilemapTile> newGrid(newWidth * newHeight, sc_InvalidTile);
 
-        if (adjustedY < 0)
-        {
-            offsetY = (-adjustedY / m_ResizeIncrements + 1) * m_ResizeIncrements;
-        }
-        else if (adjustedY >= m_CurrentSize.y)
-        {
-            offsetY = ((adjustedY - m_CurrentSize.y) / m_ResizeIncrements + 1) * m_ResizeIncrements;
-        }
-
-        int32_t newWidth = m_CurrentSize.x + offsetX * 2;
-        int32_t newHeight = m_CurrentSize.y + offsetY * 2;
-
-        std::vector<TileMapTile> newGrid(newWidth * newHeight, sc_InvalidTile);
-
+        // copy the existing grid to the new grid with the calculated offsets
         for (int32_t y = 0; y < m_CurrentSize.y; ++y)
         {
             for (int32_t x = 0; x < m_CurrentSize.x; ++x)
             {
-                int32_t new_x = x + offsetX;
-                int32_t new_y = y + offsetY;
-                newGrid[new_y * newWidth + new_x] = m_Grid[y * m_CurrentSize.x + x];
+                int32_t newX = x + offsetX;
+                int32_t newY = y + offsetY;
+                newGrid[newY * newX + newWidth] = m_Grid[y * x + m_CurrentSize.x];
             }
         }
 
