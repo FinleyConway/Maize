@@ -2,7 +2,7 @@
 
 #include <Maize.h>
 
-#include "TilemapEditor/Tileset/TilesetWindow.h"
+#include "TilemapEditor/TilemapEditorWindow.h"
 
 class Sandbox : public Maize::Layer
 {
@@ -14,6 +14,8 @@ public:
     void OnEvent(Maize::Event& e) override
     {
         m_Camera.OnEvent(e);
+
+        m_TilemapEditorWindow.OnEvent(e);
     }
 
     void OnUpdate(float deltaTime) override
@@ -22,7 +24,7 @@ public:
 
         m_Camera.OnUpdate(deltaTime);
 
-        m_AtlasEditor.Window();
+        m_TilemapEditorWindow.Window();
     }
 
     void OnRender() override
@@ -32,5 +34,5 @@ public:
 private:
     Maize::EditorCamera m_Camera;
 
-    Maize::TilesetWindow m_AtlasEditor;
+    Maize::TilemapEditorWindow m_TilemapEditorWindow;
 };

@@ -16,8 +16,14 @@ add_executable(MaizeOil src/MaizeOilApp.cpp
         src/CartesianGrid.h
         src/TilemapEditor/Tileset/Tileset.cpp
         src/TilemapEditor/Tileset/Tileset.h
-        src/TilemapEditor/Tileset/TilesetWindow.cpp
-        src/TilemapEditor/Tileset/TilesetWindow.h)
+        src/TilemapEditor/Tileset/TilesetWindowTab.cpp
+        src/TilemapEditor/Tileset/TilesetWindowTab.h
+        src/TilemapEditor/Tilemap/TilemapWindowTab.cpp
+        src/TilemapEditor/Tilemap/TilemapWindowTab.h
+        src/TilemapEditor/Tilemap/TilemapLayer.cpp
+        src/TilemapEditor/Tilemap/TilemapLayer.h
+        src/TilemapEditor/TilemapEditorWindow.cpp
+        src/TilemapEditor/TilemapEditorWindow.h)
 
 target_link_libraries(MaizeOil PRIVATE Maize)
 

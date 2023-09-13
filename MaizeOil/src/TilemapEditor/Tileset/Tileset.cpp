@@ -5,7 +5,7 @@ namespace Maize {
     Tileset::Tileset()
     {
         // set default name and texture
-        SetTexture("Resources/Icons/default-image.png");
+        m_Texture = Texture::Create("Resources/Icons/default-image.png");
         SetName("Default");
     }
 
@@ -17,9 +17,12 @@ namespace Maize {
         {
             m_Texture = std::move(texture);
             m_FilePath = textureFilePath;
+            m_HasTexture = true;
 
             return true;
         }
+
+        m_HasTexture = false;
 
         return false;
     }
@@ -37,7 +40,7 @@ namespace Maize {
                 int32_t index = x + y * sizeX;
                 Sprite sprite(Rect(x * m_TileSizeX, y * m_TileSizeY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF((float)m_TileSizeX / 2.0f, (float)m_TileSizeY / 2.0f));
 
-                m_Tiles[index] = Tile2(m_ID, index, sprite, false);
+                m_Tiles[index] = Tile(m_ID, index, sprite, false);
             }
         }
     }
@@ -60,7 +63,7 @@ namespace Maize {
                     int32_t index = x + y * sizeX;
                     Sprite sprite(Rect(x * m_TileSizeX, y * m_TileSizeY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF((float)m_TileSizeX / 2.0f, (float)m_TileSizeY / 2.0f));
 
-                    m_Tiles[index] = Tile2(m_ID, index, sprite, true);
+                    m_Tiles[index] = Tile(m_ID, index, sprite, true);
 
                 }
                 else if (!m_Texture->IsRegionTransparent(regionX, regionY, m_TileSizeX, m_TileSizeY))
@@ -68,13 +71,13 @@ namespace Maize {
                     int32_t index = x + y * sizeX;
                     Sprite sprite(Rect(x * m_TileSizeX, y * m_TileSizeY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF((float)m_TileSizeX / 2.0f, (float)m_TileSizeY / 2.0f));
 
-                    m_Tiles[index] = Tile2(m_ID, index, sprite, true);
+                    m_Tiles[index] = Tile(m_ID, index, sprite, true);
                 }
             }
         }
     }
 
-    Tile2 *Tileset::GetTile(int32_t index)
+    Tile *Tileset::GetTile(int32_t index)
     {
         if (index >= 0 && index < m_Tiles.size())
         {
