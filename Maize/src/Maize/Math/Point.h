@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <cmath>
 
-#include "Maize/Math/PointF.h."
+#include "Maize/Math/PointF.h"
 
 namespace Maize {
 

@@ -2,7 +2,9 @@
 
 namespace Maize {
 
-    TilemapWindowTab::TilemapWindowTab(std::vector<Tileset> &tilesets) : m_Tilesets(tilesets)
+    TilemapWindowTab::TilemapWindowTab(std::vector<Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers) :
+        m_Tilesets(tilesets),
+        m_TilemapLayers(tilemapLayers)
     {
         m_IconPencil = Texture::Create("Resources/Icons/pencil.png");
         m_IconEraser = Texture::Create("Resources/Icons/eraser.png");
@@ -24,6 +26,8 @@ namespace Maize {
             float mainWindowWidth = ImGui::GetWindowWidth();
 
             ButtonTools();
+            ImGui::SameLine();
+            TilemapLayers();
 
             ImGui::Columns(2, "TilesetColumns", true);
 
@@ -50,7 +54,7 @@ namespace Maize {
         ImGui::PushID(0);
         if (ImGui::ImageButton(*m_IconPencil, buttonSize))
         {
-            m_CurrentTool = Tools::Pencil;
+            m_CurrentTool = TilemapTools::Pencil;
         }
         ImGui::SetItemTooltip("Paint Tool (B)");
         ImGui::PopID();
@@ -60,7 +64,7 @@ namespace Maize {
         ImGui::PushID(1);
         if (ImGui::ImageButton(*m_IconEraser, buttonSize))
         {
-            m_CurrentTool = Tools::Erase;
+            m_CurrentTool = TilemapTools::Erase;
         }
         ImGui::SetItemTooltip("Erase Tool (E)");
         ImGui::PopID();
@@ -70,7 +74,7 @@ namespace Maize {
         ImGui::PushID(2);
         if (ImGui::ImageButton(*m_IconPicker, buttonSize))
         {
-            m_CurrentTool = Tools::Picker;
+            m_CurrentTool = TilemapTools::Picker;
         }
         ImGui::SetItemTooltip("Picker Tool (I)");
         ImGui::PopID();
@@ -80,7 +84,7 @@ namespace Maize {
         ImGui::PushID(3);
         if (ImGui::ImageButton(*m_IconFill, buttonSize))
         {
-            m_CurrentTool = Tools::Fill;
+            m_CurrentTool = TilemapTools::Fill;
         }
         ImGui::SetItemTooltip("Fill Tool (G)");
         ImGui::PopID();
@@ -90,10 +94,29 @@ namespace Maize {
         ImGui::PushID(4);
         if (ImGui::ImageButton(*m_IconRect, buttonSize))
         {
-            m_CurrentTool = Tools::Rect;
+            m_CurrentTool = TilemapTools::Rect;
         }
         ImGui::SetItemTooltip("Box Fill Tool (U)");
         ImGui::PopID();
+    }
+
+    void TilemapWindowTab::TilemapLayers()
+    {
+        if (ImGui::BeginCombo("##Layers", m_TilemapLayers[m_SelectedTilemapLayer].GetName().c_str()))
+        {
+            for (uint32_t i = 0; i < m_TilemapLayers.size(); i++)
+            {
+                bool isSelected = (i == m_SelectedTilemapLayer);
+                std::string tilemapLayer = m_TilemapLayers[i].GetName();
+
+                if (ImGui::Selectable(tilemapLayer.c_str(), isSelected))
+                {
+                    m_SelectedTilemapLayer = i;
+                }
+            }
+
+            ImGui::EndCombo();
+        }
     }
 
     void TilemapWindowTab::SelectTileset()
@@ -102,7 +125,7 @@ namespace Maize {
 
         for (auto& tileset: m_Tilesets)
         {
-            std::string text = std::format("{} (ID: {})", tileset.GetName(), tileset.GetID());
+            std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             auto buttonPos = ImGui::GetCursorScreenPos();
 
             if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
@@ -263,19 +286,19 @@ namespace Maize {
         switch (e.GetKeyCode())
         {
             case KeyCode::B:
-                m_CurrentTool = Tools::Pencil;
+                m_CurrentTool = TilemapTools::Pencil;
                 break;
             case KeyCode::E:
-                m_CurrentTool = Tools::Erase;
+                m_CurrentTool = TilemapTools::Erase;
                 break;
             case KeyCode::I:
-                m_CurrentTool = Tools::Picker;
+                m_CurrentTool = TilemapTools::Picker;
                 break;
             case KeyCode::G:
-                m_CurrentTool = Tools::Fill;
+                m_CurrentTool = TilemapTools::Fill;
                 break;
             case KeyCode::U:
-                m_CurrentTool = Tools::Rect;
+                m_CurrentTool = TilemapTools::Rect;
                 break;
             default:
                 break;

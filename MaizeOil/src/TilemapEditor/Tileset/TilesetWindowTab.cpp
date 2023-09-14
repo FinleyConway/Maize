@@ -83,7 +83,7 @@ namespace Maize {
 
         for (auto &tileset: m_Tilesets)
         {
-            std::string text = std::format("{} (ID: {})", tileset.GetName(), tileset.GetID());
+            std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             auto buttonPos = ImGui::GetCursorScreenPos();
 
             if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
