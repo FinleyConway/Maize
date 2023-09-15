@@ -2,9 +2,11 @@
 
 namespace Maize {
 
-    TilemapWindowTab::TilemapWindowTab(std::vector<Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers) :
-        m_Tilesets(tilesets),
-        m_TilemapLayers(tilemapLayers)
+    TilemapWindowTab::TilemapWindowTab(std::vector<Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY) :
+            m_Tilesets(tilesets),
+            m_TilemapLayers(tilemapLayers),
+            m_CellSizeX(cellSizeX),
+            m_CellSizeY(cellSizeY)
     {
         m_IconPencil = Texture::Create("Resources/Icons/pencil.png");
         m_IconEraser = Texture::Create("Resources/Icons/eraser.png");
@@ -17,6 +19,8 @@ namespace Maize {
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(std::bind(&TilemapWindowTab::OnKeyPressed, this, std::placeholders::_1));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(std::bind(&TilemapWindowTab::OnMousePressed, this, std::placeholders::_1));
+        dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
     void TilemapWindowTab::Window()
@@ -302,6 +306,30 @@ namespace Maize {
                 break;
             default:
                 break;
+        }
+
+        return false;
+    }
+
+    bool TilemapWindowTab::OnMousePressed(const MouseButtonPressedEvent &e)
+    {
+        if (e.GetMouseButton() == MouseCode::Left)
+        {
+            m_MouseLeftHeld = true;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    bool TilemapWindowTab::OnMouseReleased(const MouseButtonReleasedEvent &e)
+    {
+        if (e.GetMouseButton() == MouseCode::Left)
+        {
+            m_MouseLeftHeld = false;
+
+            return true;
         }
 
         return false;

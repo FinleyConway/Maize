@@ -34,8 +34,8 @@ namespace Maize {
         bool HasTile(Point position) const;
         bool IsValidPosition(Point position) const;
 
-        static PointF ConvertGridToScreen(Point gridPosition, int32_t cellSize);
-        static Point ConvertScreenToGrid(PointF mousePosition, int32_t cellSize);
+        static PointF ConvertGridToScreen(Point gridPosition, int32_t cellSizeX, int32_t cellSizeY);
+        static Point ConvertScreenToGrid(PointF mousePosition, int32_t cellSizeX, int32_t cellSizeY);
 
     private:
         void ResizeGrid(Point newTilePosition);
