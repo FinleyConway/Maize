@@ -42,41 +42,38 @@ namespace Maize {
         }
         void OnRender()
         {
-            TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
-            Point gridSize = currentLayer.GetGridSize();
-            int32_t halfWidth = gridSize.x / 2;
-            int32_t halfHeight = gridSize.y / 2;
-
             // very cursed and will make it better performant
-            for (int32_t y = -halfHeight; y < halfHeight; y++)
+            for (auto &mapLayers: m_TilemapLayers)
             {
-                for (int32_t x = -halfWidth; x < halfWidth; x++)
+                Point gridSize = mapLayers.GetGridSize();
+                int32_t halfWidth = gridSize.x / 2;
+                int32_t halfHeight = gridSize.y / 2;
+
+                for (int32_t y = -halfHeight; y < halfHeight; y++)
                 {
-                    const TilemapTile& tilemapTile = currentLayer.GetTile(Point(x, y));
-
-                    if (tilemapTile.IsValid())
+                    for (int32_t x = -halfWidth; x < halfWidth; x++)
                     {
-                        Tile* tile = nullptr;
+                        const TilemapTile &tilemapTile = mapLayers.GetTile(Point(x, y));
 
-                        for (auto& tileset : m_Tilesets)
+                        if (tilemapTile.IsValid())
                         {
-                            if (tileset.GetID() == tilemapTile.tilesetID)
-                            {
-                                tile = tileset.GetTile(tilemapTile.index);
-                            }
+                            Tile *tile = Tileset::FindTileByTilesetID(m_Tilesets, tilemapTile.tilesetID,
+                                                                      tilemapTile.index);
+
+                            if (tile == nullptr) continue;
+
+                            Sprite &sprite = tile->GetSprite();
+                            PointF screenPosition =
+                                    CartesianGrid::ConvertGridToScreen(Point(x, y), m_CellSizeX, m_CellSizeY) +
+                                    sprite.GetPivot();
+
+                            sprite.SetPosition(screenPosition);
+                            sprite.FlipX(tilemapTile.flipX);
+                            sprite.FlipY(tilemapTile.flipY);
+                            sprite.SetAngle(tilemapTile.rotation);
+
+                            Application::Get().GetWindow().Render(sprite);
                         }
-
-                        if (tile == nullptr) continue;
-
-                        Sprite& sprite = tile->GetSprite();
-                        PointF screenPosition = CartesianGrid::ConvertGridToScreen(Point(x, y), m_CellSizeX, m_CellSizeY) + sprite.GetPivot();
-
-                        sprite.SetPosition(screenPosition);
-                        sprite.FlipX(tilemapTile.flipX);
-                        sprite.FlipY(tilemapTile.flipY);
-                        sprite.SetAngle(tilemapTile.rotation);
-
-                        Application::Get().GetWindow().Render(sprite);
                     }
                 }
             }

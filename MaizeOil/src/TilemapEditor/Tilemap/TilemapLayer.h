@@ -21,8 +21,6 @@ namespace Maize {
         void FillTiles(Point gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile);
 
     private:
-        friend class TilemapEditorWindow;
-
         std::string m_Name;
         CartesianGrid m_Grid;
     };

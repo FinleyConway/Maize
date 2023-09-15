@@ -3,6 +3,7 @@
 #include "Tileset/TilesetWindowTab.h"
 #include "Tilemap/TilemapWindowTab.h"
 #include "Tilemap/TilemapLayer.h"
+#include "Tileset/TilesetSerializer.h"
 
 namespace Maize {
 
@@ -10,13 +11,8 @@ namespace Maize {
     {
         std::vector<TilemapLayer> layers;
         std::vector<Tileset> tilesets;
-        int32_t tileSizeX = 16;
-        int32_t tileSizeY = 16;
-
-        TilemapLayer& GetMap(uint32_t index)
-        {
-            return layers[index];
-        }
+        int32_t tileSizeX = 8;
+        int32_t tileSizeY = 8;
     };
 
     class TilemapEditorWindow
@@ -34,6 +30,13 @@ namespace Maize {
 
             TilemapLayer& layer2 = m_TilemapComponent.layers.emplace_back();
             layer2.SetName("Background");
+
+            m_TilemapComponent.tilesets = m_Serial.DeserializeTileset("tilesets.tilesets");
+        }
+
+        ~TilemapEditorWindow()
+        {
+            m_Serial.SerializeTileset(m_TilemapComponent.tilesets);
         }
 
         void OnEvent(Event& e)
@@ -98,6 +101,8 @@ namespace Maize {
         TilemapWindowTab m_TilemapWindow;
 
         TilemapComponent m_TilemapComponent;
+
+        TilesetSerializer m_Serial;
     };
 
 } // Maize
