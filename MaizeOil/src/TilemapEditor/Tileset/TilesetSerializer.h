@@ -10,7 +10,7 @@ namespace Maize {
     class TilesetSerializer
     {
     public:
-        void SerializeTileset(std::vector<Tileset>& tilesets) const;
+        void SerializeTileset(const std::vector<Tileset>& tilesets) const;
         std::vector<Tileset> DeserializeTileset(const std::string& filePath) const;
     };
 

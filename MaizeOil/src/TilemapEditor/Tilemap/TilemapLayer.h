@@ -17,8 +17,8 @@ namespace Maize {
 
         void PlaceTile(const TilemapTile& tile, Point gridPosition, bool flipX, bool flipY, float rotation, bool resize = true);
         void RemoveTile(Point gridPosition);
-        void GetTileInfo(Point gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation);
-        const TilemapTile& GetTile(Point gridPosition);
+        void GetTileInfo(Point gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation) const;
+        const TilemapTile& GetTile(Point gridPosition) const;
         void FillTiles(Point gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile);
 
     private:

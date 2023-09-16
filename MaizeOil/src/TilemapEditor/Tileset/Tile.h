@@ -2,16 +2,18 @@
 
 #include <Maize.h>
 
+#include <utility>
+
 namespace Maize {
 
     class Tile
     {
     public:
         Tile() = default;
-        Tile(int32_t tilesetID, int32_t index, const Sprite& sprite, bool included = false) :
+        Tile(int32_t tilesetID, int32_t index, Sprite&& sprite, bool included = false) :
                 m_TilesetID(tilesetID),
                 m_Index(index),
-                m_Sprite(sprite),
+                m_Sprite(std::move(sprite)),
                 m_Included(included)
         {}
 

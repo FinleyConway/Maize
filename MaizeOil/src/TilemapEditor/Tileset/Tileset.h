@@ -35,6 +35,7 @@ namespace Maize {
         void AutoSetTiles(bool includeTransparent);
 
         Tile* GetTile(int32_t index);
+        const Tile* GetTile(int32_t index) const;
 
         static Tile* FindTileByTilesetID(std::vector<Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex);
 

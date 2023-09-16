@@ -2,11 +2,11 @@
 
 namespace Maize {
 
-    void TilesetSerializer::SerializeTileset(std::vector<Tileset> &tilesets) const
+    void TilesetSerializer::SerializeTileset(const std::vector<Tileset> &tilesets) const
     {
         nlohmann::json serialTilesetArray;
 
-        for (auto& tileset : tilesets)
+        for (const auto& tileset : tilesets)
         {
             nlohmann::json serialTileset;
 
@@ -31,7 +31,7 @@ namespace Maize {
                     for (int32_t y = 0; y < tilesetSizeY; y++)
                     {
                         int32_t index = x + y * tilesetSizeX;
-                        auto* tile = tileset.GetTile(index);
+                        const Tile* tile = tileset.GetTile(index);
 
                         if (tile == nullptr) continue;
 
@@ -66,7 +66,7 @@ namespace Maize {
             nlohmann::json serialTilesetArray;
             input >> serialTilesetArray;
 
-            for (auto& serialTileset : serialTilesetArray)
+            for (const auto& serialTileset : serialTilesetArray)
             {
                 Tileset tileset;
 
@@ -89,7 +89,7 @@ namespace Maize {
                     int32_t y = tileData["PositionY"];
                     int32_t numTilesX = tileset.GetTexture()->GetWidth() / tileset.GetTileSizeX();
                     int32_t index = x + y * numTilesX;
-                    auto* tile = tileset.GetTile(index);
+                    Tile* tile = tileset.GetTile(index);
 
                     tile->IsIncluded(tileData["IsIncluded"]);
                 }

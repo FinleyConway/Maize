@@ -11,6 +11,7 @@ namespace Maize {
     {
     public:
         void SerializeTilemap(std::vector<TilemapLayer>& tilemapLayers);
+        std::vector<TilemapLayer> DeserializeTilemap(const std::string& filePath);
     };
 
 } // Maize

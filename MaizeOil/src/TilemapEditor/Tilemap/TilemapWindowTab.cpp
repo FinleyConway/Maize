@@ -23,6 +23,33 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
+	void TilemapWindowTab::OnUpdate(float deltaTime)
+	{
+		TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
+		PointF mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
+		Point gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
+
+		if (m_MouseLeftHeld)
+		{
+			if (m_CurrentTool == TilemapTools::Pencil)
+			{
+				currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+			}
+			else if (m_CurrentTool == TilemapTools::Erase)
+			{
+				currentLayer.RemoveTile(gridPosition);
+			}
+			else if (m_CurrentTool == TilemapTools::Picker)
+			{
+				currentLayer.GetTileInfo(gridPosition, m_SelectedTile, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+			}
+			else if (m_CurrentTool == TilemapTools::Fill)
+			{
+				currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition));
+			}
+		}
+	}
+
     void TilemapWindowTab::Window()
     {
         if (ImGui::BeginTabItem(("Tilemap")))
