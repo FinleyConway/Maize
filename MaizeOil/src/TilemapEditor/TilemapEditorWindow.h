@@ -33,6 +33,7 @@ namespace Maize {
             layer2.SetName("Background");
 
             m_TilemapComponent.tilesets = m_TilesetSerializer.DeserializeTileset("tilesets.tilesets");
+            m_TilemapComponent.layers = m_TilemapSerializer.DeserializeTilemap("TestMapName.tilemap");
         }
 
         ~TilemapEditorWindow()

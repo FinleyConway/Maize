@@ -18,7 +18,7 @@ namespace Maize {
         }
     }
 
-    void TilemapLayer::GetTileInfo(Point gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation)
+    void TilemapLayer::GetTileInfo(Point gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation) const
     {
         if (m_Grid.HasTile(gridPosition))
         {
@@ -31,7 +31,7 @@ namespace Maize {
         }
     }
 
-    const TilemapTile& TilemapLayer::GetTile(Point gridPosition)
+    const TilemapTile& TilemapLayer::GetTile(Point gridPosition) const
     {
         return m_Grid.GetTile(gridPosition);
     }

@@ -9,7 +9,7 @@ namespace Maize {
         SetName("Default");
     }
 
-    bool Tileset::SetTexture(const std::string &textureFilePath)
+    bool Tileset::SetTexture(const std::string& textureFilePath)
     {
         auto texture = Texture::Create(textureFilePath);
 
@@ -45,7 +45,7 @@ namespace Maize {
                 int32_t tileIndex = x + y * numTilesX;
 
                 Sprite sprite(Rect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
-                m_Tiles[tileIndex] = Tile(m_ID, tileIndex, sprite, false);
+                m_Tiles[tileIndex] = Tile(m_ID, tileIndex, std::move(sprite), false);
             }
         }
     }
@@ -71,7 +71,7 @@ namespace Maize {
                     int32_t tileIndex = x + y * numTilesX;
 
                     Sprite sprite(Rect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
-                    m_Tiles[tileIndex] = Tile(m_ID, tileIndex, sprite, true);
+                    m_Tiles[tileIndex] = Tile(m_ID, tileIndex, std::move(sprite), true);
                 }
             }
         }
@@ -82,13 +82,24 @@ namespace Maize {
         // check if it's within the grid
         if (index >= 0 && index < m_Tiles.size())
         {
-            return &m_Tiles[index];
+            return &m_Tiles.at(index);
         }
 
         return nullptr;
     }
 
-    Tile *Tileset::FindTileByTilesetID(std::vector<Tileset> &tilesets, int32_t tilesetID, int32_t tileIndex)
+    const Tile* Tileset::GetTile(int32_t index) const
+    {
+        // check if it's within the grid
+        if (index >= 0 && index < m_Tiles.size())
+        {
+            return &m_Tiles.at(index);
+        }
+
+        return nullptr;
+    }
+
+    Tile* Tileset::FindTileByTilesetID(std::vector<Tileset> &tilesets, int32_t tilesetID, int32_t tileIndex)
     {
         for (auto& tileset : tilesets)
         {
@@ -97,6 +108,7 @@ namespace Maize {
                 return tileset.GetTile(tileIndex);
             }
         }
+
         return nullptr;
     }
 
