@@ -4,6 +4,7 @@
 #include "Tilemap/TilemapWindowTab.h"
 #include "Tilemap/TilemapLayer.h"
 #include "Tileset/TilesetSerializer.h"
+#include "Tilemap/TilemapSerializer.h"
 
 namespace Maize {
 
@@ -31,12 +32,13 @@ namespace Maize {
             TilemapLayer& layer2 = m_TilemapComponent.layers.emplace_back();
             layer2.SetName("Background");
 
-            m_TilemapComponent.tilesets = m_Serial.DeserializeTileset("tilesets.tilesets");
+            m_TilemapComponent.tilesets = m_TilesetSerializer.DeserializeTileset("tilesets.tilesets");
         }
 
         ~TilemapEditorWindow()
         {
-            m_Serial.SerializeTileset(m_TilemapComponent.tilesets);
+            m_TilesetSerializer.SerializeTileset(m_TilemapComponent.tilesets);
+            m_TilemapSerializer.SerializeTilemap(m_TilemapComponent.layers);
         }
 
         void OnEvent(Event& e)
@@ -102,7 +104,8 @@ namespace Maize {
 
         TilemapComponent m_TilemapComponent;
 
-        TilesetSerializer m_Serial;
+        TilesetSerializer m_TilesetSerializer;
+        TilemapSerializer m_TilemapSerializer;
     };
 
 } // Maize
