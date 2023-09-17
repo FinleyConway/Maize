@@ -8,13 +8,13 @@
 
 namespace Maize {
 
-    struct TilemapComponent
-    {
-        std::vector<TilemapLayer> layers;
-        std::vector<Tileset> tilesets;
-        int32_t tileSizeX = 8;
-        int32_t tileSizeY = 8;
-    };
+	struct TilemapComponent
+	{
+		std::vector<TilemapLayer> layers;
+		std::vector<Tileset> tilesets;
+		int32_t tileSizeX = 8;
+		int32_t tileSizeY = 8;
+	};
 
     class TilemapEditorWindow
     {
@@ -23,23 +23,7 @@ namespace Maize {
             m_TilesetWindow(m_TilemapComponent.tilesets),
             m_TilemapWindow(m_TilemapComponent.tilesets, m_TilemapComponent.layers, m_TilemapComponent.tileSizeX, m_TilemapComponent.tileSizeY)
         {
-            TilemapLayer& layer0 = m_TilemapComponent.layers.emplace_back();
-            layer0.SetName("Default");
-
-            TilemapLayer& layer1 = m_TilemapComponent.layers.emplace_back();
-            layer1.SetName("Middleground");
-
-            TilemapLayer& layer2 = m_TilemapComponent.layers.emplace_back();
-            layer2.SetName("Background");
-
-            m_TilemapComponent.tilesets = m_TilesetSerializer.DeserializeTileset("tilesets.tilesets");
-            m_TilemapComponent.layers = m_TilemapSerializer.DeserializeTilemap("TestMapName.tilemap");
-        }
-
-        ~TilemapEditorWindow()
-        {
-            m_TilesetSerializer.SerializeTileset(m_TilemapComponent.tilesets);
-            m_TilemapSerializer.SerializeTilemap(m_TilemapComponent.layers);
+            m_TilemapComponent.layers.emplace_back().SetName("Default");
         }
 
         void OnEvent(Event& e)
@@ -57,36 +41,9 @@ namespace Maize {
             m_TilemapWindow.OnRender();
         }
 
-        void TilemapComponentWindow() // temp
-        {
-            ImGui::Begin("Tilemap Component (Temp)");
-
-            // get tileset serial file
-
-            // list layers that can be edited, added, remove and sorted
-
-            // handle tilemap tile size
-            int32_t tileSizeX = m_TilemapComponent.tileSizeX;
-            if (ImGui::InputInt("Tile Size X", &tileSizeX))
-            {
-                if (tileSizeX < 1) tileSizeX = 1;
-                m_TilemapComponent.tileSizeX = tileSizeX;
-            }
-
-            int32_t tileSizeY = m_TilemapComponent.tileSizeY;
-            if (ImGui::InputInt("Tile Size Y", &tileSizeY))
-            {
-                if (tileSizeY < 1) tileSizeY = 1;
-                m_TilemapComponent.tileSizeY = tileSizeY;
-            }
-
-            ImGui::End();
-        }
-
         void Window()
         {
-            bool open = true;
-            ImGui::Begin("Tilemap Editor", &open, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::Begin("Tilemap Editor", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
             if (ImGui::BeginTabBar("Tabs"))
             {
@@ -100,10 +57,10 @@ namespace Maize {
         }
 
     private:
+		TilemapComponent m_TilemapComponent;
+
         TilesetWindowTab m_TilesetWindow;
         TilemapWindowTab m_TilemapWindow;
-
-        TilemapComponent m_TilemapComponent;
 
         TilesetSerializer m_TilesetSerializer;
         TilemapSerializer m_TilemapSerializer;

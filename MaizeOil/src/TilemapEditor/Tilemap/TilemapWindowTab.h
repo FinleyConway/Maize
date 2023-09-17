@@ -15,7 +15,7 @@ namespace Maize {
 
         void OnEvent(Event& e);
         void OnUpdate(float deltaTime);
-        void OnRender()
+        void OnRender() // temp
         {
             // very cursed and will make it better performant
             for (auto &mapLayers: m_TilemapLayers)

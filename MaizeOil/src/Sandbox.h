@@ -25,7 +25,6 @@ public:
         m_Camera.OnUpdate(deltaTime);
 
         m_TilemapEditorWindow.OnUpdate(deltaTime);
-        m_TilemapEditorWindow.TilemapComponentWindow();
         m_TilemapEditorWindow.Window();
     }
 

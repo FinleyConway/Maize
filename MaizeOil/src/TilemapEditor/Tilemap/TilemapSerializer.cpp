@@ -84,6 +84,12 @@ namespace Maize {
                 tilemapLayers.push_back(layer);
             }
         }
+		else
+		{
+			std::cout << "Could not find or open" << " " << filePath << std::endl;
+		}
+
+		input.close();
 
         return tilemapLayers;
     }

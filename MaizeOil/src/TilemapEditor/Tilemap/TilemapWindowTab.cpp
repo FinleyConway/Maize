@@ -25,6 +25,8 @@ namespace Maize {
 
 	void TilemapWindowTab::OnUpdate(float deltaTime)
 	{
+		if (m_TilemapLayers.empty()) return;
+
 		TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
 		PointF mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
 		Point gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
@@ -133,7 +135,19 @@ namespace Maize {
 
     void TilemapWindowTab::TilemapLayers()
     {
-        if (ImGui::BeginCombo("##Layers", m_TilemapLayers[m_SelectedTilemapLayer].GetName().c_str()))
+		ImGui::BeginDisabled(m_TilemapLayers.empty());
+		std::string previewValue;
+
+		if (m_TilemapLayers.empty())
+		{
+			previewValue = "No Layers";
+		}
+		else
+		{
+			previewValue = m_TilemapLayers[m_SelectedTilemapLayer].GetName();
+		}
+
+        if (ImGui::BeginCombo("##Layers", previewValue.c_str()))
         {
             for (uint32_t i = 0; i < m_TilemapLayers.size(); i++)
             {
@@ -148,6 +162,8 @@ namespace Maize {
 
             ImGui::EndCombo();
         }
+
+		ImGui::EndDisabled();
     }
 
     void TilemapWindowTab::SelectTileset()

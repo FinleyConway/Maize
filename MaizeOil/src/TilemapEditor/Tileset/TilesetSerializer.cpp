@@ -97,8 +97,13 @@ namespace Maize {
                 tilesets.push_back(tileset);
             }
 
-            input.close();
         }
+		else
+		{
+			std::cout << "Could not find or open" << " " << filePath << std::endl;
+		}
+
+		input.close();
 
         return tilesets;
     }

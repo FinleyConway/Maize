@@ -22,7 +22,6 @@ add_executable(MaizeOil src/MaizeOilApp.cpp
         src/TilemapEditor/Tilemap/TilemapWindowTab.h
         src/TilemapEditor/Tilemap/TilemapLayer.cpp
         src/TilemapEditor/Tilemap/TilemapLayer.h
-        src/TilemapEditor/TilemapEditorWindow.cpp
         src/TilemapEditor/TilemapEditorWindow.h
         src/TilemapEditor/Tileset/Tile.h
         src/TilemapEditor/Tileset/TilesetSerializer.cpp
