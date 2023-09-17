@@ -189,7 +189,7 @@ namespace Maize {
 
         ImGui::BeginChild("Tileset", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-        const auto* texture = m_SelectedTileset->GetTexture();
+        const Texture* texture = m_SelectedTileset->GetTexture();
         int32_t tilesetSizeX = (int32_t)texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
         int32_t tilesetSizeY = (int32_t)texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
         static float scaleFactor = 4.0f;
