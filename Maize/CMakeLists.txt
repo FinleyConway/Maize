@@ -33,6 +33,10 @@ add_library(Maize STATIC src/Maize/Core/Application.cpp
         src/Maize/ImGui/ImGuiLayer.cpp
         src/Maize/ImGui/ImGuiLayer.h
         src/Maize/Renderer/Camera.h
-        src/Maize/Renderer/EditorCamera.h)
+        src/Maize/Renderer/EditorCamera.h
+        src/Maize/Utils/FileDialog.cpp
+        src/Maize/Utils/FileDialog.h
+        src/Maize/Utils/SystemNotify.cpp
+        src/Maize/Utils/SystemNotify.h)
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
