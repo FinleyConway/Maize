@@ -8,11 +8,8 @@
 
 #include "Maize/Renderer/EditorCamera.h"
 
-#include "Maize/Math/Point.h"
-#include "Maize/Math/PointF.h"
-#include "Maize/Math/Rect.h"
-#include "Maize/Math/RectF.h"
-
-#include "Maize/Renderer/Colour.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Renderer/Sprite.h"
+
+#include "Maize/Utils/FileDialog.h"
+#include "Maize/Utils/SystemNotify.h"

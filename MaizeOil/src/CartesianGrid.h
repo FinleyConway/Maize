@@ -2,6 +2,7 @@
 
 #include <Maize.h>
 #include <array>
+#include <cmath>
 
 namespace Maize {
 
@@ -22,28 +23,28 @@ namespace Maize {
     class CartesianGrid
     {
     public:
-        explicit CartesianGrid(Point defaultSize = Point(0, 0), int32_t resizeIncrements = 15);
+        explicit CartesianGrid(sf::Vector2u defaultSize = sf::Vector2u(0, 0), int32_t resizeIncrements = 15);
 
-        Point GetSize() const { return m_CurrentSize; }
+        sf::Vector2u GetSize() const { return m_CurrentSize; }
         const std::vector<TilemapTile>& GetGrid() const { return m_Grid; }
 
-        void SetTile(Point position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize = true);
-        void RemoveTile(Point position);
-        const TilemapTile& GetTile(Point position) const;
-        std::vector<std::pair<const TilemapTile&, Point>> GetSurroundingTiles(Point position) const;
-        bool HasTile(Point position) const;
-        bool IsValidPosition(Point position) const;
+        void SetTile(sf::Vector2i position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize = true);
+        void RemoveTile(sf::Vector2i position);
+        const TilemapTile& GetTile(sf::Vector2i position) const;
+        std::vector<std::pair<const TilemapTile&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i position) const;
+        bool HasTile(sf::Vector2i position) const;
+        bool IsValidPosition(sf::Vector2i position) const;
 
-        static PointF ConvertGridToScreen(Point gridPosition, int32_t cellSizeX, int32_t cellSizeY);
-        static Point ConvertScreenToGrid(PointF mousePosition, int32_t cellSizeX, int32_t cellSizeY);
+        static sf::Vector2f ConvertGridToScreen(sf::Vector2i gridPosition, int32_t cellSizeX, int32_t cellSizeY);
+        static sf::Vector2i ConvertScreenToGrid(sf::Vector2f mousePosition, int32_t cellSizeX, int32_t cellSizeY);
 
     private:
-        void ResizeGrid(Point newTilePosition);
+        void ResizeGrid(sf::Vector2i newTilePosition);
 
         static const TilemapTile sc_InvalidTile;
 
         std::vector<TilemapTile> m_Grid;
-        Point m_CurrentSize;
+        sf::Vector2u m_CurrentSize;
         int32_t m_ResizeIncrements;
     };
 

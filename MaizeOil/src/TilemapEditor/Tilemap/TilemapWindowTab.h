@@ -20,7 +20,7 @@ namespace Maize {
             // very cursed and will make it better performant
             for (auto &mapLayers: m_TilemapLayers)
             {
-                Point gridSize = mapLayers.GetGridSize();
+                sf::Vector2u gridSize = mapLayers.GetGridSize();
                 int32_t halfWidth = gridSize.x / 2;
                 int32_t halfHeight = gridSize.y / 2;
 
@@ -28,7 +28,7 @@ namespace Maize {
                 {
                     for (int32_t x = -halfWidth; x < halfWidth; x++)
                     {
-                        const TilemapTile &tilemapTile = mapLayers.GetTile(Point(x, y));
+                        const TilemapTile &tilemapTile = mapLayers.GetTile(sf::Vector2i(x, y));
 
                         if (tilemapTile.IsValid())
                         {
@@ -38,8 +38,8 @@ namespace Maize {
                             if (tile == nullptr) continue;
 
                             Sprite &sprite = tile->GetSprite();
-                            PointF screenPosition =
-                                    CartesianGrid::ConvertGridToScreen(Point(x, y), m_CellSizeX, m_CellSizeY) +
+                            sf::Vector2f screenPosition =
+                                    CartesianGrid::ConvertGridToScreen(sf::Vector2i(x, y), m_CellSizeX, m_CellSizeY) +
                                     sprite.GetPivot();
 
                             sprite.SetPosition(screenPosition);
@@ -72,7 +72,7 @@ namespace Maize {
         int32_t& m_CellSizeX;
         int32_t& m_CellSizeY;
 
-        PointF m_MousePosition;
+        sf::Vector2f m_MousePosition;
         bool m_MouseLeftHeld = false;
 
         Tileset* m_SelectedTileset = nullptr;

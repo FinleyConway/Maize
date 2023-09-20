@@ -61,7 +61,7 @@ namespace Maize {
                 for (Layer* layer : m_LayerStack)
                     layer->OnUpdate(deltaTime);
 
-                m_Window.Clear(Colour::grey);
+                m_Window.Clear(sf::Color::Black);
 
                 for (Layer* layer : m_LayerStack)
                     layer->OnRender();

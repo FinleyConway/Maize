@@ -16,20 +16,10 @@ add_library(Maize STATIC src/Maize/Core/Application.cpp
         src/Maize/Events/KeyEvents.h
         src/Maize/Events/MouseEvents.h
         src/Maize/Core/Input.h
-        src/Maize/Math/Point.cpp
-        src/Maize/Math/Point.h
-        src/Maize/Math/PointF.cpp
-        src/Maize/Math/PointF.h
-        src/Maize/Math/Rect.cpp
-        src/Maize/Math/Rect.h
-        src/Maize/Math/RectF.cpp
-        src/Maize/Math/RectF.h
         src/Maize/Renderer/Renderer.cpp
         src/Maize/Renderer/Renderer.h
         src/Maize/Renderer/Texture.h
         src/Maize/Renderer/Sprite.h
-        src/Maize/Renderer/Colour.cpp
-        src/Maize/Renderer/Colour.h
         src/Maize/ImGui/ImGuiLayer.cpp
         src/Maize/ImGui/ImGuiLayer.h
         src/Maize/Renderer/Camera.h

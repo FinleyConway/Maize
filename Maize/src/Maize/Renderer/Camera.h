@@ -4,8 +4,6 @@
 
 #include "Maize/Core/Application.h"
 #include "Maize/Events/Event.h"
-#include "Maize/Math/PointF.h"
-#include "Maize/Math/Point.h"
 
 namespace Maize {
 
@@ -21,13 +19,13 @@ namespace Maize {
             m_Camera.setCenter(0, 0);
         }
 
-        static PointF ScreenToWorld(Point screenPosition)
+        static sf::Vector2f ScreenToWorld(sf::Vector2i screenPosition)
         {
             const sf::RenderWindow& window = Application::Get().GetWindow();
             return window.mapPixelToCoords(screenPosition);
         }
 
-        static Point WorldToScreen(PointF worldPosition)
+        static sf::Vector2i WorldToScreen(sf::Vector2f worldPosition)
         {
             const sf::RenderWindow& window = Application::Get().GetWindow();
             return window.mapCoordsToPixel(worldPosition);

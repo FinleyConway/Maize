@@ -13,7 +13,7 @@ namespace Maize {
             tilemapLayer["LayerName"] = layer.GetName();
 
             const CartesianGrid& grid = layer.GetGrid();
-            Point gridSize = grid.GetSize();
+            sf::Vector2u gridSize = grid.GetSize();
             int32_t halfWidth = gridSize.x / 2;
             int32_t halfHeight = gridSize.y / 2;
 
@@ -23,7 +23,7 @@ namespace Maize {
             {
                 for (int32_t x = -halfWidth; x < halfWidth; ++x)
                 {
-                    const TilemapTile& tile = layer.GetTile(Point(x, y));
+                    const TilemapTile& tile = layer.GetTile(sf::Vector2i(x, y));
 
                     if (tile.IsValid())
                     {
@@ -71,7 +71,7 @@ namespace Maize {
                 {
                     TilemapTile tile;
 
-                    Point position = Point(serialTile["PositionX"], serialTile["PositionY"]);
+                    sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
                     tile.index = serialTile["TileIndex"];
                     tile.tilesetID = serialTile["TilesetID"];
                     tile.flipX = serialTile["FlipX"];

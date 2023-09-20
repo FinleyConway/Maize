@@ -4,14 +4,14 @@ namespace Maize {
 
     const TilemapTile CartesianGrid::sc_InvalidTile = TilemapTile();
 
-    CartesianGrid::CartesianGrid(Point defaultSize, int32_t resizeIncrements) :
+    CartesianGrid::CartesianGrid(sf::Vector2u defaultSize, int32_t resizeIncrements) :
             m_Grid(defaultSize.x * defaultSize.y),
             m_CurrentSize(defaultSize),
             m_ResizeIncrements(resizeIncrements)
     {
     }
 
-    void CartesianGrid::SetTile(Point position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize)
+    void CartesianGrid::SetTile(sf::Vector2i position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize)
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -36,7 +36,7 @@ namespace Maize {
         }
     }
 
-    void CartesianGrid::RemoveTile(Point position)
+    void CartesianGrid::RemoveTile(sf::Vector2i position)
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -49,7 +49,7 @@ namespace Maize {
         }
     }
 
-    const TilemapTile& CartesianGrid::GetTile(Point position) const
+    const TilemapTile& CartesianGrid::GetTile(sf::Vector2i position) const
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -65,14 +65,14 @@ namespace Maize {
         return m_Grid[m_CurrentSize.x * adjustedY + adjustedX];
     }
 
-    std::vector<std::pair<const TilemapTile&, Point>> CartesianGrid::GetSurroundingTiles(Point initPosition) const
+    std::vector<std::pair<const TilemapTile&, sf::Vector2i>> CartesianGrid::GetSurroundingTiles(sf::Vector2i initPosition) const
     {
-        std::vector<std::pair<const TilemapTile&, Point>> surrounding;
+        std::vector<std::pair<const TilemapTile&, sf::Vector2i>> surrounding;
 
-        static std::array<Point, 8> adjacentOffsets = {
-                Point(-1, -1), Point(0, -1), Point(1, -1),
-                Point(-1,  0),                     Point(1,  0),
-                Point(-1,  1), Point(0,  1), Point(1,  1)
+        static std::array<sf::Vector2i, 8> adjacentOffsets = {
+                sf::Vector2i(-1, -1), sf::Vector2i(0, -1), sf::Vector2i(1, -1),
+                sf::Vector2i(-1,  0),                            sf::Vector2i(1,  0),
+                sf::Vector2i(-1,  1), sf::Vector2i(0,  1), sf::Vector2i(1,  1)
         };
 
         for (const auto& offset : adjacentOffsets)
@@ -80,13 +80,13 @@ namespace Maize {
             int32_t x = initPosition.x + offset.x;
             int32_t y = initPosition.y + offset.y;
 
-            surrounding.emplace_back(GetTile(Point(x, y)), Point(x, y));
+            surrounding.emplace_back(GetTile(sf::Vector2i(x, y)), sf::Vector2i(x, y));
         }
 
         return surrounding;
     }
 
-    bool CartesianGrid::HasTile(Point position) const
+    bool CartesianGrid::HasTile(sf::Vector2i position) const
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -103,7 +103,7 @@ namespace Maize {
         return m_Grid[m_CurrentSize.x * adjustedY + adjustedX].index != -1;
     }
 
-    bool CartesianGrid::IsValidPosition(Point position) const
+    bool CartesianGrid::IsValidPosition(sf::Vector2i position) const
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -119,23 +119,23 @@ namespace Maize {
         return true;
     }
 
-    Point CartesianGrid::ConvertScreenToGrid(PointF mousePosition, int32_t cellSizeX, int32_t cellSizeY)
+    sf::Vector2i CartesianGrid::ConvertScreenToGrid(sf::Vector2f mousePosition, int32_t cellSizeX, int32_t cellSizeY)
     {
-        return Point(
+        return sf::Vector2i(
                 static_cast<int32_t>(std::floor(mousePosition.x / static_cast<float>(cellSizeX))),
                 static_cast<int32_t>(std::floor(mousePosition.y / static_cast<float>(cellSizeY)))
         );
     }
 
-    PointF CartesianGrid::ConvertGridToScreen(Point gridPosition, int32_t cellSizeX, int32_t cellSizeY)
+    sf::Vector2f CartesianGrid::ConvertGridToScreen(sf::Vector2i gridPosition, int32_t cellSizeX, int32_t cellSizeY)
     {
-        return PointF(
+        return sf::Vector2f(
                 static_cast<float>(gridPosition.x) * static_cast<float>(cellSizeX),
                 static_cast<float>(gridPosition.y) * static_cast<float>(cellSizeY)
         );
     }
 
-    void CartesianGrid::ResizeGrid(Point newTilePosition)
+    void CartesianGrid::ResizeGrid(sf::Vector2i newTilePosition)
     {
         int32_t adjustedX = newTilePosition.x + m_CurrentSize.x / 2;
         int32_t adjustedY = newTilePosition.y + m_CurrentSize.y / 2;
@@ -177,7 +177,7 @@ namespace Maize {
         }
 
         m_Grid = std::move(newGrid);
-        m_CurrentSize = Point(newWidth, newHeight);
+        m_CurrentSize = sf::Vector2u(newWidth, newHeight);
     }
 
 } // Maize

@@ -4,7 +4,6 @@
 #include <SFML/Window/Mouse.hpp>
 
 #include "Maize/Core/KeyCodes.h"
-#include "Maize/Math/Point.h"
 
 namespace Maize {
 
@@ -21,7 +20,7 @@ namespace Maize {
             return sf::Mouse::isButtonPressed(static_cast<sf::Mouse::Button>(button));
         }
 
-        static Point GetMousePosition()
+        static sf::Vector2i GetMousePosition()
         {
             return sf::Mouse::getPosition(Application::Get().GetWindow());
         }

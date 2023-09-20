@@ -28,8 +28,8 @@ namespace Maize {
 		if (m_TilemapLayers.empty()) return;
 
 		TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
-		PointF mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
-		Point gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
+        sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
+        sf::Vector2i gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
 
 		if (m_MouseLeftHeld)
 		{
@@ -82,7 +82,7 @@ namespace Maize {
 
     void TilemapWindowTab::ButtonTools()
     {
-        const auto buttonSize = ImVec2(16, 16);
+        const sf::Vector2f buttonSize = sf::Vector2f(16, 16);
 
         ImGui::PushID(0);
         if (ImGui::ImageButton(*m_IconPencil, buttonSize))
@@ -168,12 +168,12 @@ namespace Maize {
 
     void TilemapWindowTab::SelectTileset()
     {
-        auto windowSize = ImGui::GetContentRegionAvail();
+        sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
         for (auto& tileset: m_Tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
-            auto buttonPos = ImGui::GetCursorScreenPos();
+            sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
             if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
             {
@@ -196,9 +196,9 @@ namespace Maize {
     {
         if (m_SelectedTileset == nullptr || !m_SelectedTileset->HasTexture()) return;
 
-        ImGui::BeginChild("Tilemap", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("Tilemap", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-        const auto* texture = m_SelectedTileset->GetTexture();
+        const Texture* texture = m_SelectedTileset->GetTexture();
         int32_t tilesetSizeX = texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
         int32_t tilesetSizeY = texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
         static float scaleFactor = 4.0f;
@@ -228,12 +228,12 @@ namespace Maize {
 
         if (ImGui::IsMouseDragging(2, 0.0f))
         {
-            ImVec2 delta = ImGui::GetIO().MouseDelta;
+            sf::Vector2f delta = ImGui::GetIO().MouseDelta;
             scrollX -= delta.x;
             scrollY -= delta.y;
         }
 
-        auto imagePos = ImGui::GetCursorScreenPos();
+        sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
 
         for (int32_t x = 0; x < tilesetSizeX; x++)
@@ -241,7 +241,7 @@ namespace Maize {
             for (int32_t y = 0; y < tilesetSizeY; y++)
             {
                 int32_t index = x + y * tilesetSizeX;
-                auto* tile = m_SelectedTileset->GetTile(index);
+                Tile* tile = m_SelectedTileset->GetTile(index);
 
                 if (tile == nullptr) continue;
 
@@ -249,7 +249,7 @@ namespace Maize {
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                auto buttonSize = ImVec2(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
+                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state

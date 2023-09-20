@@ -44,7 +44,7 @@ namespace Maize {
 
                 int32_t tileIndex = x + y * numTilesX;
 
-                Sprite sprite(Rect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
+                Sprite sprite(sf::IntRect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), sf::Vector2f(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
                 m_Tiles[tileIndex] = Tile(m_ID, tileIndex, std::move(sprite), false);
             }
         }
@@ -70,7 +70,7 @@ namespace Maize {
                 {
                     int32_t tileIndex = x + y * numTilesX;
 
-                    Sprite sprite(Rect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), PointF(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
+                    Sprite sprite(sf::IntRect(regionX, regionY, m_TileSizeX, m_TileSizeY), m_Texture.get(), sf::Vector2f(static_cast<float>(m_TileSizeX) / 2.0f, static_cast<float>(m_TileSizeY) / 2.0f));
                     m_Tiles[tileIndex] = Tile(m_ID, tileIndex, std::move(sprite), true);
                 }
             }

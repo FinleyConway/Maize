@@ -2,7 +2,7 @@
 
 namespace Maize {
 
-    void TilemapLayer::PlaceTile(const TilemapTile& tile, Point gridPosition, bool flipX, bool flipY, float rotation, bool resize)
+    void TilemapLayer::PlaceTile(const TilemapTile& tile, sf::Vector2i gridPosition, bool flipX, bool flipY, float rotation, bool resize)
     {
         if (tile.IsValid())
         {
@@ -10,7 +10,7 @@ namespace Maize {
         }
     }
 
-    void TilemapLayer::RemoveTile(Point gridPosition)
+    void TilemapLayer::RemoveTile(sf::Vector2i gridPosition)
     {
         if (m_Grid.HasTile(gridPosition))
         {
@@ -18,7 +18,7 @@ namespace Maize {
         }
     }
 
-    void TilemapLayer::GetTileInfo(Point gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation) const
+    void TilemapLayer::GetTileInfo(sf::Vector2i gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation) const
     {
         if (m_Grid.HasTile(gridPosition))
         {
@@ -31,12 +31,12 @@ namespace Maize {
         }
     }
 
-    const TilemapTile& TilemapLayer::GetTile(Point gridPosition) const
+    const TilemapTile& TilemapLayer::GetTile(sf::Vector2i gridPosition) const
     {
         return m_Grid.GetTile(gridPosition);
     }
 
-    void TilemapLayer::FillTiles(Point gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile)
+    void TilemapLayer::FillTiles(sf::Vector2i gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile)
     {
         if (!m_Grid.IsValidPosition(gridPosition)) return;
 

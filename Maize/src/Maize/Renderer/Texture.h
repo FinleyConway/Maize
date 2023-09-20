@@ -17,14 +17,12 @@ namespace Maize {
 
             if (!texture->m_Texture.loadFromFile(filePath))
             {
-                texture->m_IsValid = false;
+                return nullptr;
             }
             else
             {
-                texture->m_IsValid = true;
+                return texture;
             }
-
-            return texture;
         }
 
         bool IsRegionTransparent(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -50,7 +48,6 @@ namespace Maize {
             return true;
         }
 
-        bool IsValid() const { return m_IsValid; }
         uint32_t GetWidth() const { return m_Texture.getSize().x; }
         uint32_t GetHeight() const { return m_Texture.getSize().y; }
 
@@ -59,7 +56,6 @@ namespace Maize {
 
     private:
         sf::Texture m_Texture;
-        bool m_IsValid = false;
     };
 
 } // Maize

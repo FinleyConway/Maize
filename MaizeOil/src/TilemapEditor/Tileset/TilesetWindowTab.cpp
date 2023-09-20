@@ -54,7 +54,7 @@ namespace Maize {
     Tileset& TilesetWindowTab::AddTileset()
     {
         m_Tilesets.emplace_back();
-        auto& tileset = m_Tilesets.back();
+        Tileset& tileset = m_Tilesets.back();
         tileset.SetID(CreateID()); // temp
         m_SelectedTileset = &tileset;
 
@@ -79,12 +79,12 @@ namespace Maize {
 
     void TilesetWindowTab::SelectTileset()
     {
-        auto windowSize = ImGui::GetContentRegionAvail();
+        sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
         for (auto &tileset: m_Tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
-            auto buttonPos = ImGui::GetCursorScreenPos();
+            sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
             if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
             {
@@ -139,11 +139,11 @@ namespace Maize {
 
             if (ImGui::Button("Select Texture"))
             {
-                auto file = pfd::open_file("Choose Tileset", "Assets", {"Tilesets (.png)", "*.png"}).result();
+                std::string file = FileDialog::OpenFile({ {"Tilesets (.png)", "*.png"} });
 
                 if (!file.empty())
                 {
-                    m_SelectedTileset->SetTexture(file[0]);
+                    m_SelectedTileset->SetTexture(file);
                     ImGui::OpenPopup("AutoTilesPopup");
                 }
             }
@@ -216,7 +216,7 @@ namespace Maize {
             scrollY -= delta.y;
         }
 
-        auto imagePos = ImGui::GetCursorScreenPos();
+        sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
 
         // loop through tiles and display them
@@ -225,7 +225,7 @@ namespace Maize {
             for (int32_t y = 0; y < tilesetSizeY; y++)
             {
                 int32_t index = x + y * tilesetSizeX;
-                auto* tile = m_SelectedTileset->GetTile(index);
+                Tile* tile = m_SelectedTileset->GetTile(index);
 
                 if (tile == nullptr) continue;
 
@@ -233,7 +233,7 @@ namespace Maize {
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                auto buttonSize = ImVec2(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
+                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state

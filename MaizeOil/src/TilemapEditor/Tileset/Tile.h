@@ -21,7 +21,6 @@ namespace Maize {
         int32_t GetIndex() const { return m_Index; }
 
         int32_t GetTilesetID() const { return m_TilesetID; }
-        Rect ImageRect() const { return m_Sprite.GetTextureRect(); }
         Sprite& GetSprite() { return m_Sprite; }
 
         bool IsIncluded() const { return m_Included; }

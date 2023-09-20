@@ -80,7 +80,7 @@ namespace Maize {
         }
     }
 
-    void Window::Clear(Colour clearColour)
+    void Window::Clear(sf::Color clearColour)
     {
         m_Window.clear(clearColour);
     }

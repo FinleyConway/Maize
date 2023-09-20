@@ -38,8 +38,8 @@ namespace Maize {
 
         void PanMouse()
         {
-            PointF currentMousePos = Camera::ScreenToWorld(Input::GetMousePosition());
-            PointF displacement = m_InitialMousePosition - currentMousePos;
+            sf::Vector2f currentMousePos = Camera::ScreenToWorld(Input::GetMousePosition());
+            sf::Vector2f displacement = m_InitialMousePosition - currentMousePos;
             m_Camera.move(displacement);
         }
 
@@ -87,7 +87,7 @@ namespace Maize {
         }
 
         bool m_MiddleMouseButton = false;
-        PointF m_InitialMousePosition;
+        sf::Vector2f m_InitialMousePosition;
     };
 
 } // Maize
