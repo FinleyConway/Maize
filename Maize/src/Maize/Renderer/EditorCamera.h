@@ -33,7 +33,7 @@ namespace Maize {
         {
             auto& window = Application::Get().GetWindow();
 
-            window.SetView(m_Camera);
+            //window.SetView(m_Camera); // causing issues with frame buffer with tile placement
         }
 
         void PanMouse()

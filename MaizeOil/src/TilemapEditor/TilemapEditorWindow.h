@@ -36,11 +36,6 @@ namespace Maize {
             m_TilemapWindow.OnUpdate(deltaTime);
         }
 
-        void OnRender()
-        {
-            m_TilemapWindow.OnRender();
-        }
-
         void Window()
         {
             ImGui::Begin("Tilemap Editor", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);

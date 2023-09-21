@@ -13,7 +13,7 @@ namespace Maize {
         Camera()
         {
             auto& app = Application::Get();
-            const sf::RenderWindow& window = app.GetWindow();
+            const sf::RenderWindow& window = app.GetWindow().GetRenderWindow();
 
             m_Camera = window.getDefaultView();
             m_Camera.setCenter(0, 0);
@@ -21,13 +21,15 @@ namespace Maize {
 
         static sf::Vector2f ScreenToWorld(sf::Vector2i screenPosition)
         {
-            const sf::RenderWindow& window = Application::Get().GetWindow();
+            const sf::RenderWindow& window = Application::Get().GetWindow().GetRenderWindow();
+
             return window.mapPixelToCoords(screenPosition);
         }
 
         static sf::Vector2i WorldToScreen(sf::Vector2f worldPosition)
         {
-            const sf::RenderWindow& window = Application::Get().GetWindow();
+            const sf::RenderWindow& window = Application::Get().GetWindow().GetRenderWindow();
+
             return window.mapCoordsToPixel(worldPosition);
         }
 

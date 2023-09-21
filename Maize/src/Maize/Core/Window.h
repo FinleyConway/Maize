@@ -5,52 +5,58 @@
 #include <cstdint>
 #include <string>
 
+#include "Maize/Events/Event.h"
+#include "Maize/Renderer/Renderer.h"
+
 #include "Maize/Events/WindowEvents.h"
 #include "Maize/Events/MouseEvents.h"
 #include "Maize/Events/KeyEvents.h"
-#include "Maize/Events/Event.h"
 
 namespace Maize {
 
     class Window
     {
     public:
-        using EventCallBackFn = std::function<void(Event&)>;
+        using EventCallbackFn = std::function<void(Event&)>;
 
-        explicit Window(const std::string& title, uint32_t width = 1280, uint32_t height = 720);
+        explicit Window(const std::string& title, sf::Vector2u windowSize = { 1280, 720 });
+        ~Window();
 
-        const std::string& GetTitle() const { return m_WindowData.title; }
-        uint32_t GetWidth() const { return m_WindowData.width; }
-        uint32_t GetHeight() const { return m_WindowData.height; }
-        bool IsVSync() const { return m_WindowData.vSync; }
-
-        void SetEventCallback(const EventCallBackFn& callback) { m_WindowData.eventCallback = callback; }
         void SetTitle(const std::string& title);
+        const std::string& GetTitle() const { return m_WindowTitle; }
+
+        uint32_t GetWidth() const { return m_WindowSize.x; }
+        uint32_t GetHeight() const { return m_WindowSize.y; }
+        float GetAspectRatio() const { return (float)m_WindowSize.x / (float)m_WindowSize.y; }
+
         void SetVSync(bool enable);
+        bool IsVSyncEnabled() const { return m_IsVSyncEnabled; }
+
+        void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
         void SetView(const sf::View& view) { m_Window.setView(view); }
-        const sf::View& GetView() const { return m_Window.getView(); }
 
-        void PollEvent();
+        void PollEvents();
 
-        void Clear(sf::Color clearColour);
-        void Render(const sf::Drawable& drawable);
-        void Display();
+        void ToggleFullscreen();
 
-        operator sf::RenderWindow&();
+        sf::FloatRect GetViewSpace() const;
+
+        void BeginDrawing(Renderer& renderer, sf::Color clearColour = sf::Color::Black);
+        void EndDrawing(Renderer& renderer);
+
+        sf::RenderWindow& GetRenderWindow() { return m_Window; }
+
+    private:
+        void Create();
 
     private:
         sf::RenderWindow m_Window;
 
-        struct WindowData
-        {
-            std::string title;
-            uint32_t width = 0;
-            uint32_t height = 0;
-            bool vSync = false;
-            EventCallBackFn eventCallback;
-        };
-
-        WindowData m_WindowData;
+        sf::Vector2u m_WindowSize;
+        std::string m_WindowTitle;
+        bool m_IsFullscreen = false;
+        bool m_IsVSyncEnabled = false;
+        EventCallbackFn m_EventCallback;
     };
 
 } // Maize

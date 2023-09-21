@@ -22,7 +22,7 @@ namespace Maize {
 
         static sf::Vector2i GetMousePosition()
         {
-            return sf::Mouse::getPosition(Application::Get().GetWindow());
+            return sf::Mouse::getPosition(Application::Get().GetWindow().GetRenderWindow());
         }
     };
 

@@ -7,7 +7,7 @@ namespace Maize {
     void ImGuiLayer::OnAttach()
     {
         Application& app = Application::Get();
-        if (!ImGui::SFML::Init(app.GetWindow()))
+        if (!ImGui::SFML::Init(app.GetWindow().GetRenderWindow()))
         {
             std::cout << "ImGui sfml didnt init" << std::endl;
         }
@@ -33,12 +33,12 @@ namespace Maize {
 
     void ImGuiLayer::Begin(Window& window, float deltaTime) const
     {
-        ImGui::SFML::Update(window, sf::seconds(deltaTime));
+        ImGui::SFML::Update(window.GetRenderWindow(), sf::seconds(deltaTime));
     }
 
     void ImGuiLayer::End(Window& window) const
     {
-        ImGui::SFML::Render(window);
+        ImGui::SFML::Render(window.GetRenderWindow());
     }
 
 } // Maize

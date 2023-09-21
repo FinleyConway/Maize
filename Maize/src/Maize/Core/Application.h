@@ -28,6 +28,7 @@ namespace Maize {
         void PushOverlay(Layer* layer);
 
         Window& GetWindow() { return m_Window; }
+        Renderer& GetRenderer() { return m_Renderer; }
         ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
         void Close() { m_IsRunning = false; }
@@ -44,6 +45,7 @@ namespace Maize {
         static Application* s_Instance;
 
         Window m_Window;
+        Renderer m_Renderer;
 
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;

@@ -15,44 +15,6 @@ namespace Maize {
 
         void OnEvent(Event& e);
         void OnUpdate(float deltaTime);
-        void OnRender() // temp
-        {
-            // very cursed and will make it better performant
-            for (auto &mapLayers: m_TilemapLayers)
-            {
-                sf::Vector2u gridSize = mapLayers.GetGridSize();
-                int32_t halfWidth = gridSize.x / 2;
-                int32_t halfHeight = gridSize.y / 2;
-
-                for (int32_t y = -halfHeight; y < halfHeight; y++)
-                {
-                    for (int32_t x = -halfWidth; x < halfWidth; x++)
-                    {
-                        const TilemapTile &tilemapTile = mapLayers.GetTile(sf::Vector2i(x, y));
-
-                        if (tilemapTile.IsValid())
-                        {
-                            Tile *tile = Tileset::FindTileByTilesetID(m_Tilesets, tilemapTile.tilesetID,
-                                                                      tilemapTile.index);
-
-                            if (tile == nullptr) continue;
-
-                            Sprite &sprite = tile->GetSprite();
-                            sf::Vector2f screenPosition =
-                                    CartesianGrid::ConvertGridToScreen(sf::Vector2i(x, y), m_CellSizeX, m_CellSizeY) +
-                                    sprite.GetPivot();
-
-                            sprite.SetPosition(screenPosition);
-                            sprite.FlipX(tilemapTile.flipX);
-                            sprite.FlipY(tilemapTile.flipY);
-                            sprite.SetAngle(tilemapTile.rotation);
-
-                            Application::Get().GetWindow().Render(sprite);
-                        }
-                    }
-                }
-            }
-        }
         void Window();
 
     private:

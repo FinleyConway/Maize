@@ -28,11 +28,6 @@ public:
         m_TilemapEditorWindow.Window();
     }
 
-    void OnRender() override
-    {
-        m_TilemapEditorWindow.OnRender();
-    }
-
 private:
     Maize::EditorCamera m_Camera;
 

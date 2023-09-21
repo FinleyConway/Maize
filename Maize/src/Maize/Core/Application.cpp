@@ -5,7 +5,8 @@ namespace Maize {
     Application* Application::s_Instance = nullptr;
 
     Application::Application(const ApplicationSpecification &specification) :
-            m_Window(specification.name)
+            m_Window(specification.name),
+            m_Renderer(m_Window)
     {
         s_Instance = this;
 
@@ -52,7 +53,7 @@ namespace Maize {
             deltaTime = currentTime - lastFrameTime;
             lastFrameTime = currentTime;
 
-            m_Window.PollEvent();
+            m_Window.PollEvents();
 
             if (!m_Minimized)
             {
@@ -61,14 +62,12 @@ namespace Maize {
                 for (Layer* layer : m_LayerStack)
                     layer->OnUpdate(deltaTime);
 
-                m_Window.Clear(sf::Color::Black);
+                m_Window.BeginDrawing(m_Renderer);
 
-                for (Layer* layer : m_LayerStack)
-                    layer->OnRender();
-
+                m_Renderer.DrawBufferTexture(); // temp
                 m_ImGuiLayer->End(m_Window);
 
-                m_Window.Display();
+                m_Window.EndDrawing(m_Renderer);
             }
         }
     }
