@@ -15,8 +15,8 @@ namespace Maize {
             serialTileset["Name"] = tileset.GetName();
             serialTileset["FilePath"] = tileset.GetFilePath();
 
-            serialTileset["TileSizeX"] = tileset.GetTileSizeX();
-            serialTileset["TileSizeY"] = tileset.GetTileSizeY();
+            serialTileset["TileSizeX"] = tileset.GetTileSize().x;
+            serialTileset["TileSizeY"] = tileset.GetTileSize().y;
 
             nlohmann::json tilesetTiles;
 
@@ -24,8 +24,8 @@ namespace Maize {
             {
                 nlohmann::json tiles;
 
-                int32_t tilesetSizeX = tileset.GetTexture()->GetWidth() / tileset.GetTileSizeX();
-                int32_t tilesetSizeY = tileset.GetTexture()->GetHeight() / tileset.GetTileSizeY();
+                int32_t tilesetSizeX = tileset.GetTexture()->GetWidth() / tileset.GetTileSize().x;
+                int32_t tilesetSizeY = tileset.GetTexture()->GetHeight() / tileset.GetTileSize().y;
 
                 for (int32_t x = 0; x < tilesetSizeX; x++)
                 {
@@ -39,7 +39,6 @@ namespace Maize {
                         nlohmann::json tileData;
                         tileData["PositionX"] = x;
                         tileData["PositionY"] = y;
-                        tileData["IsIncluded"] = tile->IsIncluded();
                         tilesetTiles.push_back(tileData);
                     }
                 }
@@ -78,8 +77,7 @@ namespace Maize {
                 if (!path.empty())
                     tileset.SetTexture(path);
 
-                tileset.SetTileSizeX(serialTileset["TileSizeX"]);
-                tileset.SetTileSizeY(serialTileset["TileSizeY"]);
+                tileset.SetTileSize(sf::Vector2i(serialTileset["TileSizeX"], serialTileset["TileSizeY"]));
 
                 tileset.InitEmptyTiles();
 
@@ -88,11 +86,8 @@ namespace Maize {
                 {
                     int32_t x = tileData["PositionX"];
                     int32_t y = tileData["PositionY"];
-                    int32_t numTilesX = tileset.GetTexture()->GetWidth() / tileset.GetTileSizeX();
-                    int32_t index = x + y * numTilesX;
-                    Tile* tile = tileset.GetTile(index);
 
-                    tile->IsIncluded(tileData["IsIncluded"]);
+					tileset.IncludeTile(x, y);
                 }
 
                 tilesets.push_back(tileset);

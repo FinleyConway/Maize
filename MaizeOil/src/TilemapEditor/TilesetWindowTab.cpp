@@ -112,8 +112,7 @@ namespace Maize {
         const uint32_t bufferSize = 128;
         char buffer[bufferSize];
         strncpy(buffer, name.c_str(), bufferSize);
-        int32_t tileSizeX = m_SelectedTileset->GetTileSizeX();
-        int32_t tileSizeY = m_SelectedTileset->GetTileSizeY();
+		sf::Vector2i tileSize = m_SelectedTileset->GetTileSize();
 
         if (ImGui::InputInt("ID", &id, 0))
             m_SelectedTileset->SetID(std::max(id, 0));
@@ -123,11 +122,11 @@ namespace Maize {
 
         TextureSelector();
 
-        if (ImGui::InputInt("Tile Size X", &tileSizeX, 1))
-            m_SelectedTileset->SetTileSizeX(std::max(tileSizeX, 1));
+        if (ImGui::InputInt("Tile Size X", &tileSize.x, 1))
+            m_SelectedTileset->SetTileSize(sf::Vector2i(std::max(tileSize.x, 1), tileSize.y));
 
-        if (ImGui::InputInt("Tile Size Y", &tileSizeY, 1))
-            m_SelectedTileset->SetTileSizeY(std::max(tileSizeY, 1));
+        if (ImGui::InputInt("Tile Size Y", &tileSize.y, 1))
+			m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
     }
 
     void TilesetWindowTab::TextureSelector()
@@ -190,8 +189,8 @@ namespace Maize {
         ImGui::BeginChild("Tileset", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const Texture* texture = m_SelectedTileset->GetTexture();
-        int32_t tilesetSizeX = (int32_t)texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
-        int32_t tilesetSizeY = (int32_t)texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
+		sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
+
         static float scaleFactor = 4.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
         float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
@@ -220,26 +219,23 @@ namespace Maize {
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
 
         // loop through tiles and display them
-        for (int32_t x = 0; x < tilesetSizeX; x++)
+        for (int32_t x = 0; x < tilesetSize.x; x++)
         {
-            for (int32_t y = 0; y < tilesetSizeY; y++)
+            for (int32_t y = 0; y < tilesetSize.y; y++)
             {
-                int32_t index = x + y * tilesetSizeX;
-                Tile* tile = m_SelectedTileset->GetTile(index);
+                int32_t index = x + y * tilesetSize.x;
 
-                if (tile == nullptr) continue;
-
-                ImGui::PushID(tile);
+                ImGui::PushID(index);
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
+                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSize().x * scaleFactor, m_SelectedTileset->GetTileSize().y * scaleFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, tile->IsIncluded() ? 0.0f : 0.65f));
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, m_SelectedTileset->HasTile(index) ? 0.0f : 0.65f));
                 ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.35f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, tile->IsIncluded() ? 0.45f : 0.9f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.0f, m_SelectedTileset->HasTile(index) ? 0.45f : 0.9f));
 
                 // tell the user more information about each tile
                 if (ImGui::IsItemHovered())
@@ -250,8 +246,7 @@ namespace Maize {
                 // toggle tile to be a part of atlas
                 if (ImGui::Button("##Select", buttonSize))
                 {
-                    tile->IsIncluded(!tile->IsIncluded());
-                    tile->SetIndex(index);
+					m_SelectedTileset->IncludeTile(x, y);
                 }
 
                 ImGui::PopStyleColor(3);

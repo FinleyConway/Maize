@@ -7,7 +7,6 @@
 #include "Maize/Core/Input.h"
 
 #include "Maize/Renderer/EditorCamera.h"
-
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Renderer/Sprite.h"

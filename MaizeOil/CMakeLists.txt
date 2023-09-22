@@ -12,19 +12,11 @@ file(COPY ${SAVES_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) #temp
 
 add_executable(MaizeOil src/MaizeOilApp.cpp
         src/LevelEditor.h
-        ../Maize/src/Maize/Tilemap/CartesianGrid.cpp
-        ../Maize/src/Maize/Tilemap/CartesianGrid.h
         src/TilemapEditor/TilesetWindowTab.cpp
         src/TilemapEditor/TilesetWindowTab.h
         src/TilemapEditor/TilemapWindowTab.cpp
         src/TilemapEditor/TilemapWindowTab.h
-        ../Maize/src/Maize/Tilemap/TilemapLayer.cpp
-        ../Maize/src/Maize/Tilemap/TilemapLayer.h
-        src/TilemapEditor/TilemapEditorWindow.h
-        ../Maize/src/Maize/Tilemap/TilesetSerializer.cpp
-        ../Maize/src/Maize/Tilemap/TilesetSerializer.h
-        ../Maize/src/Maize/Tilemap/TilemapSerializer.cpp
-        ../Maize/src/Maize/Tilemap/TilemapSerializer.h)
+        src/TilemapEditor/TilemapEditorWindow.h)
 
 target_link_libraries(MaizeOil PRIVATE Maize)
 

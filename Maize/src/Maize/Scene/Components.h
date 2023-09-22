@@ -4,6 +4,10 @@
 #include "Maize/Tilemap/Tileset.h"
 #include "Maize/Renderer/Sprite.h"
 
+/*
+ * Backend components
+*/
+
 namespace Maize {
 
 	struct TransformComponent
@@ -28,6 +32,15 @@ namespace Maize {
 		int32_t tileSizeY = 8;
 	};
 
+	struct RigidbodyComponent
+	{
+		enum class BodyType { Static = 0, Kinematic, Dynamic };
+
+		BodyType type = BodyType::Static;
+		bool fixedRotation = false;
+		void* body = nullptr;
+	};
+
 	struct TilemapColliderComponent
 	{
 
@@ -35,17 +48,41 @@ namespace Maize {
 
 	struct BoxColliderComponent
 	{
+		sf::Vector2f offset;
+		sf::Vector2f size = sf::Vector2f(0.5f, 0.5f);
 
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
 	};
 
 	struct CircleColliderComponent
 	{
+		sf::Vector2f offset;
+		float radius = 0.5f;
 
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
 	};
 
 	struct CapsuleColliderComponent
 	{
+		sf::Vector2f offset;
+		sf::Vector2f size = sf::Vector2f(0.5f, 1.0f);
 
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
 	};
 
 } // Maize

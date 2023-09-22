@@ -5,6 +5,8 @@
 
 namespace Maize {
 
+	using TileIndex = int32_t;
+
 	class Tileset
 	{
 	public:
@@ -22,34 +24,33 @@ namespace Maize {
 		const Texture* GetTexture() const { return m_Texture.get(); }
 		bool HasTexture() const { return m_HasTexture; }
 
-		void SetTileSizeX(int32_t newSize) { m_TileSizeX = newSize; }
-		int32_t GetTileSizeX() const { return m_TileSizeX; }
-
-		void SetTileSizeY(int32_t newSize) { m_TileSizeY = newSize; }
-		int32_t GetTileSizeY() const { return m_TileSizeY; }
+		void SetTileSize(sf::Vector2i newTileSize) { m_TileSize = newTileSize; }
+		sf::Vector2i GetTileSize() const { return m_TileSize; }
 
 		void InitEmptyTiles();
-		void Clear() { m_Tiles.clear(); }
-
 		void AutoSetTiles(bool includeTransparent);
+		void IncludeTile(int32_t x, int32_t y);
 
 		Tile* GetTile(int32_t index);
 		const Tile* GetTile(int32_t index) const;
 
+		bool HasTile(int32_t index) const;
+
+		void Clear() { m_Tiles.clear(); }
+
 		static Tile* FindTileByTilesetID(std::vector<Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex);
 
 	private:
-		int32_t m_ID = 0;
+		int32_t m_ID = -1;
 		std::string m_Name;
 		std::string m_FilePath;
 
 		std::shared_ptr<Texture> m_Texture;
 		bool m_HasTexture = false;
 
-		int32_t m_TileSizeX = 8;
-		int32_t m_TileSizeY = 8;
+		sf::Vector2i m_TileSize = sf::Vector2i(8, 8);
 
-		std::vector<Tile> m_Tiles;
+		std::unordered_map<TileIndex, Tile> m_Tiles;
 	};
 
 } // Maize

@@ -241,8 +241,7 @@ namespace Maize {
         ImGui::BeginChild("Tilemap", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const Texture* texture = m_SelectedTileset->GetTexture();
-        int32_t tilesetSizeX = texture->GetWidth() / m_SelectedTileset->GetTileSizeX();
-        int32_t tilesetSizeY = texture->GetHeight() / m_SelectedTileset->GetTileSizeY();
+		sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
         static float scaleFactor = 4.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
         float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
@@ -278,24 +277,22 @@ namespace Maize {
         sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
 
-        for (int32_t x = 0; x < tilesetSizeX; x++)
+        for (int32_t x = 0; x < tilesetSize.x; x++)
         {
-            for (int32_t y = 0; y < tilesetSizeY; y++)
+            for (int32_t y = 0; y < tilesetSize.y; y++)
             {
-                int32_t index = x + y * tilesetSizeX;
+                int32_t index = x + y * tilesetSize.x;
                 Tile* tile = m_SelectedTileset->GetTile(index);
-
-                if (tile == nullptr) continue;
 
                 ImGui::PushID(tile);
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSizeX() * scaleFactor, m_SelectedTileset->GetTileSizeY() * scaleFactor);
+                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSize().x * scaleFactor, m_SelectedTileset->GetTileSize().y * scaleFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state
-                if (!tile->IsIncluded())
+                if (!m_SelectedTileset->HasTile(index))
                 {
                     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.65f));
                     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.0f, 0.65f));

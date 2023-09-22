@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Maize.h"
+#include <Maize.h>
 
 namespace Maize {
 

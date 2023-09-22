@@ -1,8 +1,7 @@
 project(Maize)
 
 # precompiled header
-set(PCH_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/mpch.h
-)
+set(PCH_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/mpch.h)
 add_library(PrecompiledHeader STATIC ${PCH_HEADER})
 set_target_properties(PrecompiledHeader PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -39,6 +38,14 @@ add_library(Maize STATIC
         src/Maize/Tilemap/Tile.h
         src/Maize/Tilemap/Tileset.cpp
         src/Maize/Tilemap/Tileset.h
+        src/Maize/Tilemap/TilemapLayer.h
+        src/Maize/Tilemap/TilemapLayer.cpp
+        src/Maize/Tilemap/TilemapSerializer.h
+        src/Maize/Tilemap/TilemapSerializer.cpp
+        src/Maize/Tilemap/TilesetSerializer.h
+        src/Maize/Tilemap/TilesetSerializer.cpp
+        src/Maize/Tilemap/CartesianGrid.h
+        src/Maize/Tilemap/CartesianGrid.cpp
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
