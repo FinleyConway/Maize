@@ -4,7 +4,7 @@
 
 #include "TilemapEditor/TilemapEditorWindow.h"
 
-class Sandbox : public Maize::Layer
+class LevelEditor : public Maize::Layer
 {
 public:
     void OnAttach() override

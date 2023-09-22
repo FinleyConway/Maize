@@ -11,23 +11,20 @@ file(COPY ${ASSETS_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 file(COPY ${SAVES_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) #temp
 
 add_executable(MaizeOil src/MaizeOilApp.cpp
-        src/Sandbox.h
-        src/CartesianGrid.cpp
-        src/CartesianGrid.h
-        src/TilemapEditor/Tileset/Tileset.cpp
-        src/TilemapEditor/Tileset/Tileset.h
-        src/TilemapEditor/Tileset/TilesetWindowTab.cpp
-        src/TilemapEditor/Tileset/TilesetWindowTab.h
-        src/TilemapEditor/Tilemap/TilemapWindowTab.cpp
-        src/TilemapEditor/Tilemap/TilemapWindowTab.h
-        src/TilemapEditor/Tilemap/TilemapLayer.cpp
-        src/TilemapEditor/Tilemap/TilemapLayer.h
+        src/LevelEditor.h
+        ../Maize/src/Maize/Tilemap/CartesianGrid.cpp
+        ../Maize/src/Maize/Tilemap/CartesianGrid.h
+        src/TilemapEditor/TilesetWindowTab.cpp
+        src/TilemapEditor/TilesetWindowTab.h
+        src/TilemapEditor/TilemapWindowTab.cpp
+        src/TilemapEditor/TilemapWindowTab.h
+        ../Maize/src/Maize/Tilemap/TilemapLayer.cpp
+        ../Maize/src/Maize/Tilemap/TilemapLayer.h
         src/TilemapEditor/TilemapEditorWindow.h
-        src/TilemapEditor/Tileset/Tile.h
-        src/TilemapEditor/Tileset/TilesetSerializer.cpp
-        src/TilemapEditor/Tileset/TilesetSerializer.h
-        src/TilemapEditor/Tilemap/TilemapSerializer.cpp
-        src/TilemapEditor/Tilemap/TilemapSerializer.h)
+        ../Maize/src/Maize/Tilemap/TilesetSerializer.cpp
+        ../Maize/src/Maize/Tilemap/TilesetSerializer.h
+        ../Maize/src/Maize/Tilemap/TilemapSerializer.cpp
+        ../Maize/src/Maize/Tilemap/TilemapSerializer.h)
 
 target_link_libraries(MaizeOil PRIVATE Maize)
 

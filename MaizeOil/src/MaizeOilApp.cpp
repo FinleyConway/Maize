@@ -1,6 +1,6 @@
 #include <Maize/Core/EntryPoint.h>
 
-#include "Sandbox.h"
+#include "LevelEditor.h"
 
 namespace Maize {
 
@@ -9,7 +9,7 @@ namespace Maize {
     public:
         explicit MaizeOil(const ApplicationSpecification& specification) : Application(specification)
         {
-            PushLayer(new Sandbox());
+            PushLayer(new LevelEditor());
         }
     };
 

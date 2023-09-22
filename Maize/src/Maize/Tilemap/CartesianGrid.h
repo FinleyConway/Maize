@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Maize.h>
-
 namespace Maize {
 
     struct TilemapTile
@@ -21,9 +19,9 @@ namespace Maize {
     class CartesianGrid
     {
     public:
-        explicit CartesianGrid(sf::Vector2u defaultSize = sf::Vector2u(0, 0), int32_t resizeIncrements = 15);
+        explicit CartesianGrid(sf::Vector2i defaultSize = sf::Vector2i(0, 0), int32_t resizeIncrements = 15);
 
-        sf::Vector2u GetSize() const { return m_CurrentSize; }
+        sf::Vector2i GetSize() const { return m_CurrentSize; }
         const std::vector<TilemapTile>& GetGrid() const { return m_Grid; }
 
         void SetTile(sf::Vector2i position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize = true);
@@ -42,7 +40,7 @@ namespace Maize {
         static const TilemapTile sc_InvalidTile;
 
         std::vector<TilemapTile> m_Grid;
-        sf::Vector2u m_CurrentSize;
+        sf::Vector2i m_CurrentSize;
         int32_t m_ResizeIncrements;
     };
 

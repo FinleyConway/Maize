@@ -1,9 +1,8 @@
 #pragma once
 
-#include <fstream>
 #include <nlohmann/json.hpp>
 
-#include "TilemapLayer.h"
+#include "Maize/Tilemap/TilemapLayer.h"
 
 namespace Maize {
 

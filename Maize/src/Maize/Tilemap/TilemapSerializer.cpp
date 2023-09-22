@@ -1,4 +1,4 @@
-
+#include "mpch.h"
 #include "TilemapSerializer.h"
 
 namespace Maize {
@@ -13,7 +13,7 @@ namespace Maize {
             tilemapLayer["LayerName"] = layer.GetName();
 
             const CartesianGrid& grid = layer.GetGrid();
-            sf::Vector2u gridSize = grid.GetSize();
+            sf::Vector2i gridSize = grid.GetSize();
             int32_t halfWidth = gridSize.x / 2;
             int32_t halfHeight = gridSize.y / 2;
 

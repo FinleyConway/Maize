@@ -1,7 +1,8 @@
 project(Maize)
 
 # precompiled header
-set(PCH_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/mpch.h)
+set(PCH_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/mpch.h
+)
 add_library(PrecompiledHeader STATIC ${PCH_HEADER})
 set_target_properties(PrecompiledHeader PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -34,6 +35,10 @@ add_library(Maize STATIC
         src/Maize/Utils/FileDialog.h
         src/Maize/Utils/SystemNotify.cpp
         src/Maize/Utils/SystemNotify.h
+        src/Maize/Scene/Components.h
+        src/Maize/Tilemap/Tile.h
+        src/Maize/Tilemap/Tileset.cpp
+        src/Maize/Tilemap/Tileset.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

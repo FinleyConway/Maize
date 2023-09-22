@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Maize.h>
-
-#include "../../CartesianGrid.h"
+#include "Maize/Tilemap/CartesianGrid.h"
 
 namespace Maize {
 
@@ -10,7 +8,7 @@ namespace Maize {
     {
     public:
         const CartesianGrid& GetGrid() const { return m_Grid; }
-        sf::Vector2u GetGridSize() const { return m_Grid.GetSize(); }
+        sf::Vector2i GetGridSize() const { return m_Grid.GetSize(); }
 
         void SetName(const std::string& name) { m_Name = name; }
         const std::string& GetName() const { return m_Name; }

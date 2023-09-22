@@ -1,3 +1,4 @@
+#include "mpch.h"
 #include "TilemapLayer.h"
 
 namespace Maize {

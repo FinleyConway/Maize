@@ -1,9 +1,8 @@
 #pragma once
 
-#include <fstream>
 #include <nlohmann/json.hpp>
 
-#include "Tileset.h"
+#include "Maize/Tilemap/Tileset.h"
 
 namespace Maize {
 

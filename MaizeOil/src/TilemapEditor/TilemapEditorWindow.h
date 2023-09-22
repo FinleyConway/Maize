@@ -1,20 +1,11 @@
 #pragma once
 
-#include "Tileset/TilesetWindowTab.h"
-#include "Tilemap/TilemapWindowTab.h"
-#include "Tilemap/TilemapLayer.h"
-#include "Tileset/TilesetSerializer.h"
-#include "Tilemap/TilemapSerializer.h"
+#include <Maize.h>
+
+#include "TilesetWindowTab.h"
+#include "TilemapWindowTab.h"
 
 namespace Maize {
-
-	struct TilemapComponent
-	{
-		std::vector<TilemapLayer> layers;
-		std::vector<Tileset> tilesets;
-		int32_t tileSizeX = 8;
-		int32_t tileSizeY = 8;
-	};
 
     class TilemapEditorWindow
     {

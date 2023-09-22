@@ -58,7 +58,7 @@ namespace Maize {
         // very cursed and will make it better performant
         for (auto &mapLayers: m_TilemapLayers)
         {
-            sf::Vector2u gridSize = mapLayers.GetGridSize();
+            sf::Vector2i gridSize = mapLayers.GetGridSize();
             int32_t halfWidth = gridSize.x / 2;
             int32_t halfHeight = gridSize.y / 2;
 

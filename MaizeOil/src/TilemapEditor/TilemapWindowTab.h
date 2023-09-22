@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../Tileset/Tileset.h"
-#include "../../CartesianGrid.h"
-#include "TilemapLayer.h"
+#include "Maize.h"
 
 namespace Maize {
 

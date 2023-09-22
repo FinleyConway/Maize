@@ -1,10 +1,11 @@
+#include "mpch.h"
 #include "CartesianGrid.h"
 
 namespace Maize {
 
     const TilemapTile CartesianGrid::sc_InvalidTile = TilemapTile();
 
-    CartesianGrid::CartesianGrid(sf::Vector2u defaultSize, int32_t resizeIncrements) :
+    CartesianGrid::CartesianGrid(sf::Vector2i defaultSize, int32_t resizeIncrements) :
             m_Grid(defaultSize.x * defaultSize.y),
             m_CurrentSize(defaultSize),
             m_ResizeIncrements(resizeIncrements)
@@ -177,7 +178,7 @@ namespace Maize {
         }
 
         m_Grid = std::move(newGrid);
-        m_CurrentSize = sf::Vector2u(newWidth, newHeight);
+        m_CurrentSize = sf::Vector2i(newWidth, newHeight);
     }
 
 } // Maize
