@@ -2,8 +2,6 @@
 
 #include <Maize.h>
 
-#include <utility>
-
 namespace Maize {
 
     class Tile

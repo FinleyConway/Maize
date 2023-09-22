@@ -1,4 +1,4 @@
-
+#include "mpch.h"
 #include "SystemNotify.h"
 
 namespace Maize {

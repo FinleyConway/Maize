@@ -1,4 +1,5 @@
-#include "Renderer.h"
+#include "mpch.h"
+#include "Maize/Renderer/Renderer.h"
 #include "Maize/Core/Window.h"
 
 namespace Maize {

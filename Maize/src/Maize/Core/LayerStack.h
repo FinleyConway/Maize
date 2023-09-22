@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <cstdint>
-#include <algorithm>
-
 #include "Maize/Core/Layer.h"
 
 namespace Maize {

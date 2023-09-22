@@ -1,3 +1,4 @@
+#include "mpch.h"
 #include "Maize/Core/Application.h"
 
 namespace Maize {

@@ -2,7 +2,6 @@
 
 #include <imgui.h>
 #include <imgui-SFML.h>
-#include <iostream>
 
 #include "Maize/Core/Window.h"
 #include "Maize/Core/Layer.h"

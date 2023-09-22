@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "Maize/Events/Event.h"
 #include "Maize/Core/KeyCodes.h"
 

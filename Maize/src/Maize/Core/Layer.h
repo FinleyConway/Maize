@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include "Maize/Events/Event.h"
 
 namespace Maize {

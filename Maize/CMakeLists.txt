@@ -1,6 +1,12 @@
-project(src/Maize)
+project(Maize)
 
-add_library(Maize STATIC src/Maize/Core/Application.cpp
+# precompiled header
+set(PCH_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/src/mpch.h)
+add_library(PrecompiledHeader STATIC ${PCH_HEADER})
+set_target_properties(PrecompiledHeader PROPERTIES LINKER_LANGUAGE CXX)
+
+add_library(Maize STATIC
+        src/Maize/Core/Application.cpp
         src/Maize/Core/Application.h
         src/Maize/Core/EntryPoint.h
         src/Maize.h
@@ -27,6 +33,11 @@ add_library(Maize STATIC src/Maize/Core/Application.cpp
         src/Maize/Utils/FileDialog.cpp
         src/Maize/Utils/FileDialog.h
         src/Maize/Utils/SystemNotify.cpp
-        src/Maize/Utils/SystemNotify.h)
+        src/Maize/Utils/SystemNotify.h
+)
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# Link the precompiled header target to your main project target
+target_link_libraries(Maize PUBLIC PrecompiledHeader)
+target_precompile_headers(Maize PUBLIC ${PCH_HEADER})

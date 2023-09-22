@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/View.hpp>
-
 #include "Maize/Core/Application.h"
 #include "Maize/Events/Event.h"
 

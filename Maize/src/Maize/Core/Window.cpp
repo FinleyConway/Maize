@@ -1,4 +1,6 @@
+#include "mpch.h"
 #include "Maize/Core/Window.h"
+
 #include <imgui-SFML.h>
 
 namespace Maize {

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <memory>
-
 #include "Maize/Core/Window.h"
 #include "Maize/Core/LayerStack.h"
 #include "Maize/Events/EventDispatcher.h"

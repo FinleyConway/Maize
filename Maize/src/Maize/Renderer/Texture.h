@@ -1,9 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Texture.hpp>
-#include <cstdint>
-#include <memory>
-
 namespace Maize {
 
     struct Texture

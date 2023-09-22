@@ -2,9 +2,6 @@
 
 #include <portable-file-dialogs.h>
 
-#include <string>
-#include <vector>
-
 namespace Maize {
 
     struct FileFilter

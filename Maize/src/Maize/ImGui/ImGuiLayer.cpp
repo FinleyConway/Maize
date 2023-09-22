@@ -1,5 +1,5 @@
+#include "mpch.h"
 #include "Maize/ImGui/ImGuiLayer.h"
-
 #include "Maize/Core/Application.h"
 
 namespace Maize {

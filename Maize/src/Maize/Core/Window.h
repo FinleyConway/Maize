@@ -1,10 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <functional>
-#include <cstdint>
-#include <string>
-
 #include "Maize/Events/Event.h"
 #include "Maize/Renderer/Renderer.h"
 

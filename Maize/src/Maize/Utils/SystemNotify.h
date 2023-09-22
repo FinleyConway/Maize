@@ -2,8 +2,6 @@
 
 #include <portable-file-dialogs.h>
 
-#include <string>
-
 namespace Maize {
 
     enum class NotifyNote { Info, Warning, Error };

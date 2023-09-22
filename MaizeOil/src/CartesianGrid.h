@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Maize.h>
-#include <array>
-#include <cmath>
 
 namespace Maize {
 
