@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "SystemNotify.h"
+#include "Maize/Utils/SystemNotify.h"
 
 namespace Maize {
 

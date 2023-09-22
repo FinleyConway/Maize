@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "FileDialog.h"
+#include "Maize/Utils/FileDialog.h"
 
 namespace Maize {
 

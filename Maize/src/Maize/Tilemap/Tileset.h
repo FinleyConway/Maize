@@ -45,7 +45,7 @@ namespace Maize {
 		std::string m_Name;
 		std::string m_FilePath;
 
-		std::shared_ptr<Texture> m_Texture;
+		std::shared_ptr<Texture> m_Texture; // temp, reference a pre-existing texture in the future
 		bool m_HasTexture = false;
 
 		sf::Vector2i m_TileSize = sf::Vector2i(8, 8);

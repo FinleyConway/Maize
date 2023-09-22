@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Tileset.h"
+#include "Maize/Tilemap/Tileset.h"
 
 #include "Maize/Renderer/Sprite.h"
 
@@ -32,14 +32,13 @@ namespace Maize {
 
 	void Tileset::InitEmptyTiles()
 	{
-		int32_t numTilesX = m_Texture->GetWidth() / m_TileSize.x;
-		int32_t numTilesY = m_Texture->GetHeight() / m_TileSize.y;
+		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetWidth() / m_TileSize.x, m_Texture->GetHeight() / m_TileSize.y);
 
-		for (int32_t x = 0; x < numTilesX; x++)
+		for (int32_t x = 0; x < numTiles.x; x++)
 		{
-			for (int32_t y = 0; y < numTilesY; y++)
+			for (int32_t y = 0; y < numTiles.y; y++)
 			{
-				int32_t tileIndex = x + y * numTilesX;
+				int32_t tileIndex = x + y * numTiles.x;
 
 				sf::IntRect texturePosition(x * m_TileSize.x, y * m_TileSize.y, m_TileSize.x, m_TileSize.y);
 				sf::Vector2f pivot(static_cast<float>(m_TileSize.x) / 2.0f, static_cast<float>(m_TileSize.y) / 2.0f);
@@ -51,14 +50,13 @@ namespace Maize {
 
 	void Tileset::AutoSetTiles(bool includeTransparent)
 	{
-		int32_t numTilesX = m_Texture->GetWidth() / m_TileSize.x;
-		int32_t numTilesY = m_Texture->GetHeight() / m_TileSize.y;
+		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetWidth() / m_TileSize.x, m_Texture->GetHeight() / m_TileSize.y);
 
-		for (int32_t x = 0; x < numTilesX; x++)
+		for (int32_t x = 0; x < numTiles.x; x++)
 		{
-			for (int32_t y = 0; y < numTilesY; y++)
+			for (int32_t y = 0; y < numTiles.y; y++)
 			{
-				int32_t tileIndex = x + y * numTilesX;
+				int32_t tileIndex = x + y * numTiles.x;
 
 				sf::IntRect tileRect(x * m_TileSize.x, y * m_TileSize.y, m_TileSize.x, m_TileSize.y);
 
