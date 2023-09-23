@@ -49,6 +49,13 @@ FetchContent_Declare(
         GIT_TAG 0.1.0
 )
 
+# Fetch my ecs project
+FetchContent_Declare(
+        ecs
+        GIT_REPOSITORY https://github.com/FinleyConway/EntityComponentSystem.git
+        GIT_TAG master
+)
+
 # Set SFML_DIR to point to sfml_BINARY_DIR
 set(SFML_DIR "${sfml_BINARY_DIR}")
 
@@ -63,14 +70,14 @@ option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" ON)
 FetchContent_MakeAvailable(imgui-sfml)
 FetchContent_MakeAvailable(nlohmann_json)
 FetchContent_MakeAvailable(pfd)
+FetchContent_MakeAvailable(ecs)
 
 # Add subdirectories for your projects
 add_subdirectory(Maize)
 add_subdirectory(MaizeOil)
 
-message(${pfd_SOURCE_DIR})
-
 target_include_directories(Maize PUBLIC ${pfd_SOURCE_DIR})
+target_include_directories(Maize PUBLIC ${ecs_SOURCE_DIR})
 
 # Link libraries to the Maize target
 target_link_libraries(Maize
