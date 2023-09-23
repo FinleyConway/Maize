@@ -22,7 +22,8 @@ namespace Maize {
 
     void Renderer::CreateTextures()
     {
-        for (auto& m_Texture : m_Textures) {
+        for (auto& m_Texture : m_Textures)
+        {
             m_Texture.create(m_Window.GetWidth(), m_Window.GetHeight());
             m_Texture.clear();
             m_Texture.display();
@@ -36,9 +37,6 @@ namespace Maize {
 
     void Renderer::BeginSceneDrawing()
     {
-        auto& view = m_Window.GetRenderWindow().getView();
-        m_Textures[m_CurrentTextureIndex].setView(view);
-
         m_Textures[m_CurrentTextureIndex].clear();
     }
 

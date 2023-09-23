@@ -12,18 +12,22 @@ namespace Maize {
         {
             EventDispatcher dispatcher(e);
             dispatcher.Dispatch<MouseScrolledEvent>(std::bind(&EditorCamera::OnMouseScroll, this, std::placeholders::_1));
-            dispatcher.Dispatch<MouseButtonPressedEvent>(std::bind(&EditorCamera::OnMouseButtonPressed, this, std::placeholders::_1));
-            dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&EditorCamera::OnMouseButtonReleased, this, std::placeholders::_1));
-
             dispatcher.Dispatch<WindowResizeEvent>(std::bind(&EditorCamera::OnWindowResizeEvent, this, std::placeholders::_1));
         }
 
         void OnUpdate(float deltaTime)
         {
-            if (m_MiddleMouseButton)
-            {
-                PanMouse();
-            }
+            // Camera movement using WASD keys
+            float speed = 100.0f; // Adjust the movement speed as needed
+
+            if (Input::IsKeyPressed(KeyCode::W))
+                m_Camera.move(0.0f, speed * deltaTime);
+            if (Input::IsKeyPressed(KeyCode::A))
+                m_Camera.move(speed * deltaTime, 0.0f);
+            if (Input::IsKeyPressed(KeyCode::S))
+                m_Camera.move(0.0f, -speed * deltaTime);
+            if (Input::IsKeyPressed(KeyCode::D))
+                m_Camera.move(-speed * deltaTime, 0.0f);
 
             UpdateView();
         }
@@ -31,16 +35,9 @@ namespace Maize {
     private:
         void UpdateView()
         {
-            auto& window = Application::Get().GetWindow();
+            auto& window = Application::Get().GetRenderer();
 
-            //window.SetView(m_Camera); // causing issues with frame buffer with tile placement
-        }
-
-        void PanMouse()
-        {
-            sf::Vector2f currentMousePos = Camera::ScreenToWorld(Input::GetMousePosition());
-            sf::Vector2f displacement = m_InitialMousePosition - currentMousePos;
-            m_Camera.move(displacement);
+            window.GetCurrentTexture()->setView(m_Camera);
         }
 
         void CameraZoom(int32_t offset)
@@ -57,37 +54,11 @@ namespace Maize {
             return false;
         }
 
-        bool OnMouseButtonPressed(const MouseButtonPressedEvent& e)
-        {
-            if (e.GetMouseButton() == MouseCode::Middle)
-            {
-                m_MiddleMouseButton = true;
-                m_InitialMousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
-                return true;
-            }
-
-            return false;
-        }
-
-        bool OnMouseButtonReleased(const MouseButtonReleasedEvent& e)
-        {
-            if (e.GetMouseButton() == MouseCode::Middle)
-            {
-                m_MiddleMouseButton = false;
-                return true;
-            }
-
-            return false;
-        }
-
         bool OnWindowResizeEvent(const WindowResizeEvent& e)
         {
-            m_Camera.setSize((float)e.GetWidth(), (float)e.GetHeight());
+            m_Camera.setSize(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight()));
             return false;
         }
-
-        bool m_MiddleMouseButton = false;
-        sf::Vector2f m_InitialMousePosition;
     };
 
 } // Maize
