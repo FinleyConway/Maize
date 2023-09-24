@@ -21,3 +21,4 @@
 #include "Maize/Tilemap/TilemapSerializer.h"
 
 #include "Maize/Scene/Components.h"
+#include "Maize/Scene/Systems/RenderingSystem.h"

@@ -115,7 +115,7 @@ namespace Maize {
         const uint32_t bufferSize = 128;
         char buffer[bufferSize];
         strncpy(buffer, name.c_str(), bufferSize);
-		sf::Vector2i tileSize = m_SelectedTileset->GetTileSize();
+        sf::Vector2i tileSize = m_SelectedTileset->GetTileSize();
 
         if (ImGui::InputInt("ID", &id, 0))
             m_SelectedTileset->SetID(std::max(id, 0));
@@ -129,7 +129,7 @@ namespace Maize {
             m_SelectedTileset->SetTileSize(sf::Vector2i(std::max(tileSize.x, 1), tileSize.y));
 
         if (ImGui::InputInt("Tile Size Y", &tileSize.y, 1))
-			m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
+            m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
     }
 
     void TilesetWindowTab::TextureSelector()
@@ -192,7 +192,7 @@ namespace Maize {
         ImGui::BeginChild("Tileset", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const Texture* texture = m_SelectedTileset->GetTexture();
-		sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
+        sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
 
         static float scaleFactor = 4.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
@@ -249,7 +249,7 @@ namespace Maize {
                 // toggle tile to be a part of atlas
                 if (ImGui::Button("##Select", buttonSize))
                 {
-					m_SelectedTileset->IncludeTile(x, y);
+                    m_SelectedTileset->IncludeTile(x, y);
                 }
 
                 ImGui::PopStyleColor(3);

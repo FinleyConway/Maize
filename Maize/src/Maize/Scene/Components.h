@@ -20,7 +20,7 @@ namespace Maize {
 	struct SpriteComponent
 	{
 		Sprite* sprite;
-		std::string sortingLayer;
+		std::string sortingLayer = "Default";
 		int32_t orderInLayer = 0;
 	};
 
@@ -30,6 +30,9 @@ namespace Maize {
         std::unordered_map<int32_t, Tileset> tilesets;
 		int32_t tileSizeX = 8;
 		int32_t tileSizeY = 8;
+
+        std::string sortingLayer = "Default";
+        int32_t orderInLayer = 0;
 	};
 
 	struct RigidbodyComponent

@@ -7,8 +7,13 @@
 class LevelEditor : public Maize::Layer
 {
 public:
-    void OnAttach() override
+    LevelEditor()
     {
+        auto ent = m_Reg.CreateEntity();
+        m_Reg.AddComponent<Maize::TransformComponent>(ent);
+        m_Reg.AddComponent<Maize::TilemapComponent>(ent);
+
+        m_TilemapComponent = &m_Reg.GetComponent<Maize::TilemapComponent>(ent);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -29,7 +34,10 @@ public:
     }
 
 private:
+    ECS::EntityWorld m_Reg;
+
     Maize::EditorCamera m_Camera;
 
+    Maize::TilemapComponent* m_TilemapComponent;
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
 };

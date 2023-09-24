@@ -48,6 +48,8 @@ add_library(Maize STATIC
         src/Maize/Tilemap/CartesianGrid.cpp
         src/Maize/Utils/Random.h
         src/Maize/Utils/Random.cpp
+        src/Maize/Scene/Systems/RenderingSystem.cpp
+        src/Maize/Scene/Systems/RenderingSystem.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

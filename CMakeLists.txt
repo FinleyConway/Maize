@@ -5,7 +5,7 @@ include(FetchContent)
 
 # Set C++ standard to 20
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED true)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 IF (WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "-static")

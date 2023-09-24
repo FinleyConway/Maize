@@ -17,21 +17,6 @@ namespace Maize {
             }
         }
 
-        void SetPosition(sf::Vector2f position) { m_Sprite.setPosition(position); }
-        sf::Vector2f GetPosition() const { return m_Sprite.getPosition(); }
-
-        void SetColour(sf::Color colour) { m_Sprite.setColor(colour); }
-        sf::Color GetColour() const { return m_Sprite.getColor(); }
-
-        const sf::Texture* GetTexture() const { return m_Sprite.getTexture(); }
-        const sf::IntRect& GetTextureRect() const { return m_Sprite.getTextureRect(); }
-
-        void SetPivot(sf::Vector2f pivot) { m_Sprite.setOrigin(pivot); }
-        sf::Vector2f GetPivot() const { return m_Sprite.getOrigin(); }
-
-        void SetAngle(float angle) { m_Sprite.setRotation(angle); }
-        float GetAngle() const { return m_Sprite.getRotation(); }
-
         void FlipX(bool flip)
         {
             m_FlipX = flip;
@@ -49,7 +34,19 @@ namespace Maize {
         bool IsFlippedX() const { return m_FlipX; }
         bool IsFlippedY() const { return m_FlipY; }
 
-        operator const sf::Sprite& () const { return m_Sprite; }
+        static bool IsSpriteInRect(const sf::Sprite& sprite, const sf::FloatRect& rect)
+        {
+            sf::FloatRect spriteBounds = sprite.getGlobalBounds();
+
+            if (spriteBounds.intersects(rect))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        sf::Sprite& GetSprite() { return m_Sprite; }
 
     private:
         sf::Sprite m_Sprite;

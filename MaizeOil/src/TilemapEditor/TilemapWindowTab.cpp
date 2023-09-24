@@ -23,76 +23,34 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
-	void TilemapWindowTab::OnUpdate(float deltaTime)
-	{
-		if (m_TilemapLayers.empty()) return;
+    void TilemapWindowTab::OnUpdate(float deltaTime)
+    {
+        if (m_TilemapLayers.empty()) return;
 
-		TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
+        TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
         sf::Vector2i gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
 
-		if (m_MouseLeftHeld)
-		{
-			if (m_CurrentTool == TilemapTools::Pencil)
-			{
-				currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-			}
-			else if (m_CurrentTool == TilemapTools::Erase)
-			{
-				currentLayer.RemoveTile(gridPosition);
-			}
-			else if (m_CurrentTool == TilemapTools::Picker)
-			{
-				currentLayer.GetTileInfo(gridPosition, m_SelectedTile, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-			}
-			else if (m_CurrentTool == TilemapTools::Fill)
-			{
-				currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition));
-			}
-		}
-
-        Renderer& ren = Application::Get().GetRenderer();
-
-        ren.BeginSceneDrawing();
-
-        // very cursed and will make it better performant
-        for (auto &mapLayers: m_TilemapLayers)
+        if (m_MouseLeftHeld)
         {
-            sf::Vector2i gridSize = mapLayers.GetGridSize();
-            int32_t halfWidth = gridSize.x / 2;
-            int32_t halfHeight = gridSize.y / 2;
-
-            for (int32_t y = -halfHeight; y < halfHeight; y++)
+            if (m_CurrentTool == TilemapTools::Pencil)
             {
-                for (int32_t x = -halfWidth; x < halfWidth; x++)
-                {
-                    const TilemapTile &tilemapTile = mapLayers.GetTile(sf::Vector2i(x, y));
-
-                    if (tilemapTile.IsValid())
-                    {
-                        Tile *tile = Tileset::FindTileByTilesetID(m_Tilesets, tilemapTile.tilesetID,
-                                                                  tilemapTile.index);
-
-                        if (tile == nullptr) continue;
-
-                        Sprite &sprite = tile->GetSprite();
-                        sf::Vector2f screenPosition =
-                                CartesianGrid::ConvertGridToScreen(sf::Vector2i(x, y), m_CellSizeX, m_CellSizeY) +
-                                sprite.GetPivot();
-
-                        sprite.SetPosition(screenPosition);
-                        sprite.FlipX(tilemapTile.flipX);
-                        sprite.FlipY(tilemapTile.flipY);
-                        sprite.SetAngle(tilemapTile.rotation);
-
-                        ren.Draw(sprite, ren.GetCurrentTexture());
-                    }
-                }
+                currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+            }
+            else if (m_CurrentTool == TilemapTools::Erase)
+            {
+                currentLayer.RemoveTile(gridPosition);
+            }
+            else if (m_CurrentTool == TilemapTools::Picker)
+            {
+                currentLayer.GetTileInfo(gridPosition, m_SelectedTile, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+            }
+            else if (m_CurrentTool == TilemapTools::Fill)
+            {
+                currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition));
             }
         }
-
-        ren.EndSceneDrawing();
-	}
+    }
 
     void TilemapWindowTab::Window()
     {
@@ -177,17 +135,17 @@ namespace Maize {
 
     void TilemapWindowTab::TilemapLayers()
     {
-		ImGui::BeginDisabled(m_TilemapLayers.empty());
-		std::string previewValue;
+        ImGui::BeginDisabled(m_TilemapLayers.empty());
+        std::string previewValue;
 
-		if (m_TilemapLayers.empty())
-		{
-			previewValue = "No Layers";
-		}
-		else
-		{
-			previewValue = m_TilemapLayers[m_SelectedTilemapLayer].GetName();
-		}
+        if (m_TilemapLayers.empty())
+        {
+            previewValue = "No Layers";
+        }
+        else
+        {
+            previewValue = m_TilemapLayers[m_SelectedTilemapLayer].GetName();
+        }
 
         if (ImGui::BeginCombo("##Layers", previewValue.c_str()))
         {
@@ -205,7 +163,7 @@ namespace Maize {
             ImGui::EndCombo();
         }
 
-		ImGui::EndDisabled();
+        ImGui::EndDisabled();
     }
 
     void TilemapWindowTab::SelectTileset()
@@ -241,7 +199,7 @@ namespace Maize {
         ImGui::BeginChild("Tilemap", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const Texture* texture = m_SelectedTileset->GetTexture();
-		sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
+        sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
         static float scaleFactor = 4.0f;
         float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
         float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
