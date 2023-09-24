@@ -3,11 +3,11 @@
 
 namespace Maize {
 
-    void TilesetSerializer::SerializeTileset(const std::vector<Tileset> &tilesets) const
+    void TilesetSerializer::SerializeTileset(const std::unordered_map<int32_t, Tileset>& tilesets) const
     {
         nlohmann::json serialTilesetArray;
 
-        for (const auto& tileset : tilesets)
+        for (const auto& [id, tileset] : tilesets)
         {
             nlohmann::json serialTileset;
 
@@ -55,9 +55,9 @@ namespace Maize {
         output.close();
     }
 
-    std::vector<Tileset> TilesetSerializer::DeserializeTileset(const std::string &filePath) const
+    std::unordered_map<int32_t, Tileset> TilesetSerializer::DeserializeTileset(const std::string &filePath) const
     {
-        std::vector<Tileset> tilesets;
+        std::unordered_map<int32_t, Tileset> tilesets;
 
         std::ifstream input(filePath);
 
@@ -90,7 +90,7 @@ namespace Maize {
 					tileset.IncludeTile(x, y);
                 }
 
-                tilesets.push_back(tileset);
+                tilesets[serialTileset["ID"]] = tileset;
             }
 
         }

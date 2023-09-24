@@ -38,7 +38,7 @@ namespace Maize {
 
 		void Clear() { m_Tiles.clear(); }
 
-		static Tile* FindTileByTilesetID(std::vector<Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex);
+		static Tile* FindTileByTilesetID(std::unordered_map<int32_t, Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex);
 
 	private:
 		int32_t m_ID = -1;

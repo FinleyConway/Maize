@@ -2,7 +2,7 @@
 
 namespace Maize {
 
-    TilemapWindowTab::TilemapWindowTab(std::vector<Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY) :
+    TilemapWindowTab::TilemapWindowTab(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY) :
             m_Tilesets(tilesets),
             m_TilemapLayers(tilemapLayers),
             m_CellSizeX(cellSizeX),
@@ -212,7 +212,7 @@ namespace Maize {
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
-        for (auto& tileset: m_Tilesets)
+        for (auto& [id, tileset]: m_Tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();

@@ -2,7 +2,7 @@
 
 namespace Maize {
 
-    TilesetWindowTab::TilesetWindowTab(std::vector<Tileset>& tilesets) : m_Tilesets(tilesets)
+    TilesetWindowTab::TilesetWindowTab(std::unordered_map<int32_t, Tileset>& tilesets) : m_Tilesets(tilesets)
     {
         m_IconAdd = Texture::Create("Resources/Icons/plus.png");
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
@@ -53,9 +53,12 @@ namespace Maize {
 
     Tileset& TilesetWindowTab::AddTileset()
     {
-        m_Tilesets.emplace_back();
-        Tileset& tileset = m_Tilesets.back();
-        tileset.SetID(CreateID()); // temp
+        int32_t id = CreateID();
+
+        m_Tilesets.try_emplace(id);
+
+        Tileset& tileset = m_Tilesets[id];
+        tileset.SetID(id); // temp
         m_SelectedTileset = &tileset;
 
         return tileset;
@@ -63,16 +66,16 @@ namespace Maize {
 
     void TilesetWindowTab::RemoveTileset(int32_t tilesetID)
     {
-        for (auto it = m_Tilesets.rbegin(); it != m_Tilesets.rend(); ++it)
+        auto it = m_Tilesets.find(tilesetID);
+
+        if (it != m_Tilesets.end())
         {
-            if (it->GetID() == tilesetID)
+            m_Tilesets.erase(it);
+
+            // check if the erased tileset was the selected one
+            if (m_SelectedTileset && m_SelectedTileset->GetID() == tilesetID)
             {
-                auto eraseIt = it.base() - 1;
-
-                m_Tilesets.erase(eraseIt);
-                m_SelectedTileset = m_Tilesets.empty() ? nullptr : &m_Tilesets.back();
-
-                break;
+                m_SelectedTileset = nullptr;
             }
         }
     }
@@ -81,12 +84,12 @@ namespace Maize {
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
-        for (auto &tileset: m_Tilesets)
+        for (auto& [id, tileset]: m_Tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
-            if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
+            if (ImGui::Button(text.c_str(), { windowSize.x, 64 }))
             {
                 m_SelectedTileset = &tileset;
             }
@@ -138,7 +141,7 @@ namespace Maize {
 
             if (ImGui::Button("Select Texture"))
             {
-                std::string file = FileDialog::OpenFile({ {"Tilesets (.png)", "*.png"} });
+                std::string file = FileDialog::OpenFile({ { "Tilesets (.png)", "*.png" } });
 
                 if (!file.empty())
                 {

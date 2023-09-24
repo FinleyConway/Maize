@@ -9,7 +9,7 @@ namespace Maize {
     class TilemapWindowTab
     {
     public:
-        TilemapWindowTab(std::vector<Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY);
+        TilemapWindowTab(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY);
 
         void OnEvent(Event& e);
         void OnUpdate(float deltaTime);
@@ -27,12 +27,11 @@ namespace Maize {
         bool OnMouseReleased(const MouseButtonReleasedEvent& e);
 
     private:
-        std::vector<Tileset>& m_Tilesets;
+        std::unordered_map<int32_t, Tileset>& m_Tilesets;
         std::vector<TilemapLayer>& m_TilemapLayers;
         int32_t& m_CellSizeX;
         int32_t& m_CellSizeY;
 
-        sf::Vector2f m_MousePosition;
         bool m_MouseLeftHeld = false;
 
         Tileset* m_SelectedTileset = nullptr;

@@ -27,7 +27,7 @@ namespace Maize {
 	struct TilemapComponent
 	{
 		std::vector<TilemapLayer> layers;
-		std::vector<Tileset> tilesets;
+        std::unordered_map<int32_t, Tileset> tilesets;
 		int32_t tileSizeX = 8;
 		int32_t tileSizeY = 8;
 	};

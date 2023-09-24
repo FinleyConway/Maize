@@ -120,15 +120,12 @@ namespace Maize {
 		return false;
 	}
 
-	Tile* Tileset::FindTileByTilesetID(std::vector<Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex)
+	Tile* Tileset::FindTileByTilesetID(std::unordered_map<int32_t, Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex)
 	{
-		for (auto& tileset : tilesets)
-		{
-			if (tileset.GetID() == tilesetID)
-			{
-				return tileset.GetTile(tileIndex);
-			}
-		}
+        if (auto it = tilesets.find(tilesetID); it != tilesets.end())
+        {
+            return tilesets.at(tilesetID).GetTile(tileIndex);
+        }
 
 		return nullptr;
 	}
