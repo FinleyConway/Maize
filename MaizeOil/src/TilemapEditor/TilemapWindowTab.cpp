@@ -2,11 +2,7 @@
 
 namespace Maize {
 
-    TilemapWindowTab::TilemapWindowTab(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapLayer>& tilemapLayers, int32_t& cellSizeX, int32_t& cellSizeY) :
-            m_Tilesets(tilesets),
-            m_TilemapLayers(tilemapLayers),
-            m_CellSizeX(cellSizeX),
-            m_CellSizeY(cellSizeY)
+    TilemapWindowTab::TilemapWindowTab()
     {
         m_IconPencil = Texture::Create("Resources/Icons/pencil.png");
         m_IconEraser = Texture::Create("Resources/Icons/eraser.png");
@@ -25,11 +21,11 @@ namespace Maize {
 
     void TilemapWindowTab::OnUpdate(float deltaTime)
     {
-        if (m_TilemapLayers.empty()) return;
+        if (m_TilemapComponent->layers.empty()) return;
 
-        TilemapLayer& currentLayer = m_TilemapLayers[m_SelectedTilemapLayer];
+        TilemapLayer& currentLayer = m_TilemapComponent->layers[m_SelectedTilemapLayer];
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
-        sf::Vector2i gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_CellSizeX, m_CellSizeY);
+        sf::Vector2i gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY);
 
         if (m_MouseLeftHeld)
         {
@@ -135,24 +131,24 @@ namespace Maize {
 
     void TilemapWindowTab::TilemapLayers()
     {
-        ImGui::BeginDisabled(m_TilemapLayers.empty());
+        ImGui::BeginDisabled(m_TilemapComponent->layers.empty());
         std::string previewValue;
 
-        if (m_TilemapLayers.empty())
+        if (m_TilemapComponent->layers.empty())
         {
             previewValue = "No Layers";
         }
         else
         {
-            previewValue = m_TilemapLayers[m_SelectedTilemapLayer].GetName();
+            previewValue = m_TilemapComponent->layers[m_SelectedTilemapLayer].GetName();
         }
 
         if (ImGui::BeginCombo("##Layers", previewValue.c_str()))
         {
-            for (uint32_t i = 0; i < m_TilemapLayers.size(); i++)
+            for (uint32_t i = 0; i < m_TilemapComponent->layers.size(); i++)
             {
                 bool isSelected = (i == m_SelectedTilemapLayer);
-                std::string tilemapLayer = m_TilemapLayers[i].GetName();
+                std::string tilemapLayer = m_TilemapComponent->layers[i].GetName();
 
                 if (ImGui::Selectable(tilemapLayer.c_str(), isSelected))
                 {
@@ -170,7 +166,7 @@ namespace Maize {
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
-        for (auto& [id, tileset]: m_Tilesets)
+        for (auto& [id, tileset]: m_TilemapComponent->tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();

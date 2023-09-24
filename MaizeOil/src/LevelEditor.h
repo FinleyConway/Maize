@@ -14,6 +14,8 @@ public:
         m_Reg.AddComponent<Maize::TilemapComponent>(ent);
 
         m_TilemapComponent = &m_Reg.GetComponent<Maize::TilemapComponent>(ent);
+
+		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -29,8 +31,13 @@ public:
 
         m_Camera.OnUpdate(deltaTime);
 
-        m_TilemapEditorWindow.OnUpdate(deltaTime);
-        m_TilemapEditorWindow.Window();
+		if (m_TilemapComponent != nullptr)
+		{
+			m_TilemapEditorWindow.OnUpdate(deltaTime);
+			m_TilemapEditorWindow.Window();
+		}
+
+		m_RenderingSystem.OnRender(m_Reg);
     }
 
 private:
@@ -40,4 +47,6 @@ private:
 
     Maize::TilemapComponent* m_TilemapComponent;
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
+
+	Maize::RenderingSystem m_RenderingSystem;
 };

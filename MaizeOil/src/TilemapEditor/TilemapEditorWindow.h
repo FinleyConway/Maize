@@ -10,12 +10,13 @@ namespace Maize {
     class TilemapEditorWindow
     {
     public:
-        explicit TilemapEditorWindow(TilemapComponent* tilemapComponent) :
-            m_TilesetWindow(tilemapComponent->tilesets),
-            m_TilemapWindow(tilemapComponent->tilesets, tilemapComponent->layers, tilemapComponent->tileSizeX, tilemapComponent->tileSizeY)
-        {
-            m_TilemapComponent->layers.emplace_back().SetName("Default");
-        }
+		void AddComponent(TilemapComponent* tilemapComponent)
+		{
+			tilemapComponent->layers.emplace_back().SetName("Default");
+
+			m_TilesetWindow.AddComponent(tilemapComponent);
+			m_TilemapWindow.AddComponent(tilemapComponent);
+		}
 
         void OnEvent(Event& e)
         {
@@ -43,7 +44,7 @@ namespace Maize {
         }
 
     private:
-		TilemapComponent* m_TilemapComponent;
+		TilemapComponent* m_TilemapComponent = nullptr;
 
         TilesetWindowTab m_TilesetWindow;
         TilemapWindowTab m_TilemapWindow;

@@ -7,8 +7,12 @@ namespace Maize {
     class TilesetWindowTab
     {
     public:
-        explicit TilesetWindowTab(std::unordered_map<int32_t, Tileset>& tilesets);
+		TilesetWindowTab();
 
+		void AddComponent(TilemapComponent* tilemapComponent)
+		{
+			m_TilemapComponent = tilemapComponent;
+		}
         void Window();
 
     private:
@@ -28,7 +32,8 @@ namespace Maize {
         void HandleTilesetTiles();
 
     private:
-        std::unordered_map<int32_t, Tileset>& m_Tilesets;
+        TilemapComponent* m_TilemapComponent = nullptr;
+
         Tileset* m_SelectedTileset = nullptr;
 
         std::shared_ptr<Texture> m_IconAdd, m_IconRemove;

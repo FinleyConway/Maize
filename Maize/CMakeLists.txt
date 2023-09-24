@@ -50,6 +50,8 @@ add_library(Maize STATIC
         src/Maize/Utils/Random.cpp
         src/Maize/Scene/Systems/RenderingSystem.cpp
         src/Maize/Scene/Systems/RenderingSystem.h
+        src/Maize/Scene/Systems/TilemapRendering.cpp
+        src/Maize/Scene/Systems/TilemapRendering.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

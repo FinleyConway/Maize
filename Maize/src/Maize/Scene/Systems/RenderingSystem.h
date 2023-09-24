@@ -8,7 +8,8 @@
 namespace Maize {
 
     using RenderLayer = std::string;
-    using SpriteBatches = std::unordered_map<RenderLayer, std::vector<std::pair<int32_t, const sf::Sprite*>>>;
+	using SpriteData = std::vector<std::pair<int32_t, const sf::Sprite*>>;
+    using SpriteBatches = std::unordered_map<RenderLayer, SpriteData>;
 
     class RenderingSystem
     {
@@ -24,8 +25,8 @@ namespace Maize {
         void RenderSprites(ECS::EntityWorld& registry)
         {
             SpriteBatches batch;
-            GetDrawables(registry, batch);
-            SortDrawables(batch);
+            //GetDrawables(registry, batch);
+            //SortDrawables(batch);
             RenderSprite(batch);
         }
 
@@ -50,54 +51,7 @@ namespace Maize {
                 spriteInfo.setRotation(transform.angle);
                 spriteInfo.setScale(transform.scale);
 
-                batches.at(sprite.sortingLayer).emplace_back(sprite.orderInLayer, &spriteInfo);
-            }
-
-            // tilemap rendering
-            for (auto entity : registry.GetEntityGroup<TransformComponent, TilemapComponent>())
-            {
-                const auto& [transform, tilemap] = registry.GetComponents<TransformComponent, TilemapComponent>(entity);
-
-                for (const auto& map : tilemap.layers)
-                {
-                    sf::Vector2i gridSize = map.GetGridSize();
-                    sf::Vector2i halfSize = gridSize / 2;
-
-                    for (int32_t y = -halfSize.y; y < halfSize.y; y++)
-                    {
-                        for (int32_t x = -halfSize.x; x < halfSize.x; x++)
-                        {
-                            const TilemapTile &tilemapTile = map.GetTile(sf::Vector2i(x, y));
-
-                            if (!tilemapTile.IsValid()) continue;
-
-                            Tile* tile = Tileset::FindTileByTilesetID(tilemap.tilesets, tilemapTile.tilesetID,
-                                                                      tilemapTile.index);
-
-                            if (tile == nullptr) continue;
-
-                            sf::Sprite& sprite = tile->GetSprite().GetSprite();
-
-                            /*
-                             * TODO: add culling so it doesnt render every tile in the tilemap
-                             */
-
-                            sf::Vector2f screenPosition =
-                                    CartesianGrid::ConvertGridToScreen(sf::Vector2i(x, y), tilemap.tileSizeX,
-                                                                       tilemap.tileSizeY) + sprite.getOrigin();
-
-                            screenPosition += transform.position;
-
-                            sprite.setPosition(screenPosition);
-                            tile->GetSprite().FlipX(tilemapTile.flipX);
-                            tile->GetSprite().FlipX(tilemapTile.flipY);
-                            sprite.setRotation(tilemapTile.rotation + transform.angle);
-                            sprite.scale(transform.scale);
-
-                            batches.at(tilemap.sortingLayer).emplace_back(tilemap.orderInLayer, &sprite);
-                        }
-                    }
-                }
+                batches[sprite.sortingLayer].emplace_back(sprite.orderInLayer, &spriteInfo);
             }
         }
 
@@ -131,7 +85,7 @@ namespace Maize {
             {
                 for (auto& sprite : batch)
                 {
-                    m_Renderer.Draw(*sprite.second);
+                    m_Renderer.Draw(*sprite.second, m_Renderer.GetCurrentTexture());
                 }
             }
 

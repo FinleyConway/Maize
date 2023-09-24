@@ -12,9 +12,9 @@ namespace Maize {
 
 	struct TransformComponent
 	{
-		sf::Vector2f position;
+		sf::Vector2f position = sf::Vector2f(0, 0);
 		float angle = 0;
-		sf::Vector2f scale;
+		sf::Vector2f scale = sf::Vector2f(1, 1);
 	};
 
 	struct SpriteComponent

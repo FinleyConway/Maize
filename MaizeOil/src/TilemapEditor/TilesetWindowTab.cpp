@@ -2,7 +2,7 @@
 
 namespace Maize {
 
-    TilesetWindowTab::TilesetWindowTab(std::unordered_map<int32_t, Tileset>& tilesets) : m_Tilesets(tilesets)
+    TilesetWindowTab::TilesetWindowTab()
     {
         m_IconAdd = Texture::Create("Resources/Icons/plus.png");
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
@@ -55,9 +55,9 @@ namespace Maize {
     {
         int32_t id = CreateID();
 
-        m_Tilesets.try_emplace(id);
+        m_TilemapComponent->tilesets.try_emplace(id);
 
-        Tileset& tileset = m_Tilesets[id];
+        Tileset& tileset = m_TilemapComponent->tilesets[id];
         tileset.SetID(id); // temp
         m_SelectedTileset = &tileset;
 
@@ -66,11 +66,11 @@ namespace Maize {
 
     void TilesetWindowTab::RemoveTileset(int32_t tilesetID)
     {
-        auto it = m_Tilesets.find(tilesetID);
+        auto it = m_TilemapComponent->tilesets.find(tilesetID);
 
-        if (it != m_Tilesets.end())
+        if (it != m_TilemapComponent->tilesets.end())
         {
-            m_Tilesets.erase(it);
+			m_TilemapComponent->tilesets.erase(it);
 
             // check if the erased tileset was the selected one
             if (m_SelectedTileset && m_SelectedTileset->GetID() == tilesetID)
@@ -84,7 +84,7 @@ namespace Maize {
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
-        for (auto& [id, tileset]: m_Tilesets)
+        for (auto& [id, tileset]: m_TilemapComponent->tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
