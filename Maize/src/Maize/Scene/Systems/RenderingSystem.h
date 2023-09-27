@@ -25,8 +25,8 @@ namespace Maize {
         void RenderSprites(ECS::EntityWorld& registry)
         {
             SpriteBatches batch;
-            //GetDrawables(registry, batch);
-            //SortDrawables(batch);
+            GetDrawables(registry, batch);
+            SortDrawables(batch);
             RenderSprite(batch);
         }
 
@@ -51,7 +51,7 @@ namespace Maize {
                 spriteInfo.setRotation(transform.angle);
                 spriteInfo.setScale(transform.scale);
 
-                batches[sprite.sortingLayer].emplace_back(sprite.orderInLayer, &spriteInfo);
+                batches[sprite.sortingLayer].emplace_back( sprite.orderInLayer, &spriteInfo );
             }
         }
 

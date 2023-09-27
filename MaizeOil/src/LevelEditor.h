@@ -7,15 +7,24 @@
 class LevelEditor : public Maize::Layer
 {
 public:
-    LevelEditor()
+    LevelEditor() : m_Pack({512, 512})
     {
-        auto ent = m_Reg.CreateEntity();
-        m_Reg.AddComponent<Maize::TransformComponent>(ent);
-        m_Reg.AddComponent<Maize::TilemapComponent>(ent);
-
-        m_TilemapComponent = &m_Reg.GetComponent<Maize::TilemapComponent>(ent);
-
+        auto tilemapE = m_Reg.CreateEntity();
+        m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
+        m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE);
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
+
+        std::vector<sf::IntRect> rects;
+
+        rects.emplace_back(0, 0, 32, 32);
+        rects.emplace_back(0, 0, 16, 16);
+        rects.emplace_back(0, 0, 8, 8);
+        rects.emplace_back(0, 0, 128, 128);
+        rects.emplace_back(0, 0, 128, 128);
+        rects.emplace_back(0, 0, 128, 128);
+        rects.emplace_back(0, 0, 128, 128);
+
+        m_Pack.Pack(rects);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -37,7 +46,16 @@ public:
 			m_TilemapEditorWindow.Window();
 		}
 
-		m_RenderingSystem.OnRender(m_Reg);
+		//m_RenderingSystem.OnRender(m_Reg);
+
+        auto& ren = Maize::Application::Get().GetRenderer();
+
+        ren.BeginSceneDrawing();
+
+        sf::Sprite sprite(m_Pack.GetTexture());
+        ren.Draw(sprite, ren.GetCurrentTexture());
+
+        ren.EndSceneDrawing();
     }
 
 private:
@@ -49,4 +67,7 @@ private:
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
 
 	Maize::RenderingSystem m_RenderingSystem;
+    Maize::TexturePacking m_Pack;
+
+
 };

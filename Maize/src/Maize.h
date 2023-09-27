@@ -10,9 +10,11 @@
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Renderer/Sprite.h"
+#include "Maize/Renderer/TexturePacking.h"
 
 #include "Maize/Utils/FileDialog.h"
 #include "Maize/Utils/SystemNotify.h"
+#include "Maize/Utils/Random.h"
 
 #include "Maize/Tilemap/Tile.h"
 #include "Maize/Tilemap/Tileset.h"

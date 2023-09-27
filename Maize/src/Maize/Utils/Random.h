@@ -15,6 +15,7 @@ namespace Maize {
 		static float Value01();
 
 	private:
+        static std::random_device m_RandomDevice;
 		static std::mt19937 m_Generator;
 	};
 

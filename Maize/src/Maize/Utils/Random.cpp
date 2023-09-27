@@ -3,7 +3,8 @@
 
 namespace Maize {
 
-	std::mt19937 Random::m_Generator;
+    std::random_device Random::m_RandomDevice;
+	std::mt19937 Random::m_Generator(m_RandomDevice());
 
 	int32_t Random::Range(int32_t min, int32_t max)
 	{
