@@ -21,13 +21,13 @@ namespace Maize {
             float speed = 100.0f; // Adjust the movement speed as needed
 
             if (Input::IsKeyPressed(KeyCode::W))
-                m_Camera.move(0.0f, speed * deltaTime);
-            if (Input::IsKeyPressed(KeyCode::A))
-                m_Camera.move(speed * deltaTime, 0.0f);
-            if (Input::IsKeyPressed(KeyCode::S))
                 m_Camera.move(0.0f, -speed * deltaTime);
-            if (Input::IsKeyPressed(KeyCode::D))
+            if (Input::IsKeyPressed(KeyCode::A))
                 m_Camera.move(-speed * deltaTime, 0.0f);
+            if (Input::IsKeyPressed(KeyCode::S))
+                m_Camera.move(0.0f, speed * deltaTime);
+            if (Input::IsKeyPressed(KeyCode::D))
+                m_Camera.move(speed * deltaTime, 0.0f);
 
             UpdateView();
         }

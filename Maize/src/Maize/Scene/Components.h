@@ -19,7 +19,7 @@ namespace Maize {
 
 	struct SpriteComponent
 	{
-		Sprite* sprite;
+		Sprite sprite;
 		std::string sortingLayer = "Default";
 		int32_t orderInLayer = 0;
 	};
