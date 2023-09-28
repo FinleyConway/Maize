@@ -52,8 +52,8 @@ add_library(Maize STATIC
         src/Maize/Scene/Systems/RenderingSystem.h
         src/Maize/Scene/Systems/TilemapRendering.cpp
         src/Maize/Scene/Systems/TilemapRendering.h
-        src/Maize/Renderer/TexturePacking.cpp
-        src/Maize/Renderer/TexturePacking.h
+        src/Maize/Renderer/TexturePacker.cpp
+        src/Maize/Renderer/TexturePacker.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

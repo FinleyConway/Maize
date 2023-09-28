@@ -36,6 +36,7 @@ namespace Maize {
 
 		bool HasTile(int32_t index) const;
 
+		std::unordered_map<TileIndex, Tile>& GetTiles() { return m_Tiles; }
 		void Clear() { m_Tiles.clear(); }
 
 		static Tile* FindTileByTilesetID(std::unordered_map<int32_t, Tileset>& tilesets, int32_t tilesetID, int32_t tileIndex);

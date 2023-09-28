@@ -10,7 +10,7 @@
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Renderer/Sprite.h"
-#include "Maize/Renderer/TexturePacking.h"
+#include "Maize/Renderer/TexturePacker.h"
 
 #include "Maize/Utils/FileDialog.h"
 #include "Maize/Utils/SystemNotify.h"
