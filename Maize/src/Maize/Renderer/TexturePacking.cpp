@@ -11,17 +11,79 @@ namespace Maize {
         m_Atlas.clear();
     }
 
-    void TexturePacking::Pack(std::vector<sf::IntRect> rects)
+    void TexturePacking::Pack(std::vector<sf::IntRect> &rects)
     {
-        std::sort(rects.begin(), rects.end(), CompareRects);
+        auto copy = rects;
 
-        for (const auto& rect : rects)
+        std::sort(copy.begin(), copy.end(), CompareRects);
+
+        for (const auto& rect : copy)
         {
-            int32_t r = Random::Range(0, 255);
-            int32_t g = Random::Range(0, 255);
-            int32_t b = Random::Range(0, 255);
+            if (m_InsideAtlas.empty())
+            {
+                int32_t r = Random::Range(0, 255);
+                int32_t g = Random::Range(0, 255);
+                int32_t b = Random::Range(0, 255);
 
-            FindSuitableRect(rect, sf::Color(r, g, b, 255));
+                sf::RectangleShape shape((sf::Vector2f)rect.getSize());
+                shape.setPosition((sf::Vector2f(0, 0)));
+                shape.setFillColor(sf::Color(r, g, b));
+                m_Atlas.draw(shape);
+
+                m_InsideAtlas.push_back(rect);
+
+                continue;
+            }
+
+            for (const auto& inside : m_InsideAtlas)
+            {
+                sf::IntRect smallestRect;
+                sf::IntRect largestRect;
+
+                if (inside.width > inside.height)
+                {
+                    // create a rect underneath the existing rect
+                    smallestRect = CreateRectUnderneath(inside);
+                    largestRect = CreateRectToRightOf(inside);
+                }
+                else
+                {
+                    // create a rect on the right side of the existing rect
+                    smallestRect = CreateRectToRightOf(inside);
+                    largestRect = CreateRectUnderneath(inside);
+                }
+
+                if (DoesRectFitInRect(rect, smallestRect) && !IntersectsExistingRectangles(smallestRect))
+                {
+                    int32_t r = Random::Range(0, 255);
+                    int32_t g = Random::Range(0, 255);
+                    int32_t b = Random::Range(0, 255);
+
+                    sf::RectangleShape shape(sf::Vector2f(rect.width, rect.height));
+                    shape.setPosition((sf::Vector2f)smallestRect.getPosition());
+                    shape.setFillColor(sf::Color(r, g, b));
+
+                    m_Atlas.draw(shape);
+                    m_InsideAtlas.emplace_back(smallestRect.getPosition().x, smallestRect.getPosition().y, rect.width, rect.height);
+
+                    break;
+                }
+                else if (DoesRectFitInRect(rect, largestRect) && !IntersectsExistingRectangles(largestRect))
+                {
+                    int32_t r = Random::Range(0, 255);
+                    int32_t g = Random::Range(0, 255);
+                    int32_t b = Random::Range(0, 255);
+
+                    sf::RectangleShape shape(sf::Vector2f(rect.width, rect.height));
+                    shape.setPosition((sf::Vector2f)largestRect.getPosition());
+                    shape.setFillColor(sf::Color(r, g, b));
+
+                    m_Atlas.draw(shape);
+                    m_InsideAtlas.emplace_back(largestRect.getPosition().x, largestRect.getPosition().y, rect.width, rect.height);
+
+                    break;
+                }
+            }
         }
     }
 
@@ -29,6 +91,16 @@ namespace Maize {
     {
         m_Atlas.display();
         return m_Atlas.getTexture();
+    }
+
+    sf::IntRect TexturePacking::CreateRectUnderneath(const sf::IntRect &rect) const
+    {
+        return sf::IntRect(rect.left, rect.top + rect.height, rect.width, m_AtlasSize.y - (rect.top + rect.height));
+    }
+
+    sf::IntRect TexturePacking::CreateRectToRightOf(const sf::IntRect &rect) const
+    {
+        return sf::IntRect(rect.left + rect.width, rect.top, m_AtlasSize.x - (rect.left + rect.width), rect.height);
     }
 
     bool TexturePacking::IntersectsExistingRectangles(const sf::IntRect &rect) const
@@ -44,17 +116,9 @@ namespace Maize {
         return false;
     }
 
-    bool TexturePacking::DoesRectFitInAtlas(const sf::IntRect &rect) const
+    bool TexturePacking::DoesRectFitInRect(const sf::IntRect& rect, const sf::IntRect& testRect) const
     {
-        return rect.height < m_AtlasSize.y || rect.width < m_AtlasSize.x;
-    }
-
-    bool TexturePacking::DoesRectFitInRect(const sf::IntRect &rect, const sf::IntRect &testRect) const
-    {
-        bool isSmallerWidth = rect.width <= testRect.width;
-        bool isSmallerHeight = rect.height <= testRect.height;
-
-        return isSmallerWidth && isSmallerHeight;
+        return rect.width <= testRect.width && rect.height <= testRect.height;
     }
 
     bool TexturePacking::CompareRects(const sf::IntRect &rect1, const sf::IntRect &rect2)
@@ -63,74 +127,6 @@ namespace Maize {
         int32_t area2 = rect2.width * rect2.height;
 
         return area1 > area2;
-    }
-
-    std::vector<sf::IntRect> TexturePacking::CreatePossibleRects()
-    {
-        std::vector<sf::IntRect> newPossibleRects;
-
-        if (m_InsideAtlas.empty()) return newPossibleRects;
-
-        for (const auto& existingRect : m_InsideAtlas)
-        {
-            sf::IntRect rightRect(existingRect.left + existingRect.width, existingRect.top,
-                                  m_AtlasSize.x - (existingRect.left + existingRect.width), existingRect.height);
-
-            sf::IntRect bottomRect(existingRect.left, existingRect.top + existingRect.height,
-                                   existingRect.width, m_AtlasSize.y - (existingRect.top + existingRect.height));
-
-            if (rightRect.width > 0 && rightRect.height > 0 &&
-                !IntersectsExistingRectangles(rightRect) &&
-                DoesRectFitInAtlas(rightRect))
-            {
-                newPossibleRects.push_back(rightRect);
-            }
-
-            if (bottomRect.width > 0 && bottomRect.height > 0 &&
-                !IntersectsExistingRectangles(bottomRect) &&
-                DoesRectFitInAtlas(bottomRect))
-            {
-                newPossibleRects.push_back(bottomRect);
-            }
-        }
-
-        return newPossibleRects;
-    }
-
-    void TexturePacking::FindSuitableRect(const sf::IntRect &rect, sf::Color colour)
-    {
-        auto possibleRects = CreatePossibleRects();
-
-        if (possibleRects.empty())
-        {
-            m_InsideAtlas.emplace_back(0, 0, rect.width, rect.height);
-
-            sf::RectangleShape coloredRect(sf::Vector2f(rect.width, rect.height));
-            coloredRect.setPosition(sf::Vector2f(0, 0));
-            coloredRect.setFillColor(colour);
-
-            m_Atlas.draw(coloredRect);
-
-            return;
-        }
-
-        for (const auto& pRect : possibleRects)
-        {
-            if (DoesRectFitInRect(rect, pRect))
-            {
-                auto position = pRect.getPosition();
-
-                m_InsideAtlas.emplace_back(position.x, position.y, rect.width, rect.height);
-
-                sf::RectangleShape coloredRect(sf::Vector2f(rect.width, rect.height));
-                coloredRect.setPosition((sf::Vector2f)position);
-                coloredRect.setFillColor(colour);
-
-                m_Atlas.draw(coloredRect);
-
-                break;
-            }
-        }
     }
 
 } // Maize

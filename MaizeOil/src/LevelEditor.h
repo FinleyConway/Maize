@@ -7,24 +7,12 @@
 class LevelEditor : public Maize::Layer
 {
 public:
-    LevelEditor() : m_Pack({512, 512})
+    LevelEditor() : m_Pack({2048, 2048})
     {
         auto tilemapE = m_Reg.CreateEntity();
         m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
         m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE);
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
-
-        std::vector<sf::IntRect> rects;
-
-        rects.emplace_back(0, 0, 32, 32);
-        rects.emplace_back(0, 0, 16, 16);
-        rects.emplace_back(0, 0, 8, 8);
-        rects.emplace_back(0, 0, 128, 128);
-        rects.emplace_back(0, 0, 128, 128);
-        rects.emplace_back(0, 0, 128, 128);
-        rects.emplace_back(0, 0, 128, 128);
-
-        m_Pack.Pack(rects);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -47,6 +35,36 @@ public:
 		}
 
 		//m_RenderingSystem.OnRender(m_Reg);
+
+        if (ImGui::Button("Generate"))
+        {
+            std::vector<sf::IntRect> rects;
+
+            rects.emplace_back(0, 0, 8, 8);
+            rects.emplace_back(0, 0, 8, 8);
+            rects.emplace_back(0, 0, 8, 8);
+            rects.emplace_back(0, 0, 8, 8);
+            rects.emplace_back(0, 0, 16, 8);
+            rects.emplace_back(0, 0, 16, 8);
+            rects.emplace_back(0, 0, 16, 8);
+            rects.emplace_back(0, 0, 16, 8);
+            rects.emplace_back(0, 0, 16, 8);
+            rects.emplace_back(0, 0, 64, 8);
+            rects.emplace_back(0, 0, 64, 8);
+            rects.emplace_back(0, 0, 64, 8);
+            rects.emplace_back(0, 0, 64, 8);
+            rects.emplace_back(0, 0, 64, 8);
+            rects.emplace_back(0, 0, 64, 64);
+            rects.emplace_back(0, 0, 64, 64);
+            rects.emplace_back(0, 0, 64, 64);
+            rects.emplace_back(0, 0, 64, 64);
+            rects.emplace_back(0, 0, 94, 128);
+            rects.emplace_back(0, 0, 94, 128);
+            rects.emplace_back(0, 0, 94, 128);
+            rects.emplace_back(0, 0, 94, 128);
+
+            m_Pack.Pack(rects);
+        }
 
         auto& ren = Maize::Application::Get().GetRenderer();
 
