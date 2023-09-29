@@ -262,7 +262,7 @@ namespace Maize {
 
                     if (ImGui::Button("##Select", buttonSize))
                     {
-                        SetSelectedTile(tile->GetTilesetID(), tile->GetIndex());
+                        SetSelectedTile(tile->tilesetID, x + y * tilesetSize.x);
                     }
                 }
 

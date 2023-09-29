@@ -17,7 +17,7 @@ namespace Maize {
 
         void Draw(const sf::Shape& shape, sf::RenderTarget* renderTarget = nullptr);
         void Draw(const sf::Sprite& sprite, sf::RenderTarget* renderTarget = nullptr);
-        void Draw(const sf::Drawable& drawable, sf::RenderTarget* renderTarget = nullptr);
+        void Draw(const sf::Drawable& drawable, const sf::RenderStates& state = sf::RenderStates::Default, sf::RenderTarget* renderTarget = nullptr);
         void DrawBufferTexture();
 
         void EndDrawing();

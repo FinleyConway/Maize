@@ -35,15 +35,32 @@ public:
 
 			if (ImGui::Button("Generate"))
 			{
-				std::vector<sf::Texture> sprites;
+				std::vector<Maize::TextureInfo> textureInfo;
 
-				for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
+				textureInfo.reserve(m_TilemapComponent->tilesets.size());
+                for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
 				{
-					sprites.emplace_back(*tileset.GetTexture());
+                    textureInfo.emplace_back(*tileset.GetTexture(), tilesetID);
 				}
 
 				Maize::TexturePacker pack;
-				m_Texture = pack.Pack(sprites, sf::Vector2u(1024, 1024));
+				auto results = pack.Pack(textureInfo, sf::Vector2u(1024, 1024));
+
+                m_Texture = results.packedTexture;
+
+                for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
+                {
+                    for (auto& [id, rect] : results.textureInfo)
+                    {
+                        if (id == tilesetID)
+                        {
+                            for (auto& [tileID, tile] : tileset.GetTiles())
+                            {
+                                tile.position += rect.getPosition();
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
@@ -54,7 +71,7 @@ public:
         ren.BeginSceneDrawing();
 
         sf::Sprite sprite(m_Texture);
-        ren.Draw(sprite, ren.GetCurrentTexture());
+        ren.Draw(sprite);
 
         ren.EndSceneDrawing();
     }
@@ -69,5 +86,4 @@ private:
 
 	Maize::RenderingSystem m_RenderingSystem;
 	sf::Texture m_Texture;
-
 };

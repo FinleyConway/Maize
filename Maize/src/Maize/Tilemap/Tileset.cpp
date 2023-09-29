@@ -40,10 +40,7 @@ namespace Maize {
 			{
 				int32_t tileIndex = x + y * numTiles.x;
 
-				sf::IntRect texturePosition(x * m_TileSize.x, y * m_TileSize.y, m_TileSize.x, m_TileSize.y);
-				sf::Vector2f pivot(static_cast<float>(m_TileSize.x) / 2.0f, static_cast<float>(m_TileSize.y) / 2.0f);
-
-				m_Tiles[tileIndex] = Tile(m_ID, tileIndex, { texturePosition, m_Texture.get(), pivot });
+				m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y));
 			}
 		}
 	}
@@ -64,9 +61,7 @@ namespace Maize {
 
 				if (includeTransparent || !isTransparent)
 				{
-					sf::Vector2f pivot(static_cast<float>(m_TileSize.x) / 2.0f, static_cast<float>(m_TileSize.y) / 2.0f);
-
-					m_Tiles[tileIndex] = Tile(m_ID, tileIndex, { tileRect, m_Texture.get(), pivot });
+					m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y));
 				}
 			}
 		}
@@ -83,10 +78,7 @@ namespace Maize {
 		}
 		else
 		{
-			sf::IntRect texturePosition = sf::IntRect(x * m_TileSize.x, y * m_TileSize.y, m_TileSize.x, m_TileSize.y);
-			sf::Vector2f pivot = sf::Vector2f(static_cast<float>(m_TileSize.x) / 2.0f, static_cast<float>(m_TileSize.y) / 2.0f);
-
-			m_Tiles[tileIndex] = Tile(m_ID, tileIndex, { texturePosition, m_Texture.get(), pivot });
+			m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y));
 		}
 	}
 

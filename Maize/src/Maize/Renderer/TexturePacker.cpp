@@ -59,6 +59,64 @@ namespace Maize {
 		return packedTexture;
 	}
 
+    PackTextureResults TexturePacker::Pack(std::vector<TextureInfo>& textures, sf::Vector2u atlasSize)
+    {
+        sf::Texture packedTexture;
+        sf::Image packedImage;
+        std::vector<sf::IntRect> occupiedRectangles;
+        std::unordered_map<int32_t, sf::IntRect> textureInfo;
+
+        if (textures.empty()) return PackTextureResults();
+
+        packedImage.create(atlasSize.x, atlasSize.y);
+
+        // sort textures by largest to smallest before packing.
+        std::sort(textures.begin(), textures.end(), CompareTexturesInfo);
+
+        for (auto& texture : textures)
+        {
+            // check if there are any available slots in the atlas.
+            if (occupiedRectangles.empty())
+            {
+                // place the texture in the top-left corner.
+                PlaceTextureInAtlas(texture.texture, packedImage, occupiedRectangles, sf::Vector2i(0, 0));
+                textureInfo[texture.id] = sf::IntRect(0, 0, texture.texture.getSize().x, texture.texture.getSize().y);
+                continue;
+            }
+
+            // attempt to place the texture in available slots.
+            for (const auto& inside : occupiedRectangles)
+            {
+                sf::IntRect smallestRect;
+                sf::IntRect largestRect;
+
+                DetermineRectangles(inside, smallestRect, largestRect, atlasSize);
+
+                if (TryPlaceInRect(texture.texture, packedImage, occupiedRectangles, smallestRect))
+                {
+                    sf::Vector2i pos = smallestRect.getPosition();
+
+                    textureInfo[texture.id] = sf::IntRect(pos.x, pos.y, texture.texture.getSize().x, texture.texture.getSize().y);
+                    break;
+                }
+                else if (TryPlaceInRect(texture.texture, packedImage, occupiedRectangles, largestRect))
+                {
+                    sf::Vector2i pos = largestRect.getPosition();
+
+                    textureInfo[texture.id] = sf::IntRect(pos.x, pos.y, texture.texture.getSize().x, texture.texture.getSize().y);
+                    break;
+                }
+
+                /*
+                * TODO: Add error handling here
+                */
+            }
+        }
+
+        packedTexture.loadFromImage(packedImage);
+        return PackTextureResults(packedTexture, textureInfo);
+    }
+
 	void TexturePacker::DetermineRectangles(const sf::IntRect& occupiedRect, sf::IntRect& smallestRect, sf::IntRect& largestRect, sf::Vector2u atlasSize)
 	{
 		if (occupiedRect.width > occupiedRect.height)
@@ -98,7 +156,7 @@ namespace Maize {
 		return false;
 	}
 
-	void TexturePacker::PlaceTextureInAtlas(const sf::Texture& texture, sf::Image& packedImage, std::vector<sf::IntRect>& occupiedRectangles, const sf::Vector2i& position)
+	void TexturePacker::PlaceTextureInAtlas(const sf::Texture& texture, sf::Image& packedImage, std::vector<sf::IntRect>& occupiedRectangles, sf::Vector2i position)
 	{
 		packedImage.copy(texture.copyToImage(), position.x, position.y);
 		occupiedRectangles.emplace_back(position.x, position.y, texture.getSize().x, texture.getSize().y);
@@ -129,5 +187,13 @@ namespace Maize {
 
 		return area1 > area2;
 	}
+
+    bool TexturePacker::CompareTexturesInfo(const TextureInfo &texture1, const TextureInfo &texture2)
+    {
+        uint32_t area1 = texture1.texture.getSize().x * texture1.texture.getSize().y;
+        uint32_t area2 = texture2.texture.getSize().x * texture2.texture.getSize().y;
+
+        return area1 > area2;
+    }
 
 } // Maize

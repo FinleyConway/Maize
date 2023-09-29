@@ -1,6 +1,7 @@
 #include "mpch.h"
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Core/Window.h"
+#include "Maize/Core/Application.h"
 
 namespace Maize {
 
@@ -56,7 +57,7 @@ namespace Maize {
             }
         }
 
-        Draw(static_cast<const sf::Drawable&>(shape), renderTarget);
+        Draw(static_cast<const sf::Drawable&>(shape), sf::RenderStates::Default, renderTarget);
     }
 
     void Renderer::Draw(const sf::Sprite& sprite, sf::RenderTarget* renderTarget)
@@ -69,26 +70,27 @@ namespace Maize {
             }
         }
 
-        Draw(static_cast<const sf::Drawable&>(sprite), renderTarget);
+        Draw(static_cast<const sf::Drawable&>(sprite), sf::RenderStates::Default,  renderTarget);
     }
 
-    void Renderer::Draw(const sf::Drawable& drawable, sf::RenderTarget* renderTarget)
+    void Renderer::Draw(const sf::Drawable& drawable, const sf::RenderStates& state, sf::RenderTarget* renderTarget)
     {
         // look more into this section in the future
         if (renderTarget == nullptr)
         {
-            //renderTarget = &m_Textures[m_CurrentTextureIndex];
-            renderTarget = &m_Window.GetRenderWindow();
+            renderTarget = &m_Textures[m_CurrentTextureIndex];
         }
 
-        renderTarget->draw(drawable);
+        renderTarget->draw(drawable, state);
         m_DrawCalls++;
     }
 
     void Renderer::DrawBufferTexture()
     {
+        auto& window = Application::Get().GetWindow().GetRenderWindow();
+
         m_BufferSprite.setTexture(m_Textures[m_CurrentTextureIndex].getTexture());
-        Draw(m_BufferSprite);
+        Draw(m_BufferSprite, &window);
     }
 
     void Renderer::EndDrawing() { m_IsDrawing = false; }
