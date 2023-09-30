@@ -7,7 +7,7 @@ namespace Maize {
     {
         if (tile.IsValid())
         {
-            m_Grid.SetTile(gridPosition, tile.tilesetID, tile.index, flipX, flipX, rotation, resize);
+            m_Grid.SetTile(gridPosition, tile.texCoords, flipX, flipX, rotation, resize);
         }
     }
 
@@ -42,12 +42,12 @@ namespace Maize {
         if (!m_Grid.IsValidPosition(gridPosition)) return;
 
         const TilemapTile& currentTile = m_Grid.GetTile(gridPosition);
-        bool isReferenceTile = currentTile.tilesetID == referenceTile.tilesetID && currentTile.index == referenceTile.index;
-        bool isFilled = currentTile.tilesetID != selectedTile.tilesetID || currentTile.index != selectedTile.index;
+        bool isReferenceTile = currentTile.texCoords == referenceTile.texCoords;
+        bool isFilled = currentTile.texCoords != selectedTile.texCoords;
 
         if (isReferenceTile && isFilled)
         {
-            m_Grid.SetTile(gridPosition, selectedTile.tilesetID, selectedTile.index, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation, false);
+            m_Grid.SetTile(gridPosition, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation, false);
 
             for (const auto& [neighbour, tilePosition] : m_Grid.GetSurroundingTiles(gridPosition))
             {

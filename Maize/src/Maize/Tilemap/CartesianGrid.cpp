@@ -12,7 +12,7 @@ namespace Maize {
     {
     }
 
-    void CartesianGrid::SetTile(sf::Vector2i position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize)
+    void CartesianGrid::SetTile(sf::Vector2i position, sf::Vector2i texCoords, bool flipX, bool flipY, float rotation, bool resize)
     {
         // adjust the position to account for the shifted origin
         int32_t adjustedX = position.x + m_CurrentSize.x / 2;
@@ -22,9 +22,9 @@ namespace Maize {
         if (adjustedX >= 0 && adjustedX < m_CurrentSize.x &&
             adjustedY >= 0 && adjustedY < m_CurrentSize.y)
         {
-            m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(tilesetID, index, flipX, flipY, rotation);
+            m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(texCoords, flipX, flipY, rotation);
         }
-            // resize grid and place tile
+        // resize grid and place tile
         else
         {
             if (resize)
@@ -32,7 +32,7 @@ namespace Maize {
                 ResizeGrid(position);
                 adjustedX = position.x + m_CurrentSize.x / 2;
                 adjustedY = position.y + m_CurrentSize.y / 2;
-                m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(tilesetID, index, flipX, flipY, rotation);
+                m_Grid[m_CurrentSize.x * adjustedY + adjustedX] = TilemapTile(texCoords, flipX, flipY, rotation);
             }
         }
     }
@@ -101,7 +101,7 @@ namespace Maize {
         }
 
         // check if the tile is valid
-        return m_Grid[m_CurrentSize.x * adjustedY + adjustedX].index != -1;
+        return m_Grid[m_CurrentSize.x * adjustedY + adjustedX].texCoords != sf::Vector2i(-1, -1);
     }
 
     bool CartesianGrid::IsValidPosition(sf::Vector2i position) const

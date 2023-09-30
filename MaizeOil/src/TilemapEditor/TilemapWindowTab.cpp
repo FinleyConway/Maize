@@ -262,7 +262,7 @@ namespace Maize {
 
                     if (ImGui::Button("##Select", buttonSize))
                     {
-                        SetSelectedTile(tile->tilesetID, x + y * tilesetSize.x);
+                        m_SelectedTile.texCoords = tile->texCoords;
                     }
                 }
 
@@ -279,12 +279,6 @@ namespace Maize {
         ImGui::SetScrollY(ImGui::GetScrollY() + scrollY);
 
         ImGui::EndChild();
-    }
-
-    void TilemapWindowTab::SetSelectedTile(int32_t tilesetID, int32_t index)
-    {
-        m_SelectedTile.tilesetID = tilesetID;
-        m_SelectedTile.index = index;
     }
 
     bool TilemapWindowTab::OnKeyPressed(const KeyPressedEvent &e)

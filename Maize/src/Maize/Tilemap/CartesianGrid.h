@@ -4,15 +4,14 @@ namespace Maize {
 
     struct TilemapTile
     {
-        int32_t tilesetID = -1; // from where
-        int32_t index = -1; // where it is
-        bool flipX = false; // flip sprite
+        sf::Vector2i texCoords = sf::Vector2i(-1, -1);
+        bool flipX = false;
         bool flipY = false;
         float rotation = 0.0f;
 
         bool IsValid() const
         {
-            return tilesetID != -1 && index != -1;
+            return texCoords != sf::Vector2i(-1, -1);
         }
     };
 
@@ -24,7 +23,7 @@ namespace Maize {
         sf::Vector2i GetSize() const { return m_CurrentSize; }
         const std::vector<TilemapTile>& GetGrid() const { return m_Grid; }
 
-        void SetTile(sf::Vector2i position, int32_t tilesetID, int32_t index, bool flipX, bool flipY, float rotation, bool resize = true);
+        void SetTile(sf::Vector2i position, sf::Vector2i texCoords, bool flipX, bool flipY, float rotation, bool resize = true);
         void RemoveTile(sf::Vector2i position);
         const TilemapTile& GetTile(sf::Vector2i position) const;
         std::vector<std::pair<const TilemapTile&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i position) const;

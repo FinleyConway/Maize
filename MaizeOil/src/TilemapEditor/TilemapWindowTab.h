@@ -24,7 +24,6 @@ namespace Maize {
         void TilemapLayers();
         void SelectTileset();
         void SelectTile();
-        void SetSelectedTile(int32_t tilesetID, int32_t index);
 
         bool OnKeyPressed(const KeyPressedEvent& e);
         bool OnMousePressed(const MouseButtonPressedEvent& e);

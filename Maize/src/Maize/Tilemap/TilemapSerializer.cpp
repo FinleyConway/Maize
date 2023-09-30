@@ -28,8 +28,8 @@ namespace Maize {
                     if (tile.IsValid())
                     {
                         nlohmann::json serialTile = {
-                                {"TileIndex", tile.index},
-                                {"TilesetID", tile.tilesetID},
+                                {"TexCoordsX", tile.texCoords.x},
+                                {"TexCoordsY", tile.texCoords.y},
                                 {"PositionX", x},
                                 {"PositionY", y},
                                 {"FlipX", tile.flipX},
@@ -72,8 +72,8 @@ namespace Maize {
                     TilemapTile tile;
 
                     sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
-                    tile.index = serialTile["TileIndex"];
-                    tile.tilesetID = serialTile["TilesetID"];
+                    tile.texCoords.x = serialTile["TexCoordsX"];
+                    tile.texCoords.y = serialTile["TexCoordsY"];
                     tile.flipX = serialTile["FlipX"];
                     tile.flipY = serialTile["FlipY"];
                     tile.rotation = serialTile["Rotation"];
