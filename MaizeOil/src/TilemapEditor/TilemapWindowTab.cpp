@@ -25,7 +25,7 @@ namespace Maize {
 
         TilemapLayer& currentLayer = m_TilemapComponent->layers[m_SelectedTilemapLayer];
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
-        sf::Vector2i gridPosition = CartesianGrid::ConvertScreenToGrid(mousePosition, m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY);
+        sf::Vector2i gridPosition = CartesianGrid<TilemapTile>::ConvertScreenToGrid(mousePosition, { m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY });
 
         if (m_MouseLeftHeld)
         {

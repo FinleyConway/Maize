@@ -35,7 +35,6 @@ add_library(Maize STATIC
         src/Maize/Utils/SystemNotify.cpp
         src/Maize/Utils/SystemNotify.h
         src/Maize/Scene/Components.h
-        src/Maize/Tilemap/Tile.h
         src/Maize/Tilemap/Tileset.cpp
         src/Maize/Tilemap/Tileset.h
         src/Maize/Tilemap/TilemapLayer.h
@@ -44,8 +43,6 @@ add_library(Maize STATIC
         src/Maize/Tilemap/TilemapSerializer.cpp
         src/Maize/Tilemap/TilesetSerializer.h
         src/Maize/Tilemap/TilesetSerializer.cpp
-        src/Maize/Tilemap/CartesianGrid.h
-        src/Maize/Tilemap/CartesianGrid.cpp
         src/Maize/Utils/Random.h
         src/Maize/Utils/Random.cpp
         src/Maize/Scene/Systems/RenderingSystem.cpp
@@ -54,6 +51,7 @@ add_library(Maize STATIC
         src/Maize/Scene/Systems/TilemapRendering.h
         src/Maize/Renderer/TexturePacker.cpp
         src/Maize/Renderer/TexturePacker.h
+        src/Maize/Utils/Grids/CartesianGrid.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

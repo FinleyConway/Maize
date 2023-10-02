@@ -3,6 +3,7 @@
 #include <Maize.h>
 
 #include "TilemapEditor/TilemapEditorWindow.h"
+#include "Maize/Utils/Grids/CartesianGrid.h"
 
 class LevelEditor : public Maize::Layer
 {
@@ -15,7 +16,7 @@ public:
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
 
         m_Grid.setPrimitiveType(sf::Quads);
-        m_Grid.resize(50 * 50);
+        m_Grid.resize(1000 * 1000);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -104,8 +105,8 @@ public:
                         quad[2].texCoords = sf::Vector2f((texturePos.x + 1) * tileSizeX, (texturePos.y + 1) * tileSizeY);
                         quad[3].texCoords = sf::Vector2f(texturePos.x * tileSizeX, (texturePos.y + 1) * tileSizeY);
 
-                        int index = (x + halfSize.x) * 4 + (y + halfSize.y) * layer.GetGridSize().x * 4;
-                        for (int i = 0; i < 4; ++i)
+                        int32_t index = (x + halfSize.x) * 4 + (y + halfSize.y) * layer.GetGridSize().x * 4;
+                        for (int32_t i = 0; i < 4; i++)
                         {
                             m_Grid[index + i] = quad[i];
                         }
@@ -131,4 +132,5 @@ private:
 
 	sf::Texture m_Texture;
     sf::VertexArray m_Grid;
+	sf::Vector2i m_GridSize;
 };

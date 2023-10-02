@@ -12,8 +12,8 @@ namespace Maize {
             nlohmann::json tilemapLayer;
             tilemapLayer["LayerName"] = layer.GetName();
 
-            const CartesianGrid& grid = layer.GetGrid();
-            sf::Vector2i gridSize = grid.GetSize();
+            const CartesianGrid<TilemapTile>& grid = layer.GetGrid();
+            sf::Vector2i gridSize = grid.GridSize();
             int32_t halfWidth = gridSize.x / 2;
             int32_t halfHeight = gridSize.y / 2;
 
