@@ -26,12 +26,13 @@ namespace Maize {
         TilemapLayer& currentLayer = m_TilemapComponent->layers[m_SelectedTilemapLayer];
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
         sf::Vector2i gridPosition = CartesianGrid<TilemapTile>::ConvertScreenToGrid(mousePosition, { m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY });
+		sf::Vector2i size = sf::Vector2i(m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY);
 
         if (m_MouseLeftHeld)
         {
             if (m_CurrentTool == TilemapTools::Pencil)
             {
-                currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+                currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation, size);
             }
             else if (m_CurrentTool == TilemapTools::Erase)
             {
@@ -43,7 +44,7 @@ namespace Maize {
             }
             else if (m_CurrentTool == TilemapTools::Fill)
             {
-                currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition));
+                currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition), size);
             }
         }
     }

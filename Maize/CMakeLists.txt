@@ -39,10 +39,10 @@ add_library(Maize STATIC
         src/Maize/Tilemap/Tileset.h
         src/Maize/Tilemap/TilemapLayer.h
         src/Maize/Tilemap/TilemapLayer.cpp
-        src/Maize/Tilemap/TilemapSerializer.h
-        src/Maize/Tilemap/TilemapSerializer.cpp
-        src/Maize/Tilemap/TilesetSerializer.h
-        src/Maize/Tilemap/TilesetSerializer.cpp
+        src/Maize/Tilemap/Serialization/TilemapSerializer.h
+        src/Maize/Tilemap/Serialization/TilemapSerializer.cpp
+        src/Maize/Tilemap/Serialization/TilesetSerializer.h
+        src/Maize/Tilemap/Serialization/TilesetSerializer.cpp
         src/Maize/Utils/Random.h
         src/Maize/Utils/Random.cpp
         src/Maize/Scene/Systems/RenderingSystem.cpp
@@ -52,6 +52,8 @@ add_library(Maize STATIC
         src/Maize/Renderer/TexturePacker.cpp
         src/Maize/Renderer/TexturePacker.h
         src/Maize/Utils/Grids/CartesianGrid.h
+        src/Maize/Utils/Grids/VertexGrid.cpp
+        src/Maize/Utils/Grids/VertexGrid.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

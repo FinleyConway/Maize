@@ -80,7 +80,7 @@ namespace Maize {
 
             static std::array<sf::Vector2i, 8> adjacentOffsets = {
                     sf::Vector2i(-1, -1), sf::Vector2i(0, -1), sf::Vector2i(1, -1),
-                    sf::Vector2i(-1,  0),                      sf::Vector2i(1,  0),
+                    sf::Vector2i(-1,  0),                      	   sf::Vector2i(1,  0),
                     sf::Vector2i(-1,  1), sf::Vector2i(0,  1), sf::Vector2i(1,  1)
             };
 
@@ -134,6 +134,14 @@ namespace Maize {
                     static_cast<float>(position.y) * static_cast<float>(cellSize.y)
             );
         }
+
+		void Resize(sf::Vector2i adjustedPosition, int32_t resizeAmount = 15)
+		{
+			int32_t newX = std::max(m_CurrentSize.x, adjustedPosition.x);
+			int32_t newY = std::max(m_CurrentSize.y, adjustedPosition.y);
+
+			std::vector<T> newGrid(newX * newY);
+		}
 
 	private:
         sf::Vector2i AdjustPosition(sf::Vector2i position) const // 20x20 grid (0, 0) -> (10, 10)

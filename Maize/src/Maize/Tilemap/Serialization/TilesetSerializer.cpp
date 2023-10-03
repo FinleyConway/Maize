@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Maize/Tilemap/TilesetSerializer.h"
+#include "TilesetSerializer.h"
 
 namespace Maize {
 

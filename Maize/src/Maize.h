@@ -19,8 +19,8 @@
 
 #include "Maize/Tilemap/Tileset.h"
 #include "Maize/Tilemap/TilemapLayer.h"
-#include "Maize/Tilemap/TilesetSerializer.h"
-#include "Maize/Tilemap/TilemapSerializer.h"
+#include "Maize/Tilemap/Serialization/TilesetSerializer.h"
+#include "Maize/Tilemap/Serialization/TilemapSerializer.h"
 
 #include "Maize/Scene/Components.h"
 #include "Maize/Scene/Systems/RenderingSystem.h"

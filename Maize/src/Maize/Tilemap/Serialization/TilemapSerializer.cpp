@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Maize/Tilemap/TilemapSerializer.h"
+#include "TilemapSerializer.h"
 
 namespace Maize {
 
@@ -78,7 +78,7 @@ namespace Maize {
                     tile.flipY = serialTile["FlipY"];
                     tile.rotation = serialTile["Rotation"];
 
-                    layer.PlaceTile(tile, position, tile.flipX, tile.flipY, tile.rotation);
+                    //layer.PlaceTile(tile, position, tile.flipX, tile.flipY, tile.rotation);
                 }
 
                 tilemapLayers.push_back(layer);
