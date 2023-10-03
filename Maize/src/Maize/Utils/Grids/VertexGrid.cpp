@@ -63,20 +63,37 @@ namespace Maize {
 	{
 		sf::VertexArray newGrid(sf::Quads, newWidth * newHeight * c_VertexCount);
 
-		for (int32_t y = 0; y < std::min(m_CurrentSize.y, newHeight); y++)
+		for (int32_t y = 0; y < newHeight; y++)
 		{
-			for (int32_t x = 0; x < std::min(m_CurrentSize.x, newWidth); x++)
+			for (int32_t x = 0; x < newWidth; x++)
 			{
-				newGrid[(y * newWidth + x) * c_VertexCount + 0] = m_Grid[(y * m_CurrentSize.x + x) * c_VertexCount + 0];
-				newGrid[(y * newWidth + x) * c_VertexCount + 1] = m_Grid[(y * m_CurrentSize.x + x) * c_VertexCount + 1];
-				newGrid[(y * newWidth + x) * c_VertexCount + 2] = m_Grid[(y * m_CurrentSize.x + x) * c_VertexCount + 2];
-				newGrid[(y * newWidth + x) * c_VertexCount + 3] = m_Grid[(y * m_CurrentSize.x + x) * c_VertexCount + 3];
+				int32_t newIndex = (y * newWidth + x) * c_VertexCount;
+				int32_t oldX = x - (newWidth - m_CurrentSize.x) / 2;
+				int32_t oldY = y - (newHeight - m_CurrentSize.y) / 2;
+				int32_t oldIndex = (oldY * m_CurrentSize.x + oldX) * c_VertexCount;
+
+				// add new tiles when its within new old grid
+				if (oldX >= 0 && oldX < m_CurrentSize.x && oldY >= 0 && oldY < m_CurrentSize.y)
+				{
+					for (uint32_t i = 0; i < c_VertexCount; i++)
+					{
+						newGrid[newIndex + i] = m_Grid[oldIndex + i];
+					}
+				}
+				else
+				{
+					for (uint32_t i = 0; i < c_VertexCount; i++)
+					{
+						newGrid[newIndex + i] = s_DefaultObject;
+					}
+				}
 			}
 		}
 
 		m_Grid = std::move(newGrid);
 		m_CurrentSize = sf::Vector2i(newWidth, newHeight);
 	}
+
 
 	int32_t VertexGrid::GetIndex(sf::Vector2i position, bool resize)
 	{

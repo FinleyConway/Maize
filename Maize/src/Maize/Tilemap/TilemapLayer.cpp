@@ -12,9 +12,9 @@ namespace Maize {
         }
     }
 
-    void TilemapLayer::RemoveTile(sf::Vector2i gridPosition)
+	void TilemapLayer::RemoveTile(sf::Vector2i gridPosition)
     {
-        if (m_Grid.ContainsTile(gridPosition))
+        if (m_Grid.ContainsTile(gridPosition) && m_GridRenderer.ContainsTile(gridPosition))
         {
             m_Grid.RemoveTile(gridPosition);
 			m_GridRenderer.RemoveTile(gridPosition);
@@ -23,7 +23,7 @@ namespace Maize {
 
     void TilemapLayer::GetTileInfo(sf::Vector2i gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation)
     {
-        if (m_Grid.ContainsTile(gridPosition))
+        if (m_Grid.ContainsTile(gridPosition) && m_GridRenderer.ContainsTile(gridPosition))
         {
             const TilemapTile& tile = m_Grid.GetTile(gridPosition);
 
@@ -41,7 +41,7 @@ namespace Maize {
 
     void TilemapLayer::FillTiles(sf::Vector2i gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile, sf::Vector2i size)
     {
-        if (!m_Grid.ContainsTile(gridPosition)) return;
+        if (!m_Grid.ContainsTile(gridPosition) && !m_GridRenderer.ContainsTile(gridPosition)) return;
 
         const TilemapTile& currentTile = m_Grid.GetTile(gridPosition);
         bool isReferenceTile = currentTile.texCoords == referenceTile.texCoords;
@@ -49,11 +49,8 @@ namespace Maize {
 
         if (isReferenceTile && isFilled)
         {
-			m_Grid.InsertTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY,
-							  selectedTile.rotation);
-			m_GridRenderer.InsertTile(gridPosition,
-									  CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)selectedTile.texCoords,
-												 (sf::Vector2f)size), false);
+			m_Grid.InsertTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation);
+			m_GridRenderer.InsertTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)selectedTile.texCoords, (sf::Vector2f)size), false);
 
             for (const auto& [neighbour, tilePosition] : m_Grid.GetSurroundingTiles(gridPosition))
             {

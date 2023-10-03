@@ -33,6 +33,8 @@ namespace Maize {
 			if (index != -1)
 			{
 				m_Grid[index] = T(std::forward<Args>(args)...);
+
+				printf("[x:%d, y:%d]\n", m_CurrentSize.x, m_CurrentSize.y);
 			}
         }
 
@@ -54,7 +56,7 @@ namespace Maize {
 
             static std::array<sf::Vector2i, 8> adjacentOffsets = {
                     sf::Vector2i(-1, -1), sf::Vector2i(0, -1), sf::Vector2i(1, -1),
-                    sf::Vector2i(-1,  0),                      sf::Vector2i(1,  0),
+                    sf::Vector2i(-1,  0),                      	   sf::Vector2i(1,  0),
                     sf::Vector2i(-1,  1), sf::Vector2i(0,  1), sf::Vector2i(1,  1)
             };
 
@@ -93,13 +95,19 @@ namespace Maize {
 
 		void Resize(int32_t newWidth, int32_t newHeight)
 		{
-			std::vector<T> newGrid(newWidth * newHeight);
+			std::vector<T> newGrid(newWidth * newHeight, s_DefaultObject);
 
-			for (int32_t y = 0; y < std::min(m_CurrentSize.y, newHeight); y++)
+			for (int32_t y = 0; y < newHeight; y++)
 			{
-				for (int32_t x = 0; x < std::min(m_CurrentSize.x, newWidth); x++)
+				for (int32_t x = 0; x < newWidth; x++)
 				{
-					newGrid[y * newWidth + x] = m_Grid[y * m_CurrentSize.x + x];
+					int32_t oldX = x - (newWidth - m_CurrentSize.x) / 2;
+					int32_t oldY = y - (newHeight - m_CurrentSize.y) / 2;
+
+					if (oldX >= 0 && oldX < m_CurrentSize.x && oldY >= 0 && oldY < m_CurrentSize.y)
+					{
+						newGrid[y * newWidth + x] = m_Grid[oldY * m_CurrentSize.x + oldX];
+					}
 				}
 			}
 
@@ -107,7 +115,7 @@ namespace Maize {
 			m_CurrentSize = sf::Vector2i(newWidth, newHeight);
 		}
 
-        static sf::Vector2i ConvertScreenToGrid(sf::Vector2f position, sf::Vector2i cellSize)
+		static sf::Vector2i ConvertScreenToGrid(sf::Vector2f position, sf::Vector2i cellSize)
         {
             return sf::Vector2i(
                     static_cast<int32_t>(std::floor(position.x / static_cast<float>(cellSize.x))),

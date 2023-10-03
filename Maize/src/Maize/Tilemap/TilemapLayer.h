@@ -41,7 +41,7 @@ namespace Maize {
 	private:
         std::string m_Name;
         CartesianGrid<TilemapTile> m_Grid;
-		VertexGrid m_GridRenderer = VertexGrid({ 50, 50 });
+		VertexGrid m_GridRenderer;
     };
 
 } // Maize
