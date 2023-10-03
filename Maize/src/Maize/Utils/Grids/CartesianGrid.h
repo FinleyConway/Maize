@@ -33,8 +33,6 @@ namespace Maize {
 			if (index != -1)
 			{
 				m_Grid[index] = T(std::forward<Args>(args)...);
-
-				printf("[x:%d, y:%d]\n", m_CurrentSize.x, m_CurrentSize.y);
 			}
         }
 

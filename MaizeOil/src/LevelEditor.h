@@ -13,6 +13,8 @@ public:
         auto tilemapE = m_Reg.CreateEntity();
         m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
         m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE);
+		m_TilemapComponent->layers.emplace_back().SetName("Background");
+
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
     }
 
@@ -49,9 +51,6 @@ public:
 
                 m_Texture = results.packedTexture;
 
-                /*
-                 * BUG: drawing to tilemap then adding a new texture which get packed doesnt show the same texture
-                */
                 for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
                 {
                     for (auto& [id, rect] : results.textureInfo)
@@ -60,8 +59,8 @@ public:
                         {
                             for (auto& [tileID, tile] : tileset.GetTiles())
                             {
-                                tile.texCoords.x += rect.getPosition().x;
-                                tile.texCoords.y += rect.getPosition().y;
+                                tile.texCoords.x += rect.getPosition().x / m_TilemapComponent->tileSizeX;
+                                tile.texCoords.y += rect.getPosition().y / m_TilemapComponent->tileSizeY;
                             }
                         }
                     }
@@ -74,6 +73,11 @@ public:
         auto& ren = Maize::Application::Get().GetRenderer();
 
         ren.BeginSceneDrawing();
+
+		sf::Sprite sprite(m_Texture);
+		sprite.setPosition(-50, -50);
+
+		ren.Draw(sprite);
 
 		for (const auto& layer : m_TilemapComponent->layers)
 		{

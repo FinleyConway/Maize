@@ -101,8 +101,8 @@ namespace Maize {
 		{
 			if (!resize) return -1;
 
-			int32_t newWidth = std::max(m_CurrentSize.x, std::abs(position.x) * 2 + 1);
-			int32_t newHeight = std::max(m_CurrentSize.y, std::abs(position.y) * 2 + 1);
+			int32_t newWidth = std::max(m_CurrentSize.x, std::abs(position.x) * 15 + 1);
+			int32_t newHeight = std::max(m_CurrentSize.y, std::abs(position.y) * 15 + 1);
 
 			Resize(newWidth, newHeight);
 		}
