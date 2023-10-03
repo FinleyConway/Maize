@@ -112,7 +112,7 @@ namespace Maize {
 
         int32_t id = m_SelectedTileset->GetID();
         std::string name = m_SelectedTileset->GetName();
-        const uint32_t bufferSize = 128;
+        const uint8_t bufferSize = 255;
         char buffer[bufferSize];
         strncpy(buffer, name.c_str(), bufferSize);
         sf::Vector2i tileSize = m_SelectedTileset->GetTileSize();

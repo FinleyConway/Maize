@@ -16,6 +16,7 @@
 #include "Maize/Utils/SystemNotify.h"
 #include "Maize/Utils/Random.h"
 #include "Maize/Utils/Grids/CartesianGrid.h"
+#include "Maize/Utils/Grids/VertexGrid.h"
 
 #include "Maize/Tilemap/Tileset.h"
 #include "Maize/Tilemap/TilemapLayer.h"

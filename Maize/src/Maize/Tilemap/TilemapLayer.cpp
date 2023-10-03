@@ -7,8 +7,8 @@ namespace Maize {
     {
         if (tile.IsValid())
         {
-            m_Grid.EmplaceTile(gridPosition, true, tile.texCoords, flipX, flipY, rotation);
-			m_GridRenderer.PushTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)tile.texCoords, (sf::Vector2f)size), true);
+			m_Grid.InsertTile(gridPosition, true, tile.texCoords, flipX, flipY, rotation);
+			m_GridRenderer.InsertTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)tile.texCoords, (sf::Vector2f)size), true);
         }
     }
 
@@ -34,7 +34,7 @@ namespace Maize {
         }
     }
 
-    const TilemapTile& TilemapLayer::GetTile(sf::Vector2i gridPosition) const
+    const TilemapTile& TilemapLayer::GetTile(sf::Vector2i gridPosition)
     {
         return m_Grid.GetTile(gridPosition);
     }
@@ -49,8 +49,11 @@ namespace Maize {
 
         if (isReferenceTile && isFilled)
         {
-            m_Grid.EmplaceTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation);
-			m_GridRenderer.PushTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)selectedTile.texCoords, (sf::Vector2f)size), false);
+			m_Grid.InsertTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY,
+							  selectedTile.rotation);
+			m_GridRenderer.InsertTile(gridPosition,
+									  CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)selectedTile.texCoords,
+												 (sf::Vector2f)size), false);
 
             for (const auto& [neighbour, tilePosition] : m_Grid.GetSurroundingTiles(gridPosition))
             {

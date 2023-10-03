@@ -32,7 +32,7 @@ namespace Maize {
         void PlaceTile(const TilemapTile& tile, sf::Vector2i gridPosition, bool flipX, bool flipY, float rotation, sf::Vector2i size);
         void RemoveTile(sf::Vector2i gridPosition);
         void GetTileInfo(sf::Vector2i gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation);
-        const TilemapTile& GetTile(sf::Vector2i gridPosition) const;
+        const TilemapTile& GetTile(sf::Vector2i gridPosition);
         void FillTiles(sf::Vector2i gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile, sf::Vector2i size);
 
 	private:
@@ -40,8 +40,8 @@ namespace Maize {
 
 	private:
         std::string m_Name;
-        CartesianGrid<TilemapTile> m_Grid = CartesianGrid<TilemapTile>(sf::Vector2i(50, 50));
-		VertexGrid m_GridRenderer  = VertexGrid(sf::Vector2i(50, 50));
+        CartesianGrid<TilemapTile> m_Grid;
+		VertexGrid m_GridRenderer = VertexGrid({ 50, 50 });
     };
 
 } // Maize

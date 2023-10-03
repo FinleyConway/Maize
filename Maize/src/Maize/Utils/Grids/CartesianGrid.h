@@ -6,7 +6,7 @@ namespace Maize {
     class CartesianGrid
     {
     public:
-        CartesianGrid() requires std::default_initializable<T> : m_Grid(1) { }
+        CartesianGrid() requires std::default_initializable<T> = default;
         explicit CartesianGrid(sf::Vector2i size) requires std::default_initializable<T> : m_CurrentSize(size)
         {
             m_Grid.resize(size.x * size.y);
@@ -17,70 +17,44 @@ namespace Maize {
 
         void PushTile(sf::Vector2i position, const T& tile, bool resize = true)
         {
-            sf::Vector2i adjustedPosition = AdjustPosition(position);
+			int32_t index = GetIndex(position, resize);
 
-            if (IsWithinBounds(adjustedPosition))
-            {
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                m_Grid[index] = tile;
-            }
-            else
-            {
-                if (!resize) return;
-
-                Resize(adjustedPosition);
-
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                m_Grid[index] = tile;
-            }
+			if (index != -1)
+			{
+				m_Grid[index] = tile;
+			}
         }
 
         template <typename... Args>
-        void EmplaceTile(sf::Vector2i position, bool resize = true, Args&&... args)
+        void InsertTile(sf::Vector2i position, bool resize = true, Args&&... args)
         {
-            sf::Vector2i adjustedPosition = AdjustPosition(position);
+			int32_t index = GetIndex(position, resize);
 
-            if (IsWithinBounds(adjustedPosition))
-            {
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                m_Grid[index] = T(std::forward<Args>(args)...);
-            }
-            else
-            {
-                if (!resize) return;
-
-                Resize(adjustedPosition);
-
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                m_Grid[index] = T(std::forward<Args>(args)...);
-            }
+			if (index != -1)
+			{
+				m_Grid[index] = T(std::forward<Args>(args)...);
+			}
         }
 
-        const T& GetTile(sf::Vector2i position) const
+        const T& GetTile(sf::Vector2i position)
         {
-            sf::Vector2i adjustedPosition = AdjustPosition(position);
+			int32_t index = GetIndex(position, false);
 
-            if (IsWithinBounds(adjustedPosition))
-            {
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                return m_Grid.at(index);
-            }
+			if (index != -1)
+			{
+				return m_Grid.at(index);
+			}
 
             return s_DefaultObject;
         }
 
-        std::vector<std::pair<const T&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i initPosition) const
+        std::vector<std::pair<const T&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i initPosition)
         {
             std::vector<std::pair<const T&, sf::Vector2i>> surrounding;
 
             static std::array<sf::Vector2i, 8> adjacentOffsets = {
                     sf::Vector2i(-1, -1), sf::Vector2i(0, -1), sf::Vector2i(1, -1),
-                    sf::Vector2i(-1,  0),                      	   sf::Vector2i(1,  0),
+                    sf::Vector2i(-1,  0),                      sf::Vector2i(1,  0),
                     sf::Vector2i(-1,  1), sf::Vector2i(0,  1), sf::Vector2i(1,  1)
             };
 
@@ -95,29 +69,43 @@ namespace Maize {
             return surrounding;
         }
 
-        bool ContainsTile(sf::Vector2i position) const
+        bool ContainsTile(sf::Vector2i position)
         {
-            sf::Vector2i adjustedPosition = AdjustPosition(position);
+            int32_t index = GetIndex(position, false);
 
-            if (IsWithinBounds(adjustedPosition))
-            {
-                return true;
-            }
+			if (index != -1)
+			{
+				return true;
+			}
 
             return false;
         }
 
         void RemoveTile(sf::Vector2i position)
         {
-            sf::Vector2i adjustedPosition = AdjustPosition(position);
+			int32_t index = GetIndex(position, false);
 
-            if (IsWithinBounds(adjustedPosition))
-            {
-                int32_t index = adjustedPosition.y * m_CurrentSize.x + adjustedPosition.x;
-
-                m_Grid[index] = s_DefaultObject;
-            }
+			if (index != -1)
+			{
+				m_Grid[index] = s_DefaultObject;
+			}
         }
+
+		void Resize(int32_t newWidth, int32_t newHeight)
+		{
+			std::vector<T> newGrid(newWidth * newHeight);
+
+			for (int32_t y = 0; y < std::min(m_CurrentSize.y, newHeight); y++)
+			{
+				for (int32_t x = 0; x < std::min(m_CurrentSize.x, newWidth); x++)
+				{
+					newGrid[y * newWidth + x] = m_Grid[y * m_CurrentSize.x + x];
+				}
+			}
+
+			m_Grid = std::move(newGrid);
+			m_CurrentSize = sf::Vector2i(newWidth, newHeight);
+		}
 
         static sf::Vector2i ConvertScreenToGrid(sf::Vector2f position, sf::Vector2i cellSize)
         {
@@ -135,25 +123,30 @@ namespace Maize {
             );
         }
 
-		void Resize(sf::Vector2i adjustedPosition, int32_t resizeAmount = 15)
+	private:
+		int32_t GetIndex(sf::Vector2i position, bool resize = true)
 		{
-			int32_t newX = std::max(m_CurrentSize.x, adjustedPosition.x);
-			int32_t newY = std::max(m_CurrentSize.y, adjustedPosition.y);
+			if (IsOutOfBounds(position))
+			{
+				if (!resize) return -1;
 
-			std::vector<T> newGrid(newX * newY);
+				int32_t newWidth = std::max(m_CurrentSize.x, std::abs(position.x) * 2 + 1);
+				int32_t newHeight = std::max(m_CurrentSize.y, std::abs(position.y) * 2 + 1);
+
+				Resize(newWidth, newHeight);
+			}
+
+			int32_t adjustedX = position.x + m_CurrentSize.x / 2;
+			int32_t adjustedY = position.y + m_CurrentSize.y / 2;
+
+			return adjustedY * m_CurrentSize.x + adjustedX;
 		}
 
-	private:
-        sf::Vector2i AdjustPosition(sf::Vector2i position) const // 20x20 grid (0, 0) -> (10, 10)
-        {
-            return sf::Vector2i(position.x + m_CurrentSize.x / 2, position.y + m_CurrentSize.y / 2);
-        }
-
-        bool IsWithinBounds(sf::Vector2i adjustedPosition) const
-        {
-            return adjustedPosition.x >= 0 && adjustedPosition.x < m_CurrentSize.x &&
-                    adjustedPosition.y >= 0 && adjustedPosition.y < m_CurrentSize.y;
-        }
+		bool IsOutOfBounds(sf::Vector2i position) const
+		{
+			return position.x < -m_CurrentSize.x / 2 || position.x >= m_CurrentSize.x / 2 ||
+				   position.y < -m_CurrentSize.y / 2 || position.y >= m_CurrentSize.y / 2;
+		}
 
     private:
         std::vector<T> m_Grid;
