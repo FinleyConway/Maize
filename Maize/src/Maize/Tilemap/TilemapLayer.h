@@ -36,9 +36,6 @@ namespace Maize {
         void FillTiles(sf::Vector2i gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile, sf::Vector2i size);
 
 	private:
-		std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f texCoord, sf::Vector2f size) const;
-
-	private:
         std::string m_Name;
         CartesianGrid<TilemapTile> m_Grid;
 		VertexGrid m_GridRenderer;

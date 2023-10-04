@@ -1,5 +1,6 @@
 #include "mpch.h"
 #include "Maize/Tilemap/TilemapLayer.h"
+#include "Maize/Renderer/Renderer.h"
 
 namespace Maize {
 
@@ -8,7 +9,7 @@ namespace Maize {
         if (tile.IsValid())
         {
 			m_Grid.InsertTile(gridPosition, true, tile.texCoords, flipX, flipY, rotation);
-			m_GridRenderer.InsertTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)tile.texCoords, (sf::Vector2f)size), true);
+			m_GridRenderer.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)tile.texCoords), true);
         }
     }
 
@@ -50,7 +51,7 @@ namespace Maize {
         if (isReferenceTile && isFilled)
         {
 			m_Grid.InsertTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation);
-			m_GridRenderer.InsertTile(gridPosition, CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)selectedTile.texCoords, (sf::Vector2f)size), false);
+			m_GridRenderer.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)selectedTile.texCoords), false);
 
             for (const auto& [neighbour, tilePosition] : m_Grid.GetSurroundingTiles(gridPosition))
             {
@@ -58,22 +59,5 @@ namespace Maize {
             }
         }
     }
-
-	std::array<sf::Vertex, 4> TilemapLayer::CreateQuad(sf::Vector2f position, sf::Vector2f texCoord, sf::Vector2f size) const
-	{
-		std::array<sf::Vertex, 4> quad;
-
-		quad[0].position = sf::Vector2f(position.x * size.x, position.y * size.y);
-		quad[1].position = sf::Vector2f((position.x + 1) * size.x, position.y * size.y);
-		quad[2].position = sf::Vector2f((position.x + 1) * size.x, (position.y + 1) * size.y);
-		quad[3].position = sf::Vector2f(position.x * size.x, (position.y + 1) * size.y);
-
-		quad[0].texCoords = sf::Vector2f(texCoord.x * size.x, texCoord.y * size.y);
-		quad[1].texCoords = sf::Vector2f((texCoord.x + 1) * size.x, texCoord.y * size.y);
-		quad[2].texCoords = sf::Vector2f((texCoord.x + 1) * size.x, (texCoord.y + 1) * size.y);
-		quad[3].texCoords = sf::Vector2f(texCoord.x * size.x, (texCoord.y + 1) * size.y);
-
-		return quad;
-	}
 
 } // Maize
