@@ -51,20 +51,31 @@ public:
 
                 m_Texture = results.packedTexture;
 
-                for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
-                {
-                    for (auto& [id, rect] : results.textureInfo)
-                    {
-                        if (id == tilesetID)
-                        {
-                            for (auto& [tileID, tile] : tileset.GetTiles())
-                            {
-                                tile.texCoords.x += rect.getPosition().x / m_TilemapComponent->tileSizeX;
-                                tile.texCoords.y += rect.getPosition().y / m_TilemapComponent->tileSizeY;
-                            }
-                        }
-                    }
-                }
+				// need to update tilemap tile texCoords since they dont change
+				for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
+				{
+					sf::Vector2i tileSize = tileset.GetTileSize();
+
+					for (auto& [id, rect] : results.textureInfo)
+					{
+						if (id == tilesetID)
+						{
+							for (auto& [tileID, tile] : tileset.GetTiles())
+							{
+								if (tile.texCoords.x == 0 && tile.texCoords.y == 0)
+								{
+									tile.texCoords.x = rect.getPosition().x / m_TilemapComponent->tileSizeX;
+									tile.texCoords.y = rect.getPosition().y / m_TilemapComponent->tileSizeY;
+								}
+								else
+								{
+									tile.texCoords.x = (rect.getPosition().x + tile.texCoords.x * tileSize.x) / m_TilemapComponent->tileSizeX;
+									tile.texCoords.y = (rect.getPosition().y + tile.texCoords.y * tileSize.y) / m_TilemapComponent->tileSizeY;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 

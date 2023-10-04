@@ -27,7 +27,7 @@ namespace Maize {
 
                     if (tile.IsValid())
                     {
-                        nlohmann::json serialTile = {
+                        /*nlohmann::json serialTile = {
                                 {"TexCoordsX", tile.texCoords.x},
                                 {"TexCoordsY", tile.texCoords.y},
                                 {"PositionX", x},
@@ -37,7 +37,7 @@ namespace Maize {
                                 {"Rotation", tile.rotation}
                         };
 
-                        tilemap.push_back(serialTile);
+                        tilemap.push_back(serialTile);*/
                     }
                 }
             }
@@ -71,12 +71,12 @@ namespace Maize {
                 {
                     TilemapTile tile;
 
-                    sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
+                    /*sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
                     tile.texCoords.x = serialTile["TexCoordsX"];
                     tile.texCoords.y = serialTile["TexCoordsY"];
                     tile.flipX = serialTile["FlipX"];
                     tile.flipY = serialTile["FlipY"];
-                    tile.rotation = serialTile["Rotation"];
+                    tile.rotation = serialTile["Rotation"];*/
 
                     //layer.PlaceTile(tile, position, tile.flipX, tile.flipY, tile.rotation);
                 }
