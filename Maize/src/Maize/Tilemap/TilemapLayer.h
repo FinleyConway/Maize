@@ -37,7 +37,7 @@ namespace Maize {
         void PlaceTile(const TilemapTile& tile, sf::Vector2i gridPosition, bool flipX, bool flipY, float rotation, sf::Vector2i size);
         void RemoveTile(sf::Vector2i gridPosition);
         void GetTileInfo(sf::Vector2i gridPosition, TilemapTile& selectedTile, bool& flipX, bool& flipY, float& rotation);
-        const TilemapTile& GetTile(sf::Vector2i gridPosition);
+        const TilemapTile* GetTile(sf::Vector2i gridPosition) const;
         void FillTiles(sf::Vector2i gridPosition, const TilemapTile& selectedTile, TilemapTile referenceTile, sf::Vector2i size);
 
 	private:

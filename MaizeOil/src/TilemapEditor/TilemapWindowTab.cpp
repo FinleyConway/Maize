@@ -74,7 +74,10 @@ namespace Maize {
             }
             else if (m_CurrentTool == TilemapTools::Fill)
             {
-                currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition), size);
+                const auto* tile = currentLayer.GetTile(gridPosition);
+
+                if (tile != nullptr)
+                    currentLayer.FillTiles(gridPosition, m_SelectedTile, *tile, size);
             }
         }
     }

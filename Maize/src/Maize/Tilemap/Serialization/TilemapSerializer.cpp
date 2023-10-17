@@ -23,11 +23,11 @@ namespace Maize {
             {
                 for (int32_t x = -halfWidth; x < halfWidth; ++x)
                 {
-                    const TilemapTile& tile = layer.GetTile(sf::Vector2i(x, y));
+                    /*const TilemapTile& tile = layer.GetTile(sf::Vector2i(x, y));
 
                     if (tile.IsValid())
                     {
-                        /*nlohmann::json serialTile = {
+                        nlohmann::json serialTile = {
                                 {"TexCoordsX", tile.texCoords.x},
                                 {"TexCoordsY", tile.texCoords.y},
                                 {"PositionX", x},
@@ -37,8 +37,8 @@ namespace Maize {
                                 {"Rotation", tile.rotation}
                         };
 
-                        tilemap.push_back(serialTile);*/
-                    }
+                        tilemap.push_back(serialTile);
+                    }*/
                 }
             }
 

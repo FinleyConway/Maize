@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../../../Build/Release/_deps/nlohmann_json-src/include/nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "Maize/Tilemap/Tileset.h"
 

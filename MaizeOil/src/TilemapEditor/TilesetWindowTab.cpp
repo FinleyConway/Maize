@@ -72,6 +72,8 @@ namespace Maize {
 			m_TilemapComponent->tilesets.erase(tilesetID);
 			m_SelectedTileset = nullptr;
 
+            UpdateMap();
+
 			// auto select a new tileset if there is one there
 			if (!m_TilemapComponent->tilesets.empty())
 			{

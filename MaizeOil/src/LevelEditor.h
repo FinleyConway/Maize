@@ -42,11 +42,18 @@ public:
 
         ren.BeginSceneDrawing();
 
+        if (m_TilemapComponent->texture)
+        {
+            sf::Sprite sprite(*m_TilemapComponent->texture);
+
+            ren.Draw(sprite);
+        }
+
 		if (m_TilemapComponent->texture != nullptr)
 		{
 			for (auto& layer : m_TilemapComponent->layers)
 			{
-				auto halfSize = layer.GetGridSize() / 2;
+				/*auto halfSize = layer.GetGridSize() / 2;
 
 				for (int y = -halfSize.y; y < halfSize.y; y++)
 				{
@@ -58,7 +65,7 @@ public:
 
 						std::cout << tile.texCoords.x << " " << tile.texCoords.y << std::endl;
 					}
-				}
+				}*/
 
 				ren.Draw(layer.GetGridRenderer().GetGrid(), m_TilemapComponent->texture.get());
 			}

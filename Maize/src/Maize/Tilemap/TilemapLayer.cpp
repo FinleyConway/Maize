@@ -26,16 +26,16 @@ namespace Maize {
     {
         if (m_Grid.ContainsTile(gridPosition) && m_GridRenderer.ContainsTile(gridPosition))
         {
-            const TilemapTile& tile = m_Grid.GetTile(gridPosition);
+            const TilemapTile* tile = m_Grid.GetTile(gridPosition);
 
-            selectedTile = tile;
-            flipX = tile.flipX;
-            flipY = tile.flipY;
-            rotation = tile.rotation;
+            selectedTile = *tile;
+            flipX = tile->flipX;
+            flipY = tile->flipY;
+            rotation = tile->rotation;
         }
     }
 
-    const TilemapTile& TilemapLayer::GetTile(sf::Vector2i gridPosition)
+    const TilemapTile* TilemapLayer::GetTile(sf::Vector2i gridPosition) const
     {
         return m_Grid.GetTile(gridPosition);
     }
@@ -44,9 +44,12 @@ namespace Maize {
     {
         if (!m_Grid.ContainsTile(gridPosition) && !m_GridRenderer.ContainsTile(gridPosition)) return;
 
-        const TilemapTile& currentTile = m_Grid.GetTile(gridPosition);
-        bool isReferenceTile = currentTile.texCoords == referenceTile.texCoords;
-        bool isFilled = currentTile.texCoords != selectedTile.texCoords;
+        const TilemapTile* currentTile = m_Grid.GetTile(gridPosition);
+
+        if (currentTile == nullptr) return;
+
+        bool isReferenceTile = currentTile->texCoords == referenceTile.texCoords;
+        bool isFilled = currentTile->texCoords != selectedTile.texCoords;
 
         if (isReferenceTile && isFilled)
         {

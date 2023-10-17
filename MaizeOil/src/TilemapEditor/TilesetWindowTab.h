@@ -51,24 +51,16 @@ namespace Maize {
 			// offset all the tiles in the tileset of where they are in the packed texture
 			for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
 			{
-				sf::Vector2i tileSize = tileset.GetTileSize();
-
 				for (auto& [id, rect] : results.textureInfo)
 				{
 					if (id == tilesetID)
 					{
 						for (auto& [tileID, tile] : tileset.GetTiles())
 						{
-							if (tile.texCoords.x == 0 && tile.texCoords.y == 0)
-							{
-								tile.texCoords.x = rect.getPosition().x / m_TilemapComponent->tileSizeX;
-								tile.texCoords.y = rect.getPosition().y / m_TilemapComponent->tileSizeY;
-							}
-							else
-							{
-								tile.texCoords.x = (rect.getPosition().x + tile.texCoords.x * tileSize.x) / m_TilemapComponent->tileSizeX;
-								tile.texCoords.y = (rect.getPosition().y + tile.texCoords.y * tileSize.y) / m_TilemapComponent->tileSizeY;
-							}
+                            sf::Vector2i texturePosition = rect.getPosition();
+
+                            tile.texCoords.x = tile.originalTexCoords.x + (texturePosition.x / m_TilemapComponent->tileSizeX);
+                            tile.texCoords.y = tile.originalTexCoords.y + (texturePosition.y / m_TilemapComponent->tileSizeY);
 						}
 					}
 				}
@@ -86,15 +78,15 @@ namespace Maize {
 				{
 					for (int32_t x = -halfSize.x; x < halfSize.x; x++)
 					{
-						const TilemapTile& tile = layer.GetGrid().GetTile(sf::Vector2i(x, y));
+						const TilemapTile* tile = layer.GetGrid().GetTile(sf::Vector2i(x, y));
 
-						if (!tile.IsValid()) continue;
+						if (tile == nullptr) continue;
 
-						Tile* tilesetTile = Tileset::FindTileByTilesetID(m_TilemapComponent->tilesets, tile.tilesetID, tile.tileIndex);
+						Tile* tilesetTile = Tileset::FindTileByTilesetID(m_TilemapComponent->tilesets, tile->tilesetID, tile->tileIndex);
 
 						if (tilesetTile == nullptr) continue;
 
-						TilemapTile newTile = tile;
+						TilemapTile newTile = *tile;
 						newTile.texCoords = tilesetTile->texCoords;
 
 						sf::Vector2i tileSize = sf::Vector2i(m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY); // temp;

@@ -7,10 +7,7 @@ namespace Maize {
     {
     public:
         CartesianGrid() requires std::default_initializable<T> = default;
-        explicit CartesianGrid(sf::Vector2i size) requires std::default_initializable<T> : m_CurrentSize(size)
-        {
-            m_Grid.resize(size.x * size.y);
-        }
+        explicit CartesianGrid(sf::Vector2i size) requires std::default_initializable<T> : m_Grid(size.x * size.y) { }
 
         sf::Vector2i GridSize() const { return m_CurrentSize; }
 		void Clear() { m_Grid.clear(); }
@@ -36,19 +33,19 @@ namespace Maize {
 			}
         }
 
-        const T& GetTile(sf::Vector2i position)
+        const T* GetTile(sf::Vector2i position) const
         {
-			int32_t index = GetIndex(position, false);
+            if (!IsOutOfBounds(position))
+            {
+                sf::Vector2i adjusted = AdjustPosition(position);
 
-			if (index != -1)
-			{
-				return m_Grid.at(index);
-			}
+                return &m_Grid.at(adjusted.y * m_CurrentSize.x + adjusted.x);
+            }
 
-            return s_DefaultObject;
+            return nullptr;
         }
 
-        std::vector<std::pair<const T&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i initPosition)
+        std::vector<std::pair<const T&, sf::Vector2i>> GetSurroundingTiles(sf::Vector2i initPosition) const
         {
             std::vector<std::pair<const T&, sf::Vector2i>> surrounding;
 
@@ -63,37 +60,38 @@ namespace Maize {
                 int32_t x = initPosition.x + offset.x;
                 int32_t y = initPosition.y + offset.y;
 
-                surrounding.emplace_back(GetTile(sf::Vector2i(x, y)), sf::Vector2i(x, y));
+                const T* tile = GetTile(sf::Vector2i(x, y));
+
+                if (tile != nullptr)
+                    surrounding.emplace_back(*tile, sf::Vector2i(x, y));
             }
 
             return surrounding;
         }
 
-        bool ContainsTile(sf::Vector2i position)
+        bool ContainsTile(sf::Vector2i position) const
         {
-            int32_t index = GetIndex(position, false);
-
-			if (index != -1)
-			{
-				return true;
-			}
+            if (!IsOutOfBounds(position))
+            {
+                return true;
+            }
 
             return false;
         }
 
         void RemoveTile(sf::Vector2i position)
         {
-			int32_t index = GetIndex(position, false);
+            if (!IsOutOfBounds(position))
+            {
+                sf::Vector2i adjusted = AdjustPosition(position);
 
-			if (index != -1)
-			{
-				m_Grid[index] = s_DefaultObject;
-			}
+                m_Grid[adjusted.y * m_CurrentSize.x + adjusted.x] = T();
+            }
         }
 
 		void Resize(int32_t newWidth, int32_t newHeight)
 		{
-			std::vector<T> newGrid(newWidth * newHeight, s_DefaultObject);
+			std::vector<T> newGrid(newWidth * newHeight, T());
 
 			for (int32_t y = 0; y < newHeight; y++)
 			{
@@ -130,11 +128,11 @@ namespace Maize {
         }
 
 	private:
-		int32_t GetIndex(sf::Vector2i position, bool resize = true)
+		int32_t GetIndex(sf::Vector2i position, bool resize)
 		{
 			if (IsOutOfBounds(position))
 			{
-				if (!resize) return -1;
+                if (!resize) return -1;
 
 				int32_t newWidth = std::max(m_CurrentSize.x, std::abs(position.x) * 2 + 1);
 				int32_t newHeight = std::max(m_CurrentSize.y, std::abs(position.y) * 2 + 1);
@@ -142,11 +140,15 @@ namespace Maize {
 				Resize(newWidth, newHeight);
 			}
 
-			int32_t adjustedX = position.x + m_CurrentSize.x / 2;
-			int32_t adjustedY = position.y + m_CurrentSize.y / 2;
+            sf::Vector2i adjusted = AdjustPosition(position);
 
-			return adjustedY * m_CurrentSize.x + adjustedX;
+			return adjusted.y * m_CurrentSize.x + adjusted.x;
 		}
+
+        sf::Vector2i AdjustPosition(sf::Vector2i position) const
+        {
+            return sf::Vector2i(position.x + m_CurrentSize.x / 2, position.y + m_CurrentSize.y / 2);
+        }
 
 		bool IsOutOfBounds(sf::Vector2i position) const
 		{
@@ -157,11 +159,6 @@ namespace Maize {
     private:
         std::vector<T> m_Grid;
         sf::Vector2i m_CurrentSize;
-
-        const static T s_DefaultObject;
     };
-
-    template <typename T>
-    const T CartesianGrid<T>::s_DefaultObject{};
 
 } // Maize
