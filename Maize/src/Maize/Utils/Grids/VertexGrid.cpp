@@ -3,8 +3,6 @@
 
 namespace Maize {
 
-	sf::Vertex VertexGrid::s_DefaultObject{};
-
 	VertexGrid::VertexGrid(sf::Vector2i size) : m_Grid(sf::Quads, size.x * size.y * 4), m_CurrentSize(size)
 	{
 	}
@@ -15,7 +13,7 @@ namespace Maize {
 
 		if (index != -1)
 		{
-			for (uint32_t i = 0; i < quad.size(); i++)
+			for (uint8_t i = 0; i < quad.size(); i++)
 				m_Grid[index + i] = quad[i];
 		}
 	}
@@ -23,40 +21,41 @@ namespace Maize {
 	std::array<sf::Vertex*, 4> VertexGrid::GetTile(sf::Vector2i position)
 	{
 		std::array<sf::Vertex*, 4> quad{};
-		int32_t index = GetIndex(position, false);
 
-		if (index != -1)
-		{
-			for (uint32_t i = 0; i < c_VertexCount; i++)
-				quad[i] = &m_Grid[index + i];
+        if (!IsOutOfBounds(position))
+        {
+            sf::Vector2i adjusted = AdjustPosition(position);
+            int32_t index = adjusted.y * m_CurrentSize.x + adjusted.x;
 
-			return quad;
-		}
+            for (uint8_t i = 0; i < c_VertexCount; i++)
+                quad[i] = &m_Grid[index + i];
+
+            return quad;
+        }
 
 		return quad;
 	}
 
-	bool VertexGrid::ContainsTile(sf::Vector2i position)
+	bool VertexGrid::ContainsTile(sf::Vector2i position) const
 	{
-		int32_t index = GetIndex(position, false);
+        if (!IsOutOfBounds(position))
+        {
+            return true;
+        }
 
-		if (index != -1)
-		{
-			return true;
-		}
-
-		return false;
+        return false;
 	}
 
 	void VertexGrid::RemoveTile(sf::Vector2i position)
 	{
-		int32_t index = GetIndex(position, false);
+        if (!IsOutOfBounds(position))
+        {
+            sf::Vector2i adjusted = AdjustPosition(position);
+            int32_t index = adjusted.y * m_CurrentSize.x + adjusted.x;
 
-		if (index != -1)
-		{
-			for (uint32_t i = 0; i < c_VertexCount; i++)
-				m_Grid[index + i] = s_DefaultObject;
-		}
+            for (uint8_t i = 0; i < c_VertexCount; i++)
+                m_Grid[index + i] = sf::Vertex();
+        }
 	}
 
 	void VertexGrid::Resize(int32_t newWidth, int32_t newHeight)
@@ -75,16 +74,16 @@ namespace Maize {
 				// add new tiles when its within new old grid
 				if (oldX >= 0 && oldX < m_CurrentSize.x && oldY >= 0 && oldY < m_CurrentSize.y)
 				{
-					for (uint32_t i = 0; i < c_VertexCount; i++)
+					for (uint8_t i = 0; i < c_VertexCount; i++)
 					{
 						newGrid[newIndex + i] = m_Grid[oldIndex + i];
 					}
 				}
 				else
 				{
-					for (uint32_t i = 0; i < c_VertexCount; i++)
+					for (uint8_t i = 0; i < c_VertexCount; i++)
 					{
-						newGrid[newIndex + i] = s_DefaultObject;
+						newGrid[newIndex + i] = sf::Vertex();
 					}
 				}
 			}
@@ -107,11 +106,15 @@ namespace Maize {
 			Resize(newWidth, newHeight);
 		}
 
-		int32_t adjustedX = position.x + m_CurrentSize.x / 2;
-		int32_t adjustedY = position.y + m_CurrentSize.y / 2;
+        sf::Vector2i adjusted = AdjustPosition(position);
 
-		return (adjustedY * m_CurrentSize.x + adjustedX) * c_VertexCount;
+		return (adjusted.y * m_CurrentSize.x + adjusted.x) * c_VertexCount;
 	}
+
+    sf::Vector2i VertexGrid::AdjustPosition(sf::Vector2i position) const
+    {
+        return sf::Vector2i(position.x + m_CurrentSize.x / 2, position.y + m_CurrentSize.y / 2);
+    }
 
 	bool VertexGrid::IsOutOfBounds(sf::Vector2i position) const
 	{

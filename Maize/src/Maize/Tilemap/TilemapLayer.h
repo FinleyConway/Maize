@@ -11,11 +11,9 @@ namespace Maize {
 		int32_t tileIndex = -1;
 		sf::Vector2i texCoords = sf::Vector2i(-1, -1);
 
-        bool flipX = false; // to be removed
-        bool flipY = false; // to be removed
-        float rotation = 0.0f; // to be removed
-
-		// float orientation = 0.0f;
+        bool flipX = false;
+        bool flipY = false;
+        float rotation = 0.0f;
 
         bool IsValid() const
         {
