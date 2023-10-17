@@ -19,6 +19,36 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
+	void TilemapWindowTab::Window(float deltaTime)
+	{
+		if (ImGui::BeginTabItem(("Tilemap")))
+		{
+			OnUpdate(deltaTime);
+
+			float mainWindowWidth = ImGui::GetWindowWidth();
+
+			ButtonTools();
+			ImGui::SameLine();
+			TilemapLayers();
+
+			ImGui::Columns(2, "TilesetColumns", true);
+
+			ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 } );
+			SelectTileset();
+			ImGui::EndChild();
+
+			ImGui::NextColumn();
+
+			ImGui::BeginChild("Select Tile");
+			SelectTile();
+			ImGui::EndChild();
+
+			ImGui::Columns(1);
+
+			ImGui::EndTabItem();
+		}
+	}
+
     void TilemapWindowTab::OnUpdate(float deltaTime)
     {
         if (m_TilemapComponent->layers.empty()) return;
@@ -46,34 +76,6 @@ namespace Maize {
             {
                 currentLayer.FillTiles(gridPosition, m_SelectedTile, currentLayer.GetTile(gridPosition), size);
             }
-        }
-    }
-
-    void TilemapWindowTab::Window()
-    {
-        if (ImGui::BeginTabItem(("Tilemap")))
-        {
-            float mainWindowWidth = ImGui::GetWindowWidth();
-
-            ButtonTools();
-            ImGui::SameLine();
-            TilemapLayers();
-
-            ImGui::Columns(2, "TilesetColumns", true);
-
-            ImGui::BeginChild("Tilesets", {0, mainWindowWidth / 2});
-            SelectTileset();
-            ImGui::EndChild();
-
-            ImGui::NextColumn();
-
-            ImGui::BeginChild("Select Tile");
-            SelectTile();
-            ImGui::EndChild();
-
-            ImGui::Columns(1);
-
-            ImGui::EndTabItem();
         }
     }
 
@@ -135,6 +137,7 @@ namespace Maize {
         ImGui::BeginDisabled(m_TilemapComponent->layers.empty());
         std::string previewValue;
 
+		// set preview value depending on the layer state
         if (m_TilemapComponent->layers.empty())
         {
             previewValue = "No Layers";
@@ -144,6 +147,7 @@ namespace Maize {
             previewValue = m_TilemapComponent->layers[m_SelectedTilemapLayer].GetName();
         }
 
+		// show all possible layers inside drop down
         if (ImGui::BeginCombo("##Layers", previewValue.c_str()))
         {
             for (uint32_t i = 0; i < m_TilemapComponent->layers.size(); i++)
@@ -167,12 +171,13 @@ namespace Maize {
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
+		// list all available tilesets to allow selection
         for (auto& [id, tileset]: m_TilemapComponent->tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
-            if (ImGui::Button(text.c_str(), {windowSize.x, 64}))
+            if (ImGui::Button(text.c_str(), { windowSize.x, 64 }))
             {
                 m_SelectedTileset = &tileset;
             }
@@ -184,7 +189,7 @@ namespace Maize {
 
             if (tileset.GetTexture() != nullptr)
             {
-                ImGui::Image(*tileset.GetTexture(), {64, 64});
+                ImGui::Image(*tileset.GetTexture(), { 64, 64 });
             }
         }
     }
@@ -195,33 +200,32 @@ namespace Maize {
 
         ImGui::BeginChild("Tilemap", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-        const Texture* texture = m_SelectedTileset->GetTexture();
-        sf::Vector2i tilesetSize = sf::Vector2i(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
-        static float scaleFactor = 4.0f;
-        float scaledImageSizeX = (float)texture->GetWidth() * scaleFactor;
-        float scaledImageSizeY = (float)texture->GetHeight() * scaleFactor;
+        const auto texture = m_SelectedTileset->GetTexture();
+        sf::Vector2u tilesetSize = sf::Vector2u(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
+        float scaledImageSizeX = (float)texture->GetWidth() * m_TilesetZoomFactor;
+        float scaledImageSizeY = (float)texture->GetHeight() * m_TilesetZoomFactor;
 
         float scrollX = 0.0f;
         float scrollY = 0.0f;
 
+		// tileset zooming
         ImGuiIO& io = ImGui::GetIO();
-
         if (io.MouseWheel != 0)
         {
             float scrollDelta = io.MouseWheel;
             if (scrollDelta > 0.0f)
             {
-                scaleFactor++;
+				m_TilesetZoomFactor++;
             }
             else if (scrollDelta < 0.0f)
             {
-                scaleFactor--;
+				m_TilesetZoomFactor--;
             }
         }
+        if (m_TilesetZoomFactor >= 10) m_TilesetZoomFactor = 10;
+        if (m_TilesetZoomFactor <= 1) m_TilesetZoomFactor = 1;
 
-        if (scaleFactor >= 10) scaleFactor = 10;
-        if (scaleFactor <= 1) scaleFactor = 1;
-
+		// tileset dragging
         if (ImGui::IsMouseDragging(2, 0.0f))
         {
             sf::Vector2f delta = ImGui::GetIO().MouseDelta;
@@ -232,6 +236,7 @@ namespace Maize {
         sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
         ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
 
+		// create buttons for where each tile would be in the tileset
         for (int32_t x = 0; x < tilesetSize.x; x++)
         {
             for (int32_t y = 0; y < tilesetSize.y; y++)
@@ -243,7 +248,7 @@ namespace Maize {
 
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
-                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSize().x * scaleFactor, m_SelectedTileset->GetTileSize().y * scaleFactor);
+                sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSize().x * m_TilesetZoomFactor, m_SelectedTileset->GetTileSize().y * m_TilesetZoomFactor);
                 ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
 
                 // change appearance of tile depending on the tile state
@@ -263,6 +268,8 @@ namespace Maize {
 
                     if (ImGui::Button("##Select", buttonSize))
                     {
+						m_SelectedTile.tileIndex = index;
+						m_SelectedTile.tilesetID = tile->tilesetID;
                         m_SelectedTile.texCoords = tile->texCoords;
                     }
                 }

@@ -8,7 +8,7 @@ namespace Maize {
     {
         if (tile.IsValid())
         {
-			m_Grid.InsertTile(gridPosition, true, tile.texCoords, flipX, flipY, rotation);
+			m_Grid.InsertTile(gridPosition, true, tile.tilesetID, tile.tileIndex, tile.texCoords, flipX, flipY, rotation);
 			m_GridRenderer.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)tile.texCoords), true);
         }
     }
@@ -50,7 +50,7 @@ namespace Maize {
 
         if (isReferenceTile && isFilled)
         {
-			m_Grid.InsertTile(gridPosition, false, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation);
+			m_Grid.InsertTile(gridPosition, false, selectedTile.tilesetID, selectedTile.tileIndex, selectedTile.texCoords, selectedTile.flipX, selectedTile.flipY, selectedTile.rotation);
 			m_GridRenderer.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)selectedTile.texCoords), false);
 
             for (const auto& [neighbour, tilePosition] : m_Grid.GetSurroundingTiles(gridPosition))

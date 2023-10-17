@@ -6,12 +6,8 @@ namespace Maize {
 
 	using TileIndex = int32_t;
 
-	class Tile
+	struct Tile
 	{
-	public:
-		Tile() = default;
-		Tile(int32_t tilesetID, sf::Vector2i position) : tilesetID(tilesetID), texCoords(position) {}
-
 		int32_t tilesetID = -1;
 		sf::Vector2i texCoords;
 	};
@@ -30,7 +26,7 @@ namespace Maize {
 		const std::string& GetFilePath() const { return m_FilePath; }
 
 		bool SetTexture(const std::string& textureFilePath);
-		const Texture* GetTexture() const { return m_Texture.get(); }
+		std::shared_ptr<Texture> GetTexture() const { return m_Texture; }
 		bool HasTexture() const { return m_HasTexture; }
 
 		void SetTileSize(sf::Vector2i newTileSize) { m_TileSize = newTileSize; }

@@ -33,50 +33,7 @@ public:
 
 		if (m_TilemapComponent != nullptr)
 		{
-			m_TilemapEditorWindow.OnUpdate(deltaTime);
-			m_TilemapEditorWindow.Window();
-
-			if (ImGui::Button("Generate"))
-			{
-				std::vector<Maize::TextureInfo> textureInfo;
-
-				textureInfo.reserve(m_TilemapComponent->tilesets.size());
-                for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
-				{
-                    textureInfo.emplace_back(*tileset.GetTexture(), tilesetID);
-				}
-
-				Maize::TexturePacker pack;
-				auto results = pack.Pack(textureInfo, sf::Vector2u(1024, 1024));
-
-                m_Texture = results.packedTexture;
-
-				// need to update tilemap tile texCoords since they dont change
-				for (auto& [tilesetID, tileset] : m_TilemapComponent->tilesets)
-				{
-					sf::Vector2i tileSize = tileset.GetTileSize();
-
-					for (auto& [id, rect] : results.textureInfo)
-					{
-						if (id == tilesetID)
-						{
-							for (auto& [tileID, tile] : tileset.GetTiles())
-							{
-								if (tile.texCoords.x == 0 && tile.texCoords.y == 0)
-								{
-									tile.texCoords.x = rect.getPosition().x / m_TilemapComponent->tileSizeX;
-									tile.texCoords.y = rect.getPosition().y / m_TilemapComponent->tileSizeY;
-								}
-								else
-								{
-									tile.texCoords.x = (rect.getPosition().x + tile.texCoords.x * tileSize.x) / m_TilemapComponent->tileSizeX;
-									tile.texCoords.y = (rect.getPosition().y + tile.texCoords.y * tileSize.y) / m_TilemapComponent->tileSizeY;
-								}
-							}
-						}
-					}
-				}
-			}
+			m_TilemapEditorWindow.Window(deltaTime);
 		}
 
 		//m_RenderingSystem.OnRender(m_Reg);
@@ -85,14 +42,26 @@ public:
 
         ren.BeginSceneDrawing();
 
-		sf::Sprite sprite(m_Texture);
-		sprite.setPosition(-50, -50);
-
-		ren.Draw(sprite);
-
-		for (const auto& layer : m_TilemapComponent->layers)
+		if (m_TilemapComponent->texture != nullptr)
 		{
-			ren.Draw(layer.GetGridRenderer().GetGrid(), &m_Texture);
+			for (auto& layer : m_TilemapComponent->layers)
+			{
+				auto halfSize = layer.GetGridSize() / 2;
+
+				for (int y = -halfSize.y; y < halfSize.y; y++)
+				{
+					for (int x = -halfSize.x; x < halfSize.x; x++)
+					{
+						auto& tile = layer.GetTile({ x, y });
+
+						if (!tile.IsValid()) continue;
+
+						std::cout << tile.texCoords.x << " " << tile.texCoords.y << std::endl;
+					}
+				}
+
+				ren.Draw(layer.GetGridRenderer().GetGrid(), m_TilemapComponent->texture.get());
+			}
 		}
 
         ren.EndSceneDrawing();
@@ -107,6 +76,4 @@ private:
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
 
 	Maize::RenderingSystem m_RenderingSystem;
-
-	sf::Texture m_Texture;
 };

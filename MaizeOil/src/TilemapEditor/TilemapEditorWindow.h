@@ -23,19 +23,14 @@ namespace Maize {
             m_TilemapWindow.OnEvent(e);
         }
 
-        void OnUpdate(float deltaTime)
-        {
-            m_TilemapWindow.OnUpdate(deltaTime);
-        }
-
-        void Window()
+        void Window(float deltaTime)
         {
             ImGui::Begin("Tilemap Editor", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
             if (ImGui::BeginTabBar("Tabs"))
             {
                 m_TilesetWindow.Window();
-                m_TilemapWindow.Window();
+                m_TilemapWindow.Window(deltaTime);
 
                 ImGui::EndTabBar();
             }

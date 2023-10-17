@@ -13,7 +13,7 @@ namespace Maize {
 		void Clear() { m_Grid.clear(); }
 
 		void InsertTile(sf::Vector2i position, const std::array<sf::Vertex, 4>& quad, bool resize = true);
-		std::array<sf::Vertex, 4> GetTile(sf::Vector2i position);
+		std::array<sf::Vertex*, 4> GetTile(sf::Vector2i position);
 		bool ContainsTile(sf::Vector2i position);
 		void RemoveTile(sf::Vector2i position);
 		void Resize(int32_t newWidth, int32_t newHeight);

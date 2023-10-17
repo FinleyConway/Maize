@@ -16,10 +16,11 @@ namespace Maize {
 			m_TilemapComponent = tilemapComponent;
 		}
         void OnEvent(Event& e);
-        void OnUpdate(float deltaTime);
-        void Window();
+        void Window(float deltaTime);
 
     private:
+		void OnUpdate(float deltaTime);
+
         void ButtonTools();
         void TilemapLayers();
         void SelectTileset();
@@ -37,6 +38,7 @@ namespace Maize {
         Tileset* m_SelectedTileset = nullptr;
         TilemapTile m_SelectedTile;
         uint32_t m_SelectedTilemapLayer = 0;
+		float m_TilesetZoomFactor = 4.0f;
 
         bool m_FlipTileX = false;
         bool m_FlipTileY = false;

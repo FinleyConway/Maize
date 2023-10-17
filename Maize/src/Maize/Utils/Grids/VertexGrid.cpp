@@ -20,15 +20,15 @@ namespace Maize {
 		}
 	}
 
-	std::array<sf::Vertex, 4> VertexGrid::GetTile(sf::Vector2i position)
+	std::array<sf::Vertex*, 4> VertexGrid::GetTile(sf::Vector2i position)
 	{
-		std::array<sf::Vertex, 4> quad;
+		std::array<sf::Vertex*, 4> quad{};
 		int32_t index = GetIndex(position, false);
 
 		if (index != -1)
 		{
 			for (uint32_t i = 0; i < c_VertexCount; i++)
-				quad[i] = m_Grid[index + i];
+				quad[i] = &m_Grid[index + i];
 
 			return quad;
 		}

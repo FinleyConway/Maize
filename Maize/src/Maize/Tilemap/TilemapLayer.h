@@ -7,21 +7,26 @@ namespace Maize {
 
     struct TilemapTile
     {
-        sf::Vector2i texCoords = sf::Vector2i(-1, -1);
-        bool flipX = false;
-        bool flipY = false;
-        float rotation = 0.0f;
+		int32_t tilesetID = -1;
+		int32_t tileIndex = -1;
+		sf::Vector2i texCoords = sf::Vector2i(-1, -1);
+
+        bool flipX = false; // to be removed
+        bool flipY = false; // to be removed
+        float rotation = 0.0f; // to be removed
+
+		// float orientation = 0.0f;
 
         bool IsValid() const
         {
-            return texCoords != sf::Vector2i(-1, -1);
+            return texCoords != sf::Vector2i(-1, -1) || tilesetID == -1 || tileIndex == -1;
         }
     };
 
     class TilemapLayer
     {
     public:
-        const CartesianGrid<TilemapTile>& GetGrid() const { return m_Grid; }
+        CartesianGrid<TilemapTile>& GetGrid() { return m_Grid; }
 		const VertexGrid& GetGridRenderer() const { return m_GridRenderer; }
 
         sf::Vector2i GetGridSize() const { return m_Grid.GridSize(); }

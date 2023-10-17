@@ -1,8 +1,6 @@
 #include "mpch.h"
 #include "Maize/Tilemap/Tileset.h"
 
-#include "Maize/Renderer/Sprite.h"
-
 namespace Maize {
 
 	Tileset::Tileset()

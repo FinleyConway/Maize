@@ -26,13 +26,15 @@ namespace Maize {
 
 	struct TilemapComponent
 	{
-		std::vector<TilemapLayer> layers;
         std::unordered_map<int32_t, Tileset> tilesets;
+
+		std::vector<TilemapLayer> layers;
 		int32_t tileSizeX = 8;
 		int32_t tileSizeY = 8;
 
+		std::shared_ptr<sf::Texture> texture;
         std::string sortingLayer = "Default";
-        int32_t orderInLayer = 0;
+		int32_t orderInLayer = 0;
 	};
 
 	struct RigidbodyComponent
