@@ -131,12 +131,12 @@ namespace Maize {
 		}
 	}
 
-	sf::IntRect TexturePacker::CreateRectUnderneath(const sf::IntRect& rect, sf::Vector2u atlasSize) const
+	sf::IntRect TexturePacker::CreateRectUnderneath(const sf::IntRect& rect, sf::Vector2u atlasSize)
     {
         return sf::IntRect(rect.left, rect.top + rect.height, rect.width, atlasSize.y - (rect.top + rect.height));
     }
 
-    sf::IntRect TexturePacker::CreateRectToRightOf(const sf::IntRect& rect, sf::Vector2u atlasSize) const
+    sf::IntRect TexturePacker::CreateRectToRightOf(const sf::IntRect& rect, sf::Vector2u atlasSize)
     {
         return sf::IntRect(rect.left + rect.width, rect.top, atlasSize.x - (rect.left + rect.width), rect.height);
     }
@@ -162,7 +162,7 @@ namespace Maize {
 		occupiedRectangles.emplace_back(position.x, position.y, texture.getSize().x, texture.getSize().y);
 	}
 
-    bool TexturePacker::IntersectsExistingRectangles(const sf::IntRect& rect, std::vector<sf::IntRect>& occupiedRectangles) const
+    bool TexturePacker::IntersectsExistingRectangles(const sf::IntRect& rect, std::vector<sf::IntRect>& occupiedRectangles)
     {
         for (const auto& existingRect : occupiedRectangles)
         {
@@ -175,7 +175,7 @@ namespace Maize {
         return false;
     }
 
-    bool TexturePacker::DoesRectFitInRect(sf::Vector2u textureSize, sf::Vector2i testRectSize) const
+    bool TexturePacker::DoesRectFitInRect(sf::Vector2u textureSize, sf::Vector2i testRectSize)
     {
         return textureSize.x <= testRectSize.x && textureSize.y <= testRectSize.y;
     }
