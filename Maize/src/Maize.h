@@ -19,7 +19,6 @@
 #include "Maize/Utils/Grids/VertexGrid.h"
 
 #include "Maize/Tilemap/Tileset.h"
-#include "Maize/Tilemap/TilemapLayer.h"
 #include "Maize/Tilemap/Serialization/TilesetSerializer.h"
 #include "Maize/Tilemap/Serialization/TilemapSerializer.h"
 

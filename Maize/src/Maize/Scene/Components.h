@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Maize/Tilemap/TilemapLayer.h"
-#include "Maize/Tilemap/Tileset.h"
 #include "Maize/Renderer/Sprite.h"
+#include "Maize/Utils/Grids/VertexGrid.h"
 
 /*
  * Backend components
@@ -26,15 +25,13 @@ namespace Maize {
 
 	struct TilemapComponent
 	{
-        std::unordered_map<int32_t, Tileset> tilesets;
+        std::vector<VertexGrid> tilemapLayers;
+		std::shared_ptr<sf::Texture> tilemapTexture;
+        int32_t tileSizeX = 8;
+        int32_t tileSizeY = 8;
 
-		std::vector<TilemapLayer> layers;
-		int32_t tileSizeX = 8;
-		int32_t tileSizeY = 8;
-
-		std::shared_ptr<sf::Texture> texture;
         std::string sortingLayer = "Default";
-		int32_t orderInLayer = 0;
+        int32_t orderInLayer = 0;
 	};
 
 	struct RigidbodyComponent

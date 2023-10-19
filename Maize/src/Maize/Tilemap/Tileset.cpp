@@ -38,7 +38,7 @@ namespace Maize {
 			{
 				int32_t tileIndex = x + y * numTiles.x;
 
-				m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y));
+				m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y), m_TileSize);
 			}
 		}
 	}
@@ -59,7 +59,7 @@ namespace Maize {
 
 				if (includeTransparent || !isTransparent)
 				{
-					m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y));
+					m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y), m_TileSize);
 				}
 			}
 		}
@@ -76,7 +76,7 @@ namespace Maize {
 		}
 		else
 		{
-			m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y));
+			m_Tiles[tileIndex] = Tile(m_ID, sf::Vector2i(x, y), sf::Vector2i(x, y), m_TileSize);
 		}
 	}
 

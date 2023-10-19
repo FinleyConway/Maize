@@ -7,8 +7,6 @@ namespace Maize {
         m_IconPencil = Texture::Create("Resources/Icons/pencil.png");
         m_IconEraser = Texture::Create("Resources/Icons/eraser.png");
         m_IconPicker = Texture::Create("Resources/Icons/color-picker.png");
-        m_IconFill = Texture::Create("Resources/Icons/fill.png");
-        m_IconRect = Texture::Create("Resources/Icons/rect.png");
     }
 
     void TilemapWindowTab::OnEvent(Event &e)
@@ -19,22 +17,22 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
-	void TilemapWindowTab::Window(float deltaTime)
+	void TilemapWindowTab::Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
 	{
 		if (ImGui::BeginTabItem(("Tilemap")))
 		{
-			OnUpdate(deltaTime);
+			OnUpdate(editorGrid, tilemapComponent);
 
 			float mainWindowWidth = ImGui::GetWindowWidth();
 
 			ButtonTools();
 			ImGui::SameLine();
-			TilemapLayers();
+			TilemapLayers(editorGrid);
 
 			ImGui::Columns(2, "TilesetColumns", true);
 
 			ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 } );
-			SelectTileset();
+			SelectTileset(tilesets);
 			ImGui::EndChild();
 
 			ImGui::NextColumn();
@@ -49,35 +47,39 @@ namespace Maize {
 		}
 	}
 
-    void TilemapWindowTab::OnUpdate(float deltaTime)
+    void TilemapWindowTab::OnUpdate(TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
-        if (m_TilemapComponent->layers.empty()) return;
+        if (tilemapComponent->tilemapLayers.empty()) return;
 
-        TilemapLayer& currentLayer = m_TilemapComponent->layers[m_SelectedTilemapLayer];
+        auto& tilemap = tilemapComponent->tilemapLayers[m_SelectedTilemapLayer];
+		auto& editorMap = editorGrid[m_SelectedTilemapLayer];
+
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
-        sf::Vector2i gridPosition = CartesianGrid<TilemapTile>::ConvertScreenToGrid(mousePosition, { m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY });
-		sf::Vector2i size = sf::Vector2i(m_TilemapComponent->tileSizeX, m_TilemapComponent->tileSizeY);
+        sf::Vector2i gridPosition = CartesianGrid<TilemapEditorTile>::ConvertScreenToGrid(mousePosition, { tilemapComponent->tileSizeX, tilemapComponent->tileSizeY });
+		sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
 
         if (m_MouseLeftHeld)
         {
             if (m_CurrentTool == TilemapTools::Pencil)
             {
-                currentLayer.PlaceTile(m_SelectedTile, gridPosition, m_FlipTileX, m_FlipTileY, m_CurrentRotation, size);
+				editorMap.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+				tilemap.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords), true);
             }
             else if (m_CurrentTool == TilemapTools::Erase)
             {
-                currentLayer.RemoveTile(gridPosition);
+				editorMap.RemoveTile(gridPosition);
+				tilemap.RemoveTile(gridPosition);
             }
             else if (m_CurrentTool == TilemapTools::Picker)
             {
-                currentLayer.GetTileInfo(gridPosition, m_SelectedTile, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-            }
-            else if (m_CurrentTool == TilemapTools::Fill)
-            {
-                const auto* tile = currentLayer.GetTile(gridPosition);
+				const TilemapEditorTile* tile = editorMap.GetTile(gridPosition);
 
-                if (tile != nullptr)
-                    currentLayer.FillTiles(gridPosition, m_SelectedTile, *tile, size);
+				if (tile == nullptr) return;
+
+				m_SelectedTile = *tile;
+				m_FlipTileX = tile->flipX;
+				m_FlipTileY = tile->flipY;
+				m_CurrentRotation = tile->rotation;
             }
         }
     }
@@ -113,50 +115,30 @@ namespace Maize {
         }
         ImGui::SetItemTooltip("Picker Tool (I)");
         ImGui::PopID();
-
-        ImGui::SameLine();
-
-        ImGui::PushID(3);
-        if (ImGui::ImageButton(*m_IconFill, buttonSize))
-        {
-            m_CurrentTool = TilemapTools::Fill;
-        }
-        ImGui::SetItemTooltip("Fill Tool (G)");
-        ImGui::PopID();
-
-        ImGui::SameLine();
-
-        ImGui::PushID(4);
-        if (ImGui::ImageButton(*m_IconRect, buttonSize))
-        {
-            m_CurrentTool = TilemapTools::Rect;
-        }
-        ImGui::SetItemTooltip("Box Fill Tool (U)");
-        ImGui::PopID();
     }
 
-    void TilemapWindowTab::TilemapLayers()
+    void TilemapWindowTab::TilemapLayers(TilemapEditorWindow::TilemapEditorGrid& editorGrid)
     {
-        ImGui::BeginDisabled(m_TilemapComponent->layers.empty());
+        ImGui::BeginDisabled(editorGrid.empty());
         std::string previewValue;
 
 		// set preview value depending on the layer state
-        if (m_TilemapComponent->layers.empty())
+        if (editorGrid.empty())
         {
             previewValue = "No Layers";
         }
         else
         {
-            previewValue = m_TilemapComponent->layers[m_SelectedTilemapLayer].GetName();
+            //previewValue = editorGrid[m_SelectedTilemapLayer].GetName();
         }
 
 		// show all possible layers inside drop down
         if (ImGui::BeginCombo("##Layers", previewValue.c_str()))
         {
-            for (uint32_t i = 0; i < m_TilemapComponent->layers.size(); i++)
+            for (uint32_t i = 0; i < editorGrid.size(); i++)
             {
                 bool isSelected = (i == m_SelectedTilemapLayer);
-                std::string tilemapLayer = m_TilemapComponent->layers[i].GetName();
+                std::string tilemapLayer = "Default"; //tilemapComponent->tilemapLayers[i].GetName();
 
                 if (ImGui::Selectable(tilemapLayer.c_str(), isSelected))
                 {
@@ -170,12 +152,12 @@ namespace Maize {
         ImGui::EndDisabled();
     }
 
-    void TilemapWindowTab::SelectTileset()
+    void TilemapWindowTab::SelectTileset(TilemapEditorWindow::Tilesets& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
 		// list all available tilesets to allow selection
-        for (auto& [id, tileset]: m_TilemapComponent->tilesets)
+        for (auto& [id, tileset]: tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();

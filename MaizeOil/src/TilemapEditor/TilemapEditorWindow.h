@@ -7,45 +7,39 @@
 
 namespace Maize {
 
+	struct TilemapEditorTile
+	{
+		int32_t tilesetID = -1;
+		int32_t tileIndex = -1;
+		sf::Vector2i texCoords = sf::Vector2i(-1, -1);
+
+		bool flipX = false;
+		bool flipY = false;
+		float rotation = 0.0f;
+
+		bool IsValid() const
+		{
+			return texCoords != sf::Vector2i(-1, -1) || tilesetID == -1 || tileIndex == -1;
+		}
+	};
+
     class TilemapEditorWindow
     {
     public:
-		void AddComponent(TilemapComponent* tilemapComponent)
-		{
-			tilemapComponent->layers.emplace_back().SetName("Default");
+		using Tilesets = std::unordered_map<int32_t, Tileset>;
+		using TilemapEditorGrid = std::vector<CartesianGrid<TilemapEditorTile>>;
 
-			m_TilesetWindow.AddComponent(tilemapComponent);
-			m_TilemapWindow.AddComponent(tilemapComponent);
-		}
-
-        void OnEvent(Event& e)
-        {
-            m_TilemapWindow.OnEvent(e);
-        }
-
-        void Window(float deltaTime)
-        {
-            ImGui::Begin("Tilemap Editor", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-            if (ImGui::BeginTabBar("Tabs"))
-            {
-                m_TilesetWindow.Window();
-                m_TilemapWindow.Window(deltaTime);
-
-                ImGui::EndTabBar();
-            }
-
-            ImGui::End();
-        }
+		void AddComponent(TilemapComponent* tilemapComponent);
+        void OnEvent(Event& e);
+        void Window();
 
     private:
 		TilemapComponent* m_TilemapComponent = nullptr;
+		TilemapEditorGrid m_EditorGrids;
+		Tilesets m_Tilesets;
 
         TilesetWindowTab m_TilesetWindow;
         TilemapWindowTab m_TilemapWindow;
-
-        TilesetSerializer m_TilesetSerializer;
-        TilemapSerializer m_TilemapSerializer;
     };
 
 } // Maize

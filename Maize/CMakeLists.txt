@@ -37,8 +37,6 @@ add_library(Maize STATIC
         src/Maize/Scene/Components.h
         src/Maize/Tilemap/Tileset.cpp
         src/Maize/Tilemap/Tileset.h
-        src/Maize/Tilemap/TilemapLayer.h
-        src/Maize/Tilemap/TilemapLayer.cpp
         src/Maize/Tilemap/Serialization/TilemapSerializer.h
         src/Maize/Tilemap/Serialization/TilemapSerializer.cpp
         src/Maize/Tilemap/Serialization/TilesetSerializer.h

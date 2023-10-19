@@ -8,7 +8,7 @@ namespace Maize {
 		VertexGrid() = default;
 		explicit VertexGrid(sf::Vector2i size);
 
-		const sf::VertexArray& GetGrid() const { return m_Grid;}
+		const sf::VertexArray& GetVertexArray() const { return m_Grid;}
 		sf::Vector2i GridSize() const { return m_CurrentSize; }
 		void Clear() { m_Grid.clear(); }
 

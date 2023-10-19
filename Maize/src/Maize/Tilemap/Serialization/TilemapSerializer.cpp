@@ -3,7 +3,7 @@
 
 namespace Maize {
 
-    void TilemapSerializer::SerializeTilemap(std::vector<TilemapLayer>& tilemapLayers)
+    /*void TilemapSerializer::SerializeTilemap(std::vector<TilemapLayer>& tilemapLayers)
     {
         nlohmann::json serialTilemapLayers;
 
@@ -23,7 +23,7 @@ namespace Maize {
             {
                 for (int32_t x = -halfWidth; x < halfWidth; ++x)
                 {
-                    /*const TilemapTile& tile = layer.GetTile(sf::Vector2i(x, y));
+                    *//*const TilemapTile& tile = layer.GetTile(sf::Vector2i(x, y));
 
                     if (tile.IsValid())
                     {
@@ -38,7 +38,7 @@ namespace Maize {
                         };
 
                         tilemap.push_back(serialTile);
-                    }*/
+                    }*//*
                 }
             }
 
@@ -71,12 +71,12 @@ namespace Maize {
                 {
                     TilemapTile tile;
 
-                    /*sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
+                    *//*sf::Vector2i position = sf::Vector2i(serialTile["PositionX"], serialTile["PositionY"]);
                     tile.texCoords.x = serialTile["TexCoordsX"];
                     tile.texCoords.y = serialTile["TexCoordsY"];
                     tile.flipX = serialTile["FlipX"];
                     tile.flipY = serialTile["FlipY"];
-                    tile.rotation = serialTile["Rotation"];*/
+                    tile.rotation = serialTile["Rotation"];*//*
 
                     //layer.PlaceTile(tile, position, tile.flipX, tile.flipY, tile.rotation);
                 }
@@ -92,6 +92,6 @@ namespace Maize {
 		input.close();
 
         return tilemapLayers;
-    }
+    }*/
 
 } // Maize

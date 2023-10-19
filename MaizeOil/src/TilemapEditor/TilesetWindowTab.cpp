@@ -8,7 +8,7 @@ namespace Maize {
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
     }
 
-    void TilesetWindowTab::Window()
+    void TilesetWindowTab::Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginTabItem("Tileset"))
         {
@@ -16,27 +16,27 @@ namespace Maize {
 
             if (ImGui::ImageButton(*m_IconAdd, { 16, 16 }))
             {
-                AddTileset();
+                AddTileset(tilesets);
             }
             ImGui::SameLine();
             if (ImGui::ImageButton(*m_IconRemove, { 16, 16 }))
             {
                 if (m_SelectedTileset != nullptr)
                 {
-                    RemoveTileset(m_SelectedTileset->GetID());
+                    RemoveTileset(m_SelectedTileset->GetID(), tilesets, editorGrid, tilemapComponent);
                 }
             }
 
             ImGui::Columns(3, "TilesetColumns", true);
 
             ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 });
-            SelectTileset();
+            SelectTileset(tilesets);
             ImGui::EndChild();
 
             ImGui::NextColumn();
 
             ImGui::BeginChild("Current Tileset", { 0, mainWindowWidth / 2 });
-            ShowCurrentTileset();
+            ShowCurrentTileset(tilesets, editorGrid, tilemapComponent);
             ImGui::EndChild();
 
             ImGui::NextColumn();
@@ -51,43 +51,43 @@ namespace Maize {
         }
     }
 
-    Tileset& TilesetWindowTab::AddTileset()
+    Tileset& TilesetWindowTab::AddTileset(TilemapEditorWindow::Tilesets& tilesets)
     {
         int32_t id = CreateID();
 
-        m_TilemapComponent->tilesets.try_emplace(id);
+        tilesets.try_emplace(id);
 
-        Tileset& tileset = m_TilemapComponent->tilesets[id];
+        Tileset& tileset = tilesets[id];
         tileset.SetID(id); // temp
         m_SelectedTileset = &tileset;
 
         return tileset;
     }
 
-    void TilesetWindowTab::RemoveTileset(int32_t tilesetID)
+    void TilesetWindowTab::RemoveTileset(int32_t tilesetID, TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
 		// if selected tileset is within tilesets
-        if (m_TilemapComponent->tilesets.contains(tilesetID))
+        if (tilesets.contains(tilesetID))
         {
-			m_TilemapComponent->tilesets.erase(tilesetID);
+			tilesets.erase(tilesetID);
 			m_SelectedTileset = nullptr;
 
-            UpdateMap();
+            UpdateMap(tilesets, editorGrid, tilemapComponent);
 
 			// auto select a new tileset if there is one there
-			if (!m_TilemapComponent->tilesets.empty())
+			if (!tilesets.empty())
 			{
-				m_SelectedTileset = &m_TilemapComponent->tilesets.begin()->second;
+				m_SelectedTileset = &tilesets.begin()->second;
 			}
         }
     }
 
-    void TilesetWindowTab::SelectTileset()
+    void TilesetWindowTab::SelectTileset(TilemapEditorWindow::Tilesets& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
 		// list though all the tilesets to be selected
-        for (auto& [id, tileset]: m_TilemapComponent->tilesets)
+        for (auto& [id, tileset]: tilesets)
         {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
@@ -109,7 +109,7 @@ namespace Maize {
         }
     }
 
-    void TilesetWindowTab::ShowCurrentTileset()
+    void TilesetWindowTab::ShowCurrentTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset == nullptr) return;
 
@@ -126,7 +126,7 @@ namespace Maize {
         if (ImGui::InputText("Name", buffer, bufferSize))
             m_SelectedTileset->SetName(buffer);
 
-        TextureSelector();
+        TextureSelector(tilesets, editorGrid, tilemapComponent);
 
         if (ImGui::InputInt("Tile Size X", &tileSize.x, 1))
             m_SelectedTileset->SetTileSize(sf::Vector2i(std::max(tileSize.x, 1), tileSize.y));
@@ -135,7 +135,7 @@ namespace Maize {
             m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
     }
 
-    void TilesetWindowTab::TextureSelector()
+    void TilesetWindowTab::TextureSelector(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
@@ -154,10 +154,10 @@ namespace Maize {
             }
         }
 
-        SetAutomaticTiles();
+        SetAutomaticTiles(tilesets, editorGrid, tilemapComponent);
     }
 
-    void TilesetWindowTab::SetAutomaticTiles()
+    void TilesetWindowTab::SetAutomaticTiles(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginPopupModal("AutoTilesPopup"))
         {
@@ -168,7 +168,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->AutoSetTiles(false);
 
-				UpdateMap();
+				UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -178,7 +178,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->AutoSetTiles(true);
 
-				UpdateMap();
+				UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -188,7 +188,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->InitEmptyTiles();
 
-				UpdateMap();
+				UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -274,6 +274,74 @@ namespace Maize {
         ImGui::SetScrollY(ImGui::GetScrollY() + scrollY);
 
         ImGui::EndChild();
+    }
+
+	void TilesetWindowTab::UpdateMap(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+	{
+		PackTileset(tilesets, tilemapComponent);
+
+		for (uint32_t i = 0; i < editorGrid.size(); i++)
+		{
+			auto& editorMap = editorGrid[i];
+			auto& tilemap = tilemapComponent->tilemapLayers[i];
+
+			sf::Vector2i halfSize = editorMap.GridSize() / 2;
+
+			for (int32_t y = -halfSize.y; y < halfSize.y; y++)
+			{
+				for (int32_t x = -halfSize.x; x < halfSize.x; x++)
+				{
+					const TilemapEditorTile* tile = editorMap.GetTile(sf::Vector2i(x, y));
+
+					if (tile == nullptr) continue;
+
+					Tile* tilesetTile = Tileset::FindTileByTilesetID(tilesets, tile->tilesetID, tile->tileIndex);
+
+					if (tilesetTile == nullptr) continue;
+
+					TilemapEditorTile newTile = *tile;
+					newTile.texCoords = tilesetTile->texCoords;
+
+					editorMap.InsertTile(sf::Vector2i(x, y), true, newTile.tilesetID, newTile.tileIndex, newTile.texCoords, newTile.flipX, newTile.flipY, newTile.rotation);
+					tilemap.InsertTile(sf::Vector2i(x, y), Renderer::CreateQuad(sf::Vector2f(x, y), 0, (sf::Vector2f)tilesetTile->tileSize, (sf::Vector2f)tile->texCoords), true);
+				}
+			}
+		}
+	}
+
+    void TilesetWindowTab::PackTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapComponent* tilemapComponent)
+    {
+        std::vector<Maize::TextureInfo> textureInfo;
+
+        // add textures to temp array
+        textureInfo.reserve(tilesets.size());
+        for (auto& [tilesetID, tileset] : tilesets)
+        {
+            textureInfo.emplace_back(*tileset.GetTexture(), tilesetID);
+        }
+
+        // pack textures into one big texture
+        auto results = Maize::TexturePacker::Pack(textureInfo, sf::Vector2u(1024, 1024));
+
+		tilemapComponent->tilemapTexture = std::make_shared<sf::Texture>(results.packedTexture);
+
+        // offset all the tiles in the tileset of where they are in the packed texture
+        for (auto& [tilesetID, tileset] : tilesets)
+        {
+            for (auto& [id, rect] : results.idToTextureRect)
+            {
+                if (id == tilesetID)
+                {
+                    for (auto& [tileID, tile] : tileset.GetTiles())
+                    {
+                        sf::Vector2i texturePosition = rect.getPosition();
+
+                        tile.texCoords.x = tile.originalTexCoords.x + (texturePosition.x / tile.tileSize.x);
+                        tile.texCoords.y = tile.originalTexCoords.y + (texturePosition.y / tile.tileSize.y);
+                    }
+                }
+            }
+        }
     }
 
 } // Maize

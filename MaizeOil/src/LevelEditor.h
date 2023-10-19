@@ -13,7 +13,6 @@ public:
         auto tilemapE = m_Reg.CreateEntity();
         m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
         m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE);
-		m_TilemapComponent->layers.emplace_back().SetName("Background");
 
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
     }
@@ -33,7 +32,7 @@ public:
 
 		if (m_TilemapComponent != nullptr)
 		{
-			m_TilemapEditorWindow.Window(deltaTime);
+			m_TilemapEditorWindow.Window();
 		}
 
 		//m_RenderingSystem.OnRender(m_Reg);
@@ -42,18 +41,18 @@ public:
 
         ren.BeginSceneDrawing();
 
-        if (m_TilemapComponent->texture)
+        if (m_TilemapComponent->tilemapTexture)
         {
-            sf::Sprite sprite(*m_TilemapComponent->texture);
+            sf::Sprite sprite(*m_TilemapComponent->tilemapTexture);
 
             ren.Draw(sprite);
         }
 
-		if (m_TilemapComponent->texture != nullptr)
+		if (m_TilemapComponent->tilemapTexture != nullptr)
 		{
-			for (auto& layer : m_TilemapComponent->layers)
+			for (auto& layer : m_TilemapComponent->tilemapLayers)
 			{
-				ren.Draw(layer.GetGridRenderer().GetGrid(), m_TilemapComponent->texture.get());
+				ren.Draw(layer.GetVertexArray(), m_TilemapComponent->tilemapTexture.get());
 			}
 		}
 
@@ -65,7 +64,7 @@ private:
 
     Maize::EditorCamera m_Camera;
 
-    Maize::TilemapComponent* m_TilemapComponent;
+    Maize::TilemapComponent* m_TilemapComponent = nullptr;
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
 
 	Maize::RenderingSystem m_RenderingSystem;

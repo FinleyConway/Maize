@@ -11,6 +11,7 @@ namespace Maize {
 		int32_t tilesetID = -1;
         sf::Vector2i originalTexCoords;
         sf::Vector2i texCoords;
+        sf::Vector2i tileSize;
 	};
 
 	class Tileset
