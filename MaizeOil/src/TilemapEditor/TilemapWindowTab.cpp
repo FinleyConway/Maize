@@ -17,7 +17,7 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
-	void TilemapWindowTab::Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+	void TilemapWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
 	{
 		if (ImGui::BeginTabItem(("Tilemap")))
 		{
@@ -47,7 +47,7 @@ namespace Maize {
 		}
 	}
 
-    void TilemapWindowTab::OnUpdate(TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilemapWindowTab::OnUpdate(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (tilemapComponent->tilemapLayers.empty()) return;
 
@@ -117,7 +117,7 @@ namespace Maize {
         ImGui::PopID();
     }
 
-    void TilemapWindowTab::TilemapLayers(TilemapEditorWindow::TilemapEditorGrid& editorGrid)
+    void TilemapWindowTab::TilemapLayers(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid)
     {
         ImGui::BeginDisabled(editorGrid.empty());
         std::string previewValue;
@@ -152,7 +152,7 @@ namespace Maize {
         ImGui::EndDisabled();
     }
 
-    void TilemapWindowTab::SelectTileset(TilemapEditorWindow::Tilesets& tilesets)
+    void TilemapWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 

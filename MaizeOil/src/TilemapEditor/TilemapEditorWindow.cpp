@@ -5,7 +5,9 @@ namespace Maize {
 	void TilemapEditorWindow::AddComponent(TilemapComponent* tilemapComponent)
 	{
 		m_TilemapComponent = tilemapComponent;
+
 		tilemapComponent->tilemapLayers.emplace_back();
+		m_EditorGrids.emplace_back();
 	}
 
 	void TilemapEditorWindow::OnEvent(Event& e)

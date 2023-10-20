@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Maize.h>
+#include <EntityComponentSystem/EntityWorld.h>
 
 #include "TilemapEditor/TilemapEditorWindow.h"
 #include "Maize/Utils/Grids/CartesianGrid.h"
@@ -35,8 +36,6 @@ public:
 			m_TilemapEditorWindow.Window();
 		}
 
-		//m_RenderingSystem.OnRender(m_Reg);
-
         auto& ren = Maize::Application::Get().GetRenderer();
 
         ren.BeginSceneDrawing();
@@ -66,6 +65,4 @@ private:
 
     Maize::TilemapComponent* m_TilemapComponent = nullptr;
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
-
-	Maize::RenderingSystem m_RenderingSystem;
 };

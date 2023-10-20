@@ -2,7 +2,7 @@
 
 #include <Maize.h>
 
-#include "TilemapEditorWindow.h"
+#include "TilemapEditorTile.h"
 
 namespace Maize {
 
@@ -14,14 +14,14 @@ namespace Maize {
         TilemapWindowTab();
 
         void OnEvent(Event& e);
-        void Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
+        void Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
 
     private:
-		void OnUpdate(TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
+		void OnUpdate(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
 
         void ButtonTools();
-        void TilemapLayers(TilemapEditorWindow::TilemapEditorGrid& editorGrid);
-        void SelectTileset(TilemapEditorWindow::Tilesets& tilesets);
+        void TilemapLayers(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid);
+        void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
         void SelectTile();
 
         bool OnKeyPressed(const KeyPressedEvent& e);

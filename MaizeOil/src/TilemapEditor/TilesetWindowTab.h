@@ -2,6 +2,8 @@
 
 #include <Maize.h>
 
+#include "TilemapEditorTile.h"
+
 namespace Maize {
 
     class TilesetWindowTab
@@ -9,7 +11,7 @@ namespace Maize {
     public:
 		TilesetWindowTab();
 
-        void Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
+        void Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
 
     private:
         int32_t CreateID() // temp, will create a better id
@@ -18,17 +20,17 @@ namespace Maize {
             return id++;
         }
 
-        Tileset& AddTileset(TilemapEditorWindow::Tilesets& tilesets);
-        void RemoveTileset(int32_t tilesetID, TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
+        Tileset& AddTileset(std::unordered_map<int32_t, Tileset>& tilesets);
+        void RemoveTileset(int32_t tilesetID, std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
 
-        void SelectTileset(TilemapEditorWindow::Tilesets& tilesets);
-        void ShowCurrentTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
-        void TextureSelector(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
-        void SetAutomaticTiles(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
+        void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
+        void ShowCurrentTileset(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
+        void TextureSelector(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
+        void SetAutomaticTiles(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
         void HandleTilesetTiles();
 
-		void UpdateMap(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent);
-		void PackTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapComponent* tilemapComponent);
+		void UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
+		void PackTileset(std::unordered_map<int32_t, Tileset>& tilesets, TilemapComponent* tilemapComponent);
 
     private:
         Tileset* m_SelectedTileset = nullptr;

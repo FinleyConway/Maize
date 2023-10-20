@@ -43,10 +43,6 @@ add_library(Maize STATIC
         src/Maize/Tilemap/Serialization/TilesetSerializer.cpp
         src/Maize/Utils/Random.h
         src/Maize/Utils/Random.cpp
-        src/Maize/Scene/Systems/RenderingSystem.cpp
-        src/Maize/Scene/Systems/RenderingSystem.h
-        src/Maize/Scene/Systems/TilemapRendering.cpp
-        src/Maize/Scene/Systems/TilemapRendering.h
         src/Maize/Renderer/TexturePacker.cpp
         src/Maize/Renderer/TexturePacker.h
         src/Maize/Utils/Grids/CartesianGrid.h

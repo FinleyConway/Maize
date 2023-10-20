@@ -8,7 +8,7 @@ namespace Maize {
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
     }
 
-    void TilesetWindowTab::Window(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginTabItem("Tileset"))
         {
@@ -51,7 +51,7 @@ namespace Maize {
         }
     }
 
-    Tileset& TilesetWindowTab::AddTileset(TilemapEditorWindow::Tilesets& tilesets)
+    Tileset& TilesetWindowTab::AddTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         int32_t id = CreateID();
 
@@ -64,7 +64,7 @@ namespace Maize {
         return tileset;
     }
 
-    void TilesetWindowTab::RemoveTileset(int32_t tilesetID, TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::RemoveTileset(int32_t tilesetID, std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
 		// if selected tileset is within tilesets
         if (tilesets.contains(tilesetID))
@@ -82,7 +82,7 @@ namespace Maize {
         }
     }
 
-    void TilesetWindowTab::SelectTileset(TilemapEditorWindow::Tilesets& tilesets)
+    void TilesetWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
@@ -109,7 +109,7 @@ namespace Maize {
         }
     }
 
-    void TilesetWindowTab::ShowCurrentTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::ShowCurrentTileset(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset == nullptr) return;
 
@@ -135,7 +135,7 @@ namespace Maize {
             m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
     }
 
-    void TilesetWindowTab::TextureSelector(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::TextureSelector(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
@@ -157,7 +157,7 @@ namespace Maize {
         SetAutomaticTiles(tilesets, editorGrid, tilemapComponent);
     }
 
-    void TilesetWindowTab::SetAutomaticTiles(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::SetAutomaticTiles(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginPopupModal("AutoTilesPopup"))
         {
@@ -276,7 +276,7 @@ namespace Maize {
         ImGui::EndChild();
     }
 
-	void TilesetWindowTab::UpdateMap(TilemapEditorWindow::Tilesets& tilesets, TilemapEditorWindow::TilemapEditorGrid& editorGrid, TilemapComponent* tilemapComponent)
+	void TilesetWindowTab::UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
 	{
 		PackTileset(tilesets, tilemapComponent);
 
@@ -309,7 +309,7 @@ namespace Maize {
 		}
 	}
 
-    void TilesetWindowTab::PackTileset(TilemapEditorWindow::Tilesets& tilesets, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::PackTileset(std::unordered_map<int32_t, Tileset>& tilesets, TilemapComponent* tilemapComponent)
     {
         std::vector<Maize::TextureInfo> textureInfo;
 
