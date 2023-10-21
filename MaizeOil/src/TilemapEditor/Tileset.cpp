@@ -1,5 +1,4 @@
-#include "mpch.h"
-#include "Maize/Tilemap/Tileset.h"
+#include "Tileset.h"
 
 namespace Maize {
 

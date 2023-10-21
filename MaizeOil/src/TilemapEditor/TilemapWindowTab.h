@@ -2,11 +2,12 @@
 
 #include <Maize.h>
 
+#include "Tileset.h"
 #include "TilemapEditorTile.h"
 
 namespace Maize {
 
-    enum class TilemapTools { None = 0, Pencil, Erase, Picker, Rect, Fill };
+    enum class TilemapTools { None = 0, Pencil, Erase, Picker };
 
     class TilemapWindowTab
     {
@@ -14,13 +15,13 @@ namespace Maize {
         TilemapWindowTab();
 
         void OnEvent(Event& e);
-        void Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
+        void Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
 
     private:
-		void OnUpdate(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent);
+		void OnUpdate(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
 
         void ButtonTools();
-        void TilemapLayers(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid);
+        void TilemapLayers(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
         void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
         void SelectTile();
 

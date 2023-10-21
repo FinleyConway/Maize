@@ -13,9 +13,16 @@ public:
     {
         auto tilemapE = m_Reg.CreateEntity();
         m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
-        m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE);
+        m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE); // temp
 
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);
+
+		m_SpriteBatch.setPrimitiveType(sf::Quads);
+
+		auto quad = Maize::Renderer::CreateQuad(sf::Vector2f(50, -10), 45, sf::Vector2f(100, 100), sf::Color::Blue);
+
+		for (auto& vertex : quad)
+			m_SpriteBatch.append(vertex);
     }
 
     void OnEvent(Maize::Event& e) override
@@ -40,12 +47,7 @@ public:
 
         ren.BeginSceneDrawing();
 
-        if (m_TilemapComponent->tilemapTexture)
-        {
-            sf::Sprite sprite(*m_TilemapComponent->tilemapTexture);
-
-            ren.Draw(sprite);
-        }
+		ren.Draw(m_SpriteBatch);
 
 		if (m_TilemapComponent->tilemapTexture != nullptr)
 		{
@@ -65,4 +67,6 @@ private:
 
     Maize::TilemapComponent* m_TilemapComponent = nullptr;
     Maize::TilemapEditorWindow m_TilemapEditorWindow;
+
+	sf::VertexArray m_SpriteBatch;
 };

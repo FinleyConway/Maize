@@ -18,8 +18,4 @@
 #include "Maize/Utils/Grids/CartesianGrid.h"
 #include "Maize/Utils/Grids/VertexGrid.h"
 
-#include "Maize/Tilemap/Tileset.h"
-#include "Maize/Tilemap/Serialization/TilesetSerializer.h"
-#include "Maize/Tilemap/Serialization/TilemapSerializer.h"
-
 #include "Maize/Scene/Components.h"

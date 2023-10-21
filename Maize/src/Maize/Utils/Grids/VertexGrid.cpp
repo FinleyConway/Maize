@@ -25,7 +25,7 @@ namespace Maize {
         if (!IsOutOfBounds(position))
         {
             sf::Vector2i adjusted = AdjustPosition(position);
-            int32_t index = adjusted.y * m_CurrentSize.x + adjusted.x;
+            int32_t index = (adjusted.y * m_CurrentSize.x + adjusted.x) * c_VertexCount;
 
             for (uint8_t i = 0; i < c_VertexCount; i++)
                 quad[i] = &m_Grid[index + i];
@@ -51,7 +51,7 @@ namespace Maize {
         if (!IsOutOfBounds(position))
         {
             sf::Vector2i adjusted = AdjustPosition(position);
-            int32_t index = adjusted.y * m_CurrentSize.x + adjusted.x;
+            int32_t index = (adjusted.y * m_CurrentSize.x + adjusted.x) * c_VertexCount;
 
             for (uint8_t i = 0; i < c_VertexCount; i++)
                 m_Grid[index + i] = sf::Vertex();

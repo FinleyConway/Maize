@@ -8,7 +8,7 @@ namespace Maize {
         m_IconRemove = Texture::Create("Resources/Icons/trash-can.png");
     }
 
-    void TilesetWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginTabItem("Tileset"))
         {
@@ -64,7 +64,7 @@ namespace Maize {
         return tileset;
     }
 
-    void TilesetWindowTab::RemoveTileset(int32_t tilesetID, std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::RemoveTileset(int32_t tilesetID, std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
 		// if selected tileset is within tilesets
         if (tilesets.contains(tilesetID))
@@ -109,7 +109,7 @@ namespace Maize {
         }
     }
 
-    void TilesetWindowTab::ShowCurrentTileset(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::ShowCurrentTileset(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset == nullptr) return;
 
@@ -135,7 +135,7 @@ namespace Maize {
             m_SelectedTileset->SetTileSize(sf::Vector2i(tileSize.x, std::max(tileSize.y, 1)));
     }
 
-    void TilesetWindowTab::TextureSelector(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::TextureSelector(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
@@ -157,7 +157,7 @@ namespace Maize {
         SetAutomaticTiles(tilesets, editorGrid, tilemapComponent);
     }
 
-    void TilesetWindowTab::SetAutomaticTiles(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilesetWindowTab::SetAutomaticTiles(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
         if (ImGui::BeginPopupModal("AutoTilesPopup"))
         {
@@ -276,7 +276,7 @@ namespace Maize {
         ImGui::EndChild();
     }
 
-	void TilesetWindowTab::UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+	void TilesetWindowTab::UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
 	{
 		PackTileset(tilesets, tilemapComponent);
 
@@ -285,13 +285,13 @@ namespace Maize {
 			auto& editorMap = editorGrid[i];
 			auto& tilemap = tilemapComponent->tilemapLayers[i];
 
-			sf::Vector2i halfSize = editorMap.GridSize() / 2;
+			sf::Vector2i halfSize = editorMap.grid.GridSize() / 2;
 
 			for (int32_t y = -halfSize.y; y < halfSize.y; y++)
 			{
 				for (int32_t x = -halfSize.x; x < halfSize.x; x++)
 				{
-					const TilemapEditorTile* tile = editorMap.GetTile(sf::Vector2i(x, y));
+					const TilemapEditorTile* tile = editorMap.grid.GetTile(sf::Vector2i(x, y));
 
 					if (tile == nullptr) continue;
 
@@ -302,7 +302,7 @@ namespace Maize {
 					TilemapEditorTile newTile = *tile;
 					newTile.texCoords = tilesetTile->texCoords;
 
-					editorMap.InsertTile(sf::Vector2i(x, y), true, newTile.tilesetID, newTile.tileIndex, newTile.texCoords, newTile.flipX, newTile.flipY, newTile.rotation);
+					editorMap.grid.InsertTile(sf::Vector2i(x, y), true, newTile.tilesetID, newTile.tileIndex, newTile.texCoords, newTile.flipX, newTile.flipY, newTile.rotation);
 					tilemap.InsertTile(sf::Vector2i(x, y), Renderer::CreateQuad(sf::Vector2f(x, y), 0, (sf::Vector2f)tilesetTile->tileSize, (sf::Vector2f)tile->texCoords), true);
 				}
 			}

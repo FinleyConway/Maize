@@ -35,12 +35,6 @@ add_library(Maize STATIC
         src/Maize/Utils/SystemNotify.cpp
         src/Maize/Utils/SystemNotify.h
         src/Maize/Scene/Components.h
-        src/Maize/Tilemap/Tileset.cpp
-        src/Maize/Tilemap/Tileset.h
-        src/Maize/Tilemap/Serialization/TilemapSerializer.h
-        src/Maize/Tilemap/Serialization/TilemapSerializer.cpp
-        src/Maize/Tilemap/Serialization/TilesetSerializer.h
-        src/Maize/Tilemap/Serialization/TilesetSerializer.cpp
         src/Maize/Utils/Random.h
         src/Maize/Utils/Random.cpp
         src/Maize/Renderer/TexturePacker.cpp

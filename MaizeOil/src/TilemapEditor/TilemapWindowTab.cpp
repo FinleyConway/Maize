@@ -17,7 +17,7 @@ namespace Maize {
         dispatcher.Dispatch<MouseButtonReleasedEvent>(std::bind(&TilemapWindowTab::OnMouseReleased, this, std::placeholders::_1));
     }
 
-	void TilemapWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+	void TilemapWindowTab::Window(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
 	{
 		if (ImGui::BeginTabItem(("Tilemap")))
 		{
@@ -27,11 +27,11 @@ namespace Maize {
 
 			ButtonTools();
 			ImGui::SameLine();
-			TilemapLayers(editorGrid);
+			TilemapLayers(editorGrid, tilemapComponent);
 
 			ImGui::Columns(2, "TilesetColumns", true);
 
-			ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 } );
+			ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 });
 			SelectTileset(tilesets);
 			ImGui::EndChild();
 
@@ -47,9 +47,9 @@ namespace Maize {
 		}
 	}
 
-    void TilemapWindowTab::OnUpdate(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid, TilemapComponent* tilemapComponent)
+    void TilemapWindowTab::OnUpdate(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
-        if (tilemapComponent->tilemapLayers.empty()) return;
+        if (tilemapComponent->tilemapLayers.empty() || editorGrid.empty()) return;
 
         auto& tilemap = tilemapComponent->tilemapLayers[m_SelectedTilemapLayer];
 		auto& editorMap = editorGrid[m_SelectedTilemapLayer];
@@ -62,17 +62,20 @@ namespace Maize {
         {
             if (m_CurrentTool == TilemapTools::Pencil)
             {
-				editorMap.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-				tilemap.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, 0, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords), true);
+				if (m_SelectedTile.IsValid())
+				{
+					editorMap.grid.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
+					tilemap.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords), true);
+				}
             }
             else if (m_CurrentTool == TilemapTools::Erase)
             {
-				editorMap.RemoveTile(gridPosition);
+				editorMap.grid.RemoveTile(gridPosition);
 				tilemap.RemoveTile(gridPosition);
             }
             else if (m_CurrentTool == TilemapTools::Picker)
             {
-				const TilemapEditorTile* tile = editorMap.GetTile(gridPosition);
+				const TilemapEditorTile* tile = editorMap.grid.GetTile(gridPosition);
 
 				if (tile == nullptr) return;
 
@@ -80,6 +83,8 @@ namespace Maize {
 				m_FlipTileX = tile->flipX;
 				m_FlipTileY = tile->flipY;
 				m_CurrentRotation = tile->rotation;
+
+				m_CurrentTool = TilemapTools::Pencil;
             }
         }
     }
@@ -117,19 +122,19 @@ namespace Maize {
         ImGui::PopID();
     }
 
-    void TilemapWindowTab::TilemapLayers(std::vector<CartesianGrid<TilemapEditorTile>>& editorGrid)
+    void TilemapWindowTab::TilemapLayers(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
-        ImGui::BeginDisabled(editorGrid.empty());
+        ImGui::BeginDisabled(editorGrid.empty() || tilemapComponent->tilemapLayers.empty());
         std::string previewValue;
 
 		// set preview value depending on the layer state
-        if (editorGrid.empty())
+        if (editorGrid.empty() || tilemapComponent->tilemapLayers.empty())
         {
             previewValue = "No Layers";
         }
         else
         {
-            //previewValue = editorGrid[m_SelectedTilemapLayer].GetName();
+            previewValue = editorGrid[m_SelectedTilemapLayer].layerName;
         }
 
 		// show all possible layers inside drop down
@@ -138,14 +143,14 @@ namespace Maize {
             for (uint32_t i = 0; i < editorGrid.size(); i++)
             {
                 bool isSelected = (i == m_SelectedTilemapLayer);
-                std::string tilemapLayer = "Default"; //tilemapComponent->tilemapLayers[i].GetName();
+                std::string tilemapLayer = editorGrid[i].layerName;
 
                 if (ImGui::Selectable(tilemapLayer.c_str(), isSelected))
                 {
                     m_SelectedTilemapLayer = i;
                 }
             }
-
+			
             ImGui::EndCombo();
         }
 
@@ -320,12 +325,6 @@ namespace Maize {
                 break;
             case KeyCode::I:
                 m_CurrentTool = TilemapTools::Picker;
-                break;
-            case KeyCode::G:
-                m_CurrentTool = TilemapTools::Fill;
-                break;
-            case KeyCode::U:
-                m_CurrentTool = TilemapTools::Rect;
                 break;
             default:
                 break;

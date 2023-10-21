@@ -20,4 +20,10 @@ namespace Maize {
 		}
 	};
 
+	struct TilemapEditorLayer
+	{
+		std::string layerName;
+		CartesianGrid<TilemapEditorTile> grid;
+	};
+
 }

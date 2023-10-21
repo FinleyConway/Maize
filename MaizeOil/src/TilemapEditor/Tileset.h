@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Maize/Renderer/Texture.h"
+#include <Maize.h>
 
 namespace Maize {
 
