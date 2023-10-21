@@ -22,6 +22,7 @@ namespace Maize {
 
         void ButtonTools();
         void TilemapLayers(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
+		void CreateTilemapLayer(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
         void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
         void SelectTile();
 
@@ -42,7 +43,7 @@ namespace Maize {
         float m_CurrentRotation = 0.0f;
         TilemapTools m_CurrentTool = TilemapTools::Pencil;
 
-        std::shared_ptr<Texture> m_IconPencil, m_IconEraser, m_IconPicker;
+        std::shared_ptr<Texture> m_IconPencil, m_IconEraser, m_IconPicker, m_IconAdd;
     };
 
 } // Maize

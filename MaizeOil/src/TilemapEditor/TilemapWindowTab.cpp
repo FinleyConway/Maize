@@ -7,6 +7,7 @@ namespace Maize {
         m_IconPencil = Texture::Create("Resources/Icons/pencil.png");
         m_IconEraser = Texture::Create("Resources/Icons/eraser.png");
         m_IconPicker = Texture::Create("Resources/Icons/color-picker.png");
+		m_IconAdd = Texture::Create("Resources/Icons/plus.png");
     }
 
     void TilemapWindowTab::OnEvent(Event &e)
@@ -124,8 +125,9 @@ namespace Maize {
 
     void TilemapWindowTab::TilemapLayers(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
-        ImGui::BeginDisabled(editorGrid.empty() || tilemapComponent->tilemapLayers.empty());
-        std::string previewValue;
+		std::string previewValue;
+
+		ImGui::BeginDisabled(editorGrid.empty() || tilemapComponent->tilemapLayers.empty());
 
 		// set preview value depending on the layer state
         if (editorGrid.empty() || tilemapComponent->tilemapLayers.empty())
@@ -155,9 +157,52 @@ namespace Maize {
         }
 
         ImGui::EndDisabled();
+
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton(*m_IconAdd, sf::Vector2f(16, 16)))
+		{
+			ImGui::OpenPopup("CreateNewLayerPopup");
+		}
+
+		CreateTilemapLayer(editorGrid, tilemapComponent);
     }
 
-    void TilemapWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
+	void TilemapWindowTab::CreateTilemapLayer(std::vector<TilemapEditorLayer>& editorGrid, Maize::TilemapComponent* tilemapComponent)
+	{
+		static std::string buffer;
+
+		if (ImGui::BeginPopupModal("CreateNewLayerPopup"))
+		{
+			const uint8_t bufferSize = 255;
+			char inputBuffer[bufferSize];
+			strncpy(inputBuffer, buffer.c_str(), bufferSize);
+
+			if (ImGui::InputText("New Layer Name", inputBuffer, bufferSize))
+			{
+				buffer = inputBuffer;
+			}
+
+			if (ImGui::Button("Create Layer") && !buffer.empty())
+			{
+				editorGrid.emplace_back(buffer);
+				tilemapComponent->tilemapLayers.emplace_back();
+
+				ImGui::CloseCurrentPopup();
+				buffer.clear();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				ImGui::CloseCurrentPopup();
+				buffer.clear();
+			}
+
+			ImGui::EndPopup();
+		}
+	}
+
+	void TilemapWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
 
