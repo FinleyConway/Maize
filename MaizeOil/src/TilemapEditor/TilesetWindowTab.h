@@ -30,9 +30,6 @@ namespace Maize {
         void SetAutomaticTiles(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
         void HandleTilesetTiles();
 
-		void UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
-		void PackTileset(std::unordered_map<int32_t, Tileset>& tilesets, TilemapComponent* tilemapComponent);
-
     private:
         Tileset* m_SelectedTileset = nullptr;
 		float m_TilesetZoomFactor = 4.0f;

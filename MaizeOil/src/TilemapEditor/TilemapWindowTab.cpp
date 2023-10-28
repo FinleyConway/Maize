@@ -1,4 +1,5 @@
 #include "TilemapWindowTab.h"
+#include "TilemapEditorHelper.h"
 
 namespace Maize {
 
@@ -67,7 +68,7 @@ namespace Maize {
 				if (m_SelectedTile.IsValid())
 				{
 					editorMap.grid.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-					tilemap.InsertTile(gridPosition, CreateTile(screenPosition, m_CurrentRotation, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY), true);
+					tilemap.InsertTile(gridPosition, TilemapEditorHelper::CreateTile(screenPosition, m_CurrentRotation, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY), true);
 				}
             }
             else if (m_CurrentTool == TilemapTools::Erase)
@@ -206,6 +207,7 @@ namespace Maize {
 	void TilemapWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
+		const float buttonSize = 64;
 
 		// list all available tilesets to allow selection
         for (auto& [id, tileset]: tilesets)
@@ -213,7 +215,7 @@ namespace Maize {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
-            if (ImGui::Button(text.c_str(), { windowSize.x, 64 }))
+            if (ImGui::Button(text.c_str(), sf::Vector2f(windowSize.x, buttonSize)))
             {
                 m_SelectedTileset = &tileset;
             }
@@ -221,11 +223,11 @@ namespace Maize {
             ImGui::SameLine(0, 0.1f);
 
             ImGui::SetNextItemAllowOverlap();
-            ImGui::SetCursorScreenPos({ buttonPos.x, buttonPos.y });
+            ImGui::SetCursorScreenPos(sf::Vector2f(buttonPos.x, buttonPos.y));
 
             if (tileset.GetTexture() != nullptr)
             {
-                ImGui::Image(*tileset.GetTexture(), { 64, 64 });
+                ImGui::Image(*tileset.GetTexture(), sf::Vector2f(buttonSize, buttonSize));
             }
         }
     }

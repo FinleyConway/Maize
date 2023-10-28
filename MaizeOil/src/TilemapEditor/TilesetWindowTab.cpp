@@ -1,4 +1,5 @@
 #include "TilesetWindowTab.h"
+#include "TilemapEditorHelper.h"
 
 namespace Maize {
 
@@ -13,13 +14,14 @@ namespace Maize {
         if (ImGui::BeginTabItem("Tileset"))
         {
             float mainWindowWidth = ImGui::GetWindowWidth();
+			const float buttonSize = 16;
 
-            if (ImGui::ImageButton(*m_IconAdd, { 16, 16 }))
+            if (ImGui::ImageButton(*m_IconAdd, sf::Vector2f(buttonSize, buttonSize)))
             {
                 AddTileset(tilesets);
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(*m_IconRemove, { 16, 16 }))
+            if (ImGui::ImageButton(*m_IconRemove, sf::Vector2f(buttonSize, buttonSize)))
             {
                 if (m_SelectedTileset != nullptr)
                 {
@@ -29,13 +31,13 @@ namespace Maize {
 
             ImGui::Columns(3, "TilesetColumns", true);
 
-            ImGui::BeginChild("Tilesets", { 0, mainWindowWidth / 2 });
+            ImGui::BeginChild("Tilesets", sf::Vector2f(0, mainWindowWidth / 2));
             SelectTileset(tilesets);
             ImGui::EndChild();
 
             ImGui::NextColumn();
 
-            ImGui::BeginChild("Current Tileset", { 0, mainWindowWidth / 2 });
+            ImGui::BeginChild("Current Tileset", sf::Vector2f(0, mainWindowWidth / 2));
             ShowCurrentTileset(tilesets, editorGrid, tilemapComponent);
             ImGui::EndChild();
 
@@ -72,7 +74,7 @@ namespace Maize {
 			tilesets.erase(tilesetID);
 			m_SelectedTileset = nullptr;
 
-            UpdateMap(tilesets, editorGrid, tilemapComponent);
+			TilemapEditorHelper::UpdateMap(tilesets, editorGrid, tilemapComponent);
 
 			// auto select a new tileset if there is one there
 			if (!tilesets.empty())
@@ -85,6 +87,7 @@ namespace Maize {
     void TilesetWindowTab::SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets)
     {
         sf::Vector2f windowSize = ImGui::GetContentRegionAvail();
+		const float buttonSize = 64;
 
 		// list though all the tilesets to be selected
         for (auto& [id, tileset]: tilesets)
@@ -92,7 +95,7 @@ namespace Maize {
             std::string text = tileset.GetName() + " ID: " + std::to_string(tileset.GetID());
             sf::Vector2f buttonPos = ImGui::GetCursorScreenPos();
 
-            if (ImGui::Button(text.c_str(), { windowSize.x, 64 }))
+            if (ImGui::Button(text.c_str(), sf::Vector2f(windowSize.x, buttonSize)))
             {
                 m_SelectedTileset = &tileset;
             }
@@ -100,11 +103,11 @@ namespace Maize {
             ImGui::SameLine(0, 0.1f);
 
             ImGui::SetNextItemAllowOverlap();
-            ImGui::SetCursorScreenPos({ buttonPos.x, buttonPos.y });
+            ImGui::SetCursorScreenPos(sf::Vector2f(buttonPos.x, buttonPos.y));
 
             if (tileset.GetTexture() != nullptr)
             {
-                ImGui::Image(*tileset.GetTexture(), {64, 64});
+                ImGui::Image(*tileset.GetTexture(), sf::Vector2f(buttonSize, buttonSize));
             }
         }
     }
@@ -137,9 +140,11 @@ namespace Maize {
 
     void TilesetWindowTab::TextureSelector(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
     {
+		sf::Vector2f previewTextureSize = sf::Vector2f(64, 64);
+
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
-            ImGui::Image(*m_SelectedTileset->GetTexture(), { 64, 64 });
+            ImGui::Image(*m_SelectedTileset->GetTexture(), previewTextureSize);
             ImGui::SameLine();
 
             if (ImGui::Button("Select Texture"))
@@ -168,7 +173,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->AutoSetTiles(false);
 
-				UpdateMap(tilesets, editorGrid, tilemapComponent);
+				TilemapEditorHelper::UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -178,7 +183,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->AutoSetTiles(true);
 
-				UpdateMap(tilesets, editorGrid, tilemapComponent);
+				TilemapEditorHelper::UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -188,7 +193,7 @@ namespace Maize {
                 m_SelectedTileset->Clear();
                 m_SelectedTileset->InitEmptyTiles();
 
-				UpdateMap(tilesets, editorGrid, tilemapComponent);
+				TilemapEditorHelper::UpdateMap(tilesets, editorGrid, tilemapComponent);
 
                 ImGui::CloseCurrentPopup();
             }
@@ -201,7 +206,7 @@ namespace Maize {
     {
         if (m_SelectedTileset == nullptr || !m_SelectedTileset->HasTexture()) return;
 
-        ImGui::BeginChild("Tileset", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+        ImGui::BeginChild("Tileset", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const auto texture = m_SelectedTileset->GetTexture();
         sf::Vector2u tilesetSize = sf::Vector2u(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
@@ -243,7 +248,7 @@ namespace Maize {
                 // scale the button size along with the image
                 ImGui::SetNextItemAllowOverlap();
                 sf::Vector2f buttonSize = sf::Vector2f(m_SelectedTileset->GetTileSize().x * m_TilesetZoomFactor, m_SelectedTileset->GetTileSize().y * m_TilesetZoomFactor);
-                ImGui::SetCursorScreenPos({ imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y });
+                ImGui::SetCursorScreenPos(sf::Vector2f(imagePos.x + x * buttonSize.x, imagePos.y + y * buttonSize.y));
 
                 // change appearance of tile depending on the tile state
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, m_SelectedTileset->HasTile(index) ? 0.0f : 0.65f));
@@ -274,74 +279,6 @@ namespace Maize {
         ImGui::SetScrollY(ImGui::GetScrollY() + scrollY);
 
         ImGui::EndChild();
-    }
-
-	void TilesetWindowTab::UpdateMap(std::unordered_map<int32_t, Tileset>& tilesets, std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent)
-	{
-		PackTileset(tilesets, tilemapComponent);
-
-		for (uint32_t i = 0; i < editorGrid.size(); i++)
-		{
-			auto& editorMap = editorGrid[i];
-			auto& tilemap = tilemapComponent->tilemapLayers[i];
-
-			sf::Vector2i halfSize = editorMap.grid.GridSize() / 2;
-
-			for (int32_t y = -halfSize.y; y < halfSize.y; y++)
-			{
-				for (int32_t x = -halfSize.x; x < halfSize.x; x++)
-				{
-					const TilemapEditorTile* tile = editorMap.grid.GetTile(sf::Vector2i(x, y));
-
-					if (tile == nullptr) continue;
-
-					Tile* tilesetTile = Tileset::FindTileByTilesetID(tilesets, tile->tilesetID, tile->tileIndex);
-
-					if (tilesetTile == nullptr) continue;
-
-					TilemapEditorTile newTile = *tile;
-					newTile.texCoords = tilesetTile->texCoords;
-
-					editorMap.grid.InsertTile(sf::Vector2i(x, y), true, newTile.tilesetID, newTile.tileIndex, newTile.texCoords, newTile.flipX, newTile.flipY, newTile.rotation);
-					tilemap.InsertTile(sf::Vector2i(x, y), Renderer::CreateQuad(sf::Vector2f(x, y), 0, (sf::Vector2f)tilesetTile->tileSize, (sf::Vector2f)tile->texCoords), true);
-				}
-			}
-		}
-	}
-
-    void TilesetWindowTab::PackTileset(std::unordered_map<int32_t, Tileset>& tilesets, TilemapComponent* tilemapComponent)
-    {
-        std::vector<Maize::TextureInfo> textureInfo;
-
-        // add textures to temp array
-        textureInfo.reserve(tilesets.size());
-        for (auto& [tilesetID, tileset] : tilesets)
-        {
-            textureInfo.emplace_back(*tileset.GetTexture(), tilesetID);
-        }
-
-        // pack textures into one big texture
-        auto results = Maize::TexturePacker::Pack(textureInfo, sf::Vector2u(1024, 1024));
-
-		tilemapComponent->tilemapTexture = std::make_shared<sf::Texture>(results.packedTexture);
-
-        // offset all the tiles in the tileset of where they are in the packed texture
-        for (auto& [tilesetID, tileset] : tilesets)
-        {
-            for (auto& [id, rect] : results.idToTextureRect)
-            {
-                if (id == tilesetID)
-                {
-                    for (auto& [tileID, tile] : tileset.GetTiles())
-                    {
-                        sf::Vector2i texturePosition = rect.getPosition();
-
-                        tile.texCoords.x = tile.originalTexCoords.x + (texturePosition.x / tile.tileSize.x);
-                        tile.texCoords.y = tile.originalTexCoords.y + (texturePosition.y / tile.tileSize.y);
-                    }
-                }
-            }
-        }
     }
 
 } // Maize
