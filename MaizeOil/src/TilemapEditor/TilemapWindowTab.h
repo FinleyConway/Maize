@@ -26,6 +26,25 @@ namespace Maize {
         void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
         void SelectTile();
 
+		std::array<sf::Vertex, 4> CreateTile(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoords, bool flipX, bool flipY)
+		{
+			std::array<sf::Vertex, 4> quad = Renderer::CreateQuad(position, rotation, size, texCoords);
+
+			if (flipX)
+			{
+				std::swap(quad[0].position, quad[1].position);
+				std::swap(quad[3].position, quad[2].position);
+			}
+
+			if (flipY)
+			{
+				std::swap(quad[0].position, quad[3].position);
+				std::swap(quad[1].position, quad[2].position);
+			}
+
+			return quad;
+		}
+
         bool OnKeyPressed(const KeyPressedEvent& e);
         bool OnMousePressed(const MouseButtonPressedEvent& e);
         bool OnMouseReleased(const MouseButtonReleasedEvent& e);
