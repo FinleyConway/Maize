@@ -30,7 +30,7 @@ namespace Maize {
         bool OnMousePressed(const MouseButtonPressedEvent& e);
         bool OnMouseReleased(const MouseButtonReleasedEvent& e);
 
-    private:
+	private:
         bool m_MouseLeftHeld = false;
 
         Tileset* m_SelectedTileset = nullptr;

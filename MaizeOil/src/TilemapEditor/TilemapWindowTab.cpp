@@ -57,6 +57,7 @@ namespace Maize {
 
         sf::Vector2f mousePosition = Camera::ScreenToWorld(Input::GetMousePosition());
         sf::Vector2i gridPosition = CartesianGrid<TilemapEditorTile>::ConvertScreenToGrid(mousePosition, { tilemapComponent->tileSizeX, tilemapComponent->tileSizeY });
+		sf::Vector2f screenPosition = CartesianGrid<TilemapEditorTile>::ConvertGridToScreen(gridPosition, { tilemapComponent->tileSizeX, tilemapComponent->tileSizeY });
 		sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
 
         if (m_MouseLeftHeld)
@@ -66,7 +67,7 @@ namespace Maize {
 				if (m_SelectedTile.IsValid())
 				{
 					editorMap.grid.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-					tilemap.InsertTile(gridPosition, Renderer::CreateQuad((sf::Vector2f)gridPosition, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords), true);
+					tilemap.InsertTile(gridPosition, Renderer::CreateQuad(screenPosition, m_CurrentRotation, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords), true);
 				}
             }
             else if (m_CurrentTool == TilemapTools::Erase)
@@ -336,10 +337,6 @@ namespace Maize {
 
                 if (m_CurrentRotation < 0.0f) m_CurrentRotation = 270.0f;
             }
-            else
-            {
-                m_FlipTileX = !m_FlipTileX;
-            }
 
             return true;
         }
@@ -351,10 +348,6 @@ namespace Maize {
                 m_CurrentRotation += 90.0f;
 
                 if (m_CurrentRotation > 270.0f) m_CurrentRotation = 0.0f;
-            }
-            else
-            {
-                m_FlipTileY = !m_FlipTileY;
             }
 
             return true;

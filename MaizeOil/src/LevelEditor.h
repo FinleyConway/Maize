@@ -19,7 +19,7 @@ public:
 
 		m_SpriteBatch.setPrimitiveType(sf::Quads);
 
-		auto quad = Maize::Renderer::CreateQuad(sf::Vector2f(50, -10), 45, sf::Vector2f(100, 100), sf::Color::Blue);
+		auto quad = Maize::Renderer::CreateQuad(sf::Vector2f(0, 0), 0, sf::Vector2f(100, 100), sf::Color::Blue);
 
 		for (auto& vertex : quad)
 			m_SpriteBatch.append(vertex);

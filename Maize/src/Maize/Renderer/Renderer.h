@@ -26,8 +26,11 @@ namespace Maize {
         bool IsDrawing() const;
 
 		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord);
+		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Color colour);
+		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour);
 		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord);
 		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Color colour);
+		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour);
 
     private:
         void CreateTextures();
