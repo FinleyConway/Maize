@@ -44,8 +44,11 @@ namespace Maize {
             return true;
         }
 
+		sf::Vector2u GetSize() const { return m_Texture.getSize(); }
         uint32_t GetWidth() const { return m_Texture.getSize().x; }
         uint32_t GetHeight() const { return m_Texture.getSize().y; }
+
+		const sf::Texture& GetTexture() const { return m_Texture; }
 
         operator sf::Texture& () { return m_Texture; }
         operator const sf::Texture& () const { return m_Texture; }

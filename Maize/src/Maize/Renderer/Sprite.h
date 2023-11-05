@@ -16,6 +16,16 @@ namespace Maize {
 				m_Sprite.setTexture(*texture);
 			}
 		}
+		Sprite(const sf::IntRect rect, const sf::Texture* texture, sf::Vector2f pivot = sf::Vector2f(0, 0))
+		{
+			m_Sprite.setOrigin(pivot);
+
+			if (texture != nullptr)
+			{
+				m_Sprite.setTextureRect(rect);
+				m_Sprite.setTexture(*texture);
+			}
+		}
 
 		void FlipX(bool flip)
 		{

@@ -42,6 +42,8 @@ add_library(Maize STATIC
         src/Maize/Utils/Grids/CartesianGrid.h
         src/Maize/Utils/Grids/VertexGrid.cpp
         src/Maize/Utils/Grids/VertexGrid.h
+        src/Maize/Renderer/SpriteNew.cpp
+        src/Maize/Renderer/SpriteNew.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

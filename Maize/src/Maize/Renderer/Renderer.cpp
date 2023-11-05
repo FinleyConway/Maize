@@ -66,7 +66,7 @@ namespace Maize {
         {
             if (!m_Window.GetViewSpace().intersects(sprite.getGlobalBounds()))
             {
-                return;
+                //return;
             }
         }
 

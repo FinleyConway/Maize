@@ -24,7 +24,7 @@ namespace Maize {
         void TilemapLayers(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
 		void CreateTilemapLayer(std::vector<TilemapEditorLayer>& editorGrid, TilemapComponent* tilemapComponent);
         void SelectTileset(std::unordered_map<int32_t, Tileset>& tilesets);
-        void SelectTile();
+        void SelectTile(TilemapComponent* tilemapComponent);
 
         bool OnKeyPressed(const KeyPressedEvent& e);
         bool OnMousePressed(const MouseButtonPressedEvent& e);
@@ -36,6 +36,9 @@ namespace Maize {
         Tileset* m_SelectedTileset = nullptr;
         TilemapEditorTile m_SelectedTile;
         uint32_t m_SelectedTilemapLayer = 0;
+		Sprite m_PreviewTile;
+		std::array<sf::Vertex, 4> m_CurrentTilePreview;
+
 		float m_TilesetZoomFactor = 4.0f;
 
         bool m_FlipTileX = false;

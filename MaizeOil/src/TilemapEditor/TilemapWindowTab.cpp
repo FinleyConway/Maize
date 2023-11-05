@@ -1,5 +1,6 @@
 #include "TilemapWindowTab.h"
 #include "TilemapEditorHelper.h"
+#include "Maize/Renderer/SpriteNew.h"
 
 namespace Maize {
 
@@ -40,7 +41,7 @@ namespace Maize {
 			ImGui::NextColumn();
 
 			ImGui::BeginChild("Select Tile");
-			SelectTile();
+			SelectTile(tilemapComponent);
 			ImGui::EndChild();
 
 			ImGui::Columns(1);
@@ -61,6 +62,10 @@ namespace Maize {
 		sf::Vector2f screenPosition = CartesianGrid<TilemapEditorTile>::ConvertGridToScreen(gridPosition, { tilemapComponent->tileSizeX, tilemapComponent->tileSizeY });
 		sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
 
+		// temp will make some sort of debug rendering
+		m_PreviewTile.GetSprite().setPosition(screenPosition + m_PreviewTile.GetSprite().getOrigin());
+		Application::Get().GetRenderer().Draw(m_PreviewTile.GetSprite());
+
         if (m_MouseLeftHeld)
         {
             if (m_CurrentTool == TilemapTools::Pencil)
@@ -68,7 +73,9 @@ namespace Maize {
 				if (m_SelectedTile.IsValid())
 				{
 					editorMap.grid.InsertTile(gridPosition, true, m_SelectedTile.tilesetID, m_SelectedTile.tileIndex, m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY, m_CurrentRotation);
-					tilemap.InsertTile(gridPosition, TilemapEditorHelper::CreateTile(screenPosition, m_CurrentRotation, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY), true);
+
+					m_CurrentTilePreview = TilemapEditorHelper::CreateTile(screenPosition, m_CurrentRotation, (sf::Vector2f)size, (sf::Vector2f)m_SelectedTile.texCoords, m_FlipTileX, m_FlipTileY);
+					tilemap.InsertTile(gridPosition, m_CurrentTilePreview, true);
 				}
             }
             else if (m_CurrentTool == TilemapTools::Erase)
@@ -232,7 +239,7 @@ namespace Maize {
         }
     }
 
-    void TilemapWindowTab::SelectTile()
+    void TilemapWindowTab::SelectTile(TilemapComponent* tilemapComponent)
     {
         if (m_SelectedTileset == nullptr || !m_SelectedTileset->HasTexture()) return;
 
@@ -309,6 +316,10 @@ namespace Maize {
 						m_SelectedTile.tileIndex = index;
 						m_SelectedTile.tilesetID = tile->tilesetID;
                         m_SelectedTile.texCoords = tile->texCoords;
+
+						sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
+						sf::IntRect rect = sf::IntRect(tile->texCoords * 8, size);
+						m_PreviewTile = Sprite(rect, tilemapComponent->tilemapTexture.get(), (sf::Vector2f)size / 2.0f);
                     }
                 }
 
@@ -338,10 +349,12 @@ namespace Maize {
                 m_CurrentRotation -= 90.0f;
 
                 if (m_CurrentRotation < 0.0f) m_CurrentRotation = 270.0f;
+				m_PreviewTile.GetSprite().setRotation(m_CurrentRotation);
             }
 			else
 			{
 				m_FlipTileX = !m_FlipTileX;
+				m_PreviewTile.FlipX(m_FlipTileX);
 			}
 
             return true;
@@ -354,10 +367,13 @@ namespace Maize {
                 m_CurrentRotation += 90.0f;
 
                 if (m_CurrentRotation > 270.0f) m_CurrentRotation = 0.0f;
+
+				m_PreviewTile.GetSprite().setRotation(m_CurrentRotation);
             }
 			else
 			{
 				m_FlipTileY = !m_FlipTileY;
+				m_PreviewTile.FlipY(m_FlipTileY);
 			}
 
             return true;
