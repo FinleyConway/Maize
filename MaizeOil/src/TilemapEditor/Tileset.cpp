@@ -29,7 +29,7 @@ namespace Maize {
 
 	void Tileset::InitEmptyTiles()
 	{
-		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetWidth() / m_TileSize.x, m_Texture->GetHeight() / m_TileSize.y);
+		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetSize().x / m_TileSize.x, m_Texture->GetSize().y / m_TileSize.y);
 
 		for (int32_t x = 0; x < numTiles.x; x++)
 		{
@@ -44,7 +44,7 @@ namespace Maize {
 
 	void Tileset::AutoSetTiles(bool includeTransparent)
 	{
-		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetWidth() / m_TileSize.x, m_Texture->GetHeight() / m_TileSize.y);
+		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetSize().x / m_TileSize.x, m_Texture->GetSize().y / m_TileSize.y);
 
 		for (int32_t x = 0; x < numTiles.x; x++)
 		{
@@ -66,7 +66,7 @@ namespace Maize {
 
 	void Tileset::IncludeTile(int32_t x, int32_t y)
 	{
-		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetWidth() / m_TileSize.x, m_Texture->GetHeight() / m_TileSize.y);
+		sf::Vector2i numTiles = sf::Vector2i(m_Texture->GetSize().x / m_TileSize.x, m_Texture->GetSize().y / m_TileSize.y);
 		int32_t tileIndex = x + y * numTiles.x;
 
 		if (m_Tiles.contains(tileIndex))

@@ -18,6 +18,7 @@ namespace Maize {
     {
     public:
         explicit Application(const ApplicationSpecification& specification);
+		~Application();
 
         static Application& Get() { return *s_Instance; }
 
@@ -25,7 +26,6 @@ namespace Maize {
         void PushOverlay(Layer* layer);
 
         Window& GetWindow() { return m_Window; }
-        Renderer& GetRenderer() { return m_Renderer; }
         ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
         void Close() { m_IsRunning = false; }
@@ -37,12 +37,12 @@ namespace Maize {
         void OnEvent(Event& e);
 
         bool OnWindowClose(const WindowCloseEvent& e);
+		bool OnWindowResize(const WindowResizeEvent& e);
 
     private:
-        static Application* s_Instance;
+        inline static Application* s_Instance = nullptr;
 
         Window m_Window;
-        Renderer m_Renderer;
 
         LayerStack m_LayerStack;
         ImGuiLayer* m_ImGuiLayer;

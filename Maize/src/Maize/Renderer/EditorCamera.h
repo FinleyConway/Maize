@@ -20,24 +20,34 @@ namespace Maize {
             // Camera movement using WASD keys
             float speed = 100.0f; // Adjust the movement speed as needed
 
-            if (Input::IsKeyPressed(KeyCode::W))
+            /*if (Input::IsKeyPressed(KeyCode::W))
                 m_Camera.move(0.0f, -speed * deltaTime);
             if (Input::IsKeyPressed(KeyCode::A))
                 m_Camera.move(-speed * deltaTime, 0.0f);
             if (Input::IsKeyPressed(KeyCode::S))
                 m_Camera.move(0.0f, speed * deltaTime);
             if (Input::IsKeyPressed(KeyCode::D))
-                m_Camera.move(speed * deltaTime, 0.0f);
+                m_Camera.move(speed * deltaTime, 0.0f);*/
 
             UpdateView();
         }
 
+		void SetPosition(sf::Vector2f position)
+		{
+			m_Camera.setCenter(position);
+			UpdateView();
+		}
+
+		void SetRotation(float angle)
+		{
+			m_Camera.setRotation(angle);
+			UpdateView();
+		}
+
     private:
         void UpdateView()
         {
-            auto& window = Application::Get().GetRenderer();
-
-            window.GetCurrentTexture()->setView(m_Camera);
+			Renderer::GetCurrentTexture()->setView(m_Camera);
         }
 
         void CameraZoom(int32_t offset)

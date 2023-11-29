@@ -19,3 +19,9 @@
 #include "Maize/Utils/Grids/VertexGrid.h"
 
 #include "Maize/Scene/Components.h"
+
+#include "Maize/Scene/AnimationSystem.h"
+
+#include "Maize/Scene/LocalToWorldSystem.h"
+#include "Maize/Scene/CameraSystem.h"
+#include "Maize/Scene/RenderingSystem.h"

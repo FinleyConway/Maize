@@ -16,12 +16,12 @@ namespace Maize {
             float mainWindowWidth = ImGui::GetWindowWidth();
 			const float buttonSize = 16;
 
-            if (ImGui::ImageButton(*m_IconAdd, sf::Vector2f(buttonSize, buttonSize)))
+            if (ImGui::ImageButton(m_IconAdd->GetTexture(), sf::Vector2f(buttonSize, buttonSize)))
             {
                 AddTileset(tilesets);
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(*m_IconRemove, sf::Vector2f(buttonSize, buttonSize)))
+            if (ImGui::ImageButton(m_IconRemove->GetTexture(), sf::Vector2f(buttonSize, buttonSize)))
             {
                 if (m_SelectedTileset != nullptr)
                 {
@@ -107,7 +107,7 @@ namespace Maize {
 
             if (tileset.GetTexture() != nullptr)
             {
-                ImGui::Image(*tileset.GetTexture(), sf::Vector2f(buttonSize, buttonSize));
+                ImGui::Image(tileset.GetTexture()->GetTexture(), sf::Vector2f(buttonSize, buttonSize));
             }
         }
     }
@@ -144,7 +144,7 @@ namespace Maize {
 
         if (m_SelectedTileset->GetTexture() != nullptr)
         {
-            ImGui::Image(*m_SelectedTileset->GetTexture(), previewTextureSize);
+            ImGui::Image(m_SelectedTileset->GetTexture()->GetTexture(), previewTextureSize);
             ImGui::SameLine();
 
             if (ImGui::Button("Select Texture"))
@@ -209,9 +209,9 @@ namespace Maize {
         ImGui::BeginChild("Tileset", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const auto texture = m_SelectedTileset->GetTexture();
-        sf::Vector2u tilesetSize = sf::Vector2u(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
-        float scaledImageSizeX = (float)texture->GetWidth() * m_TilesetZoomFactor;
-        float scaledImageSizeY = (float)texture->GetHeight() * m_TilesetZoomFactor;
+        sf::Vector2u tilesetSize = sf::Vector2u(texture->GetSize().x / m_SelectedTileset->GetTileSize().x, texture->GetSize().y / m_SelectedTileset->GetTileSize().y);
+        float scaledImageSizeX = (float)texture->GetSize().x * m_TilesetZoomFactor;
+        float scaledImageSizeY = (float)texture->GetSize().y * m_TilesetZoomFactor;
 
         float scrollX = 0.0f;
         float scrollY = 0.0f;
@@ -234,7 +234,7 @@ namespace Maize {
         }
 
         sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
-        ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
+        ImGui::Image(texture->GetTexture(), { scaledImageSizeX, scaledImageSizeY });
 
         // loop through tiles and display them
         for (int32_t x = 0; x < tilesetSize.x; x++)

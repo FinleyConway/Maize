@@ -1,68 +1,47 @@
 #pragma once
 
+#include "Maize/Renderer/Texture.h"
+
 namespace Maize {
 
-	struct Sprite
+	class Sprite : public sf::Drawable, private sf::Transformable
 	{
 	public:
 		Sprite() = default;
-		Sprite(const sf::IntRect rect, const Texture* texture, sf::Vector2f pivot = sf::Vector2f(0, 0))
-		{
-			m_Sprite.setOrigin(pivot);
+		explicit Sprite(const Texture& texture);
+		Sprite(const Texture& texture, const sf::IntRect& rectangle);
+		Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin);
 
-			if (texture != nullptr)
-			{
-				m_Sprite.setTextureRect(rect);
-				m_Sprite.setTexture(*texture);
-			}
-		}
-		Sprite(const sf::IntRect rect, const sf::Texture* texture, sf::Vector2f pivot = sf::Vector2f(0, 0))
-		{
-			m_Sprite.setOrigin(pivot);
+		void SetTexture(const Texture& texture, bool resetRect = false);
+		void SetTextureRect(const sf::IntRect& rectangle);
+		void SetColour(sf::Color colour);
 
-			if (texture != nullptr)
-			{
-				m_Sprite.setTextureRect(rect);
-				m_Sprite.setTexture(*texture);
-			}
-		}
+		const Texture* GetTexture() const;
+		const sf::IntRect& GetTextureRect() const;
+		sf::Color GetColour() const;
 
-		void FlipX(bool flip)
-		{
-			m_FlipX = flip;
-			float scaleX = flip ? -1.0f : 1.0f;
-			m_Sprite.setScale(scaleX, m_Sprite.getScale().y);
-		}
+		sf::FloatRect GetLocalBounds() const;
+		sf::FloatRect GetGlobalBounds() const;
 
-		void FlipY(bool flip)
-		{
-			m_FlipY = flip;
-			float scaleY = flip ? -1.0f : 1.0f;
-			m_Sprite.setScale(m_Sprite.getScale().x, scaleY);
-		}
+		void FlipX(bool flip);
+		void FlipY(bool flip);
 
-		bool IsFlippedX() const { return m_FlipX; }
-		bool IsFlippedY() const { return m_FlipY; }
-
-		static bool IsSpriteInRect(const sf::Sprite& sprite, const sf::FloatRect& rect)
-		{
-			sf::FloatRect spriteBounds = sprite.getGlobalBounds();
-
-			if (spriteBounds.intersects(rect))
-			{
-				return true;
-			}
-
-			return false;
-		}
-
-		sf::Sprite& GetSprite() { return m_Sprite; }
-		bool IsEmpty() const { return m_Sprite.getTexture() == nullptr; }
+		bool IsFlippedX() const;
+		bool IsFlippedY() const;
 
 	private:
-		sf::Sprite m_Sprite;
-		bool m_FlipX = false;
-		bool m_FlipY = false;
+		friend class RenderingSystem;
+
+		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		void UpdatePositions();
+		void UpdateTexCoords();
+
+	private:
+		std::array<sf::Vertex, 4> m_Vertices;
+		const Texture* m_Texture = nullptr;
+		sf::IntRect m_TextureRect;
+		bool m_FlippedX = false;
+		bool m_FlippedY = false;
 	};
 
 } // Maize

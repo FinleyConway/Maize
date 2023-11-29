@@ -1,6 +1,5 @@
 #include "TilemapWindowTab.h"
 #include "TilemapEditorHelper.h"
-#include "Maize/Renderer/SpriteNew.h"
 
 namespace Maize {
 
@@ -63,8 +62,8 @@ namespace Maize {
 		sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
 
 		// temp will make some sort of debug rendering
-		m_PreviewTile.GetSprite().setPosition(screenPosition + m_PreviewTile.GetSprite().getOrigin());
-		Application::Get().GetRenderer().Draw(m_PreviewTile.GetSprite());
+		m_PreviewTile.setPosition(screenPosition + m_PreviewTile.getOrigin());
+		Renderer::Draw(m_PreviewTile);
 
         if (m_MouseLeftHeld)
         {
@@ -104,7 +103,7 @@ namespace Maize {
         const sf::Vector2f buttonSize = sf::Vector2f(16, 16);
 
         ImGui::PushID(0);
-        if (ImGui::ImageButton(*m_IconPencil, buttonSize))
+        if (ImGui::ImageButton(m_IconPencil->GetTexture(), buttonSize))
         {
             m_CurrentTool = TilemapTools::Pencil;
         }
@@ -114,7 +113,7 @@ namespace Maize {
         ImGui::SameLine();
 
         ImGui::PushID(1);
-        if (ImGui::ImageButton(*m_IconEraser, buttonSize))
+        if (ImGui::ImageButton(m_IconEraser->GetTexture(), buttonSize))
         {
             m_CurrentTool = TilemapTools::Erase;
         }
@@ -124,7 +123,7 @@ namespace Maize {
         ImGui::SameLine();
 
         ImGui::PushID(2);
-        if (ImGui::ImageButton(*m_IconPicker, buttonSize))
+        if (ImGui::ImageButton(m_IconPicker->GetTexture(), buttonSize))
         {
             m_CurrentTool = TilemapTools::Picker;
         }
@@ -169,7 +168,7 @@ namespace Maize {
 
 		ImGui::SameLine();
 
-		if (ImGui::ImageButton(*m_IconAdd, sf::Vector2f(16, 16)))
+		if (ImGui::ImageButton(m_IconAdd->GetTexture(), sf::Vector2f(16, 16)))
 		{
 			ImGui::OpenPopup("CreateNewLayerPopup");
 		}
@@ -234,7 +233,7 @@ namespace Maize {
 
             if (tileset.GetTexture() != nullptr)
             {
-                ImGui::Image(*tileset.GetTexture(), sf::Vector2f(buttonSize, buttonSize));
+                ImGui::Image(tileset.GetTexture()->GetTexture(), sf::Vector2f(buttonSize, buttonSize));
             }
         }
     }
@@ -246,9 +245,9 @@ namespace Maize {
         ImGui::BeginChild("Tilemap", sf::Vector2f(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
         const auto texture = m_SelectedTileset->GetTexture();
-        sf::Vector2u tilesetSize = sf::Vector2u(texture->GetWidth() / m_SelectedTileset->GetTileSize().x, texture->GetHeight() / m_SelectedTileset->GetTileSize().y);
-        float scaledImageSizeX = (float)texture->GetWidth() * m_TilesetZoomFactor;
-        float scaledImageSizeY = (float)texture->GetHeight() * m_TilesetZoomFactor;
+        sf::Vector2u tilesetSize = sf::Vector2u(texture->GetSize().x / m_SelectedTileset->GetTileSize().x, texture->GetSize().y / m_SelectedTileset->GetTileSize().y);
+        float scaledImageSizeX = (float)texture->GetSize().x * m_TilesetZoomFactor;
+        float scaledImageSizeY = (float)texture->GetSize().y * m_TilesetZoomFactor;
 
         float scrollX = 0.0f;
         float scrollY = 0.0f;
@@ -279,7 +278,7 @@ namespace Maize {
         }
 
         sf::Vector2f imagePos = ImGui::GetCursorScreenPos();
-        ImGui::Image(*texture, { scaledImageSizeX, scaledImageSizeY });
+        ImGui::Image(texture->GetTexture(), { scaledImageSizeX, scaledImageSizeY });
 
 		// create buttons for where each tile would be in the tileset
         for (int32_t x = 0; x < tilesetSize.x; x++)
@@ -319,7 +318,9 @@ namespace Maize {
 
 						sf::Vector2i size = sf::Vector2i(tilemapComponent->tileSizeX, tilemapComponent->tileSizeY);
 						sf::IntRect rect = sf::IntRect(tile->texCoords * 8, size);
-						m_PreviewTile = Sprite(rect, tilemapComponent->tilemapTexture.get(), (sf::Vector2f)size / 2.0f);
+
+						m_PreviewTile = sf::Sprite(tilemapComponent->tilemapTexture->GetTexture(), rect);
+						m_PreviewTile.setOrigin((sf::Vector2f)size / 2.0f);
                     }
                 }
 
@@ -349,12 +350,16 @@ namespace Maize {
                 m_CurrentRotation -= 90.0f;
 
                 if (m_CurrentRotation < 0.0f) m_CurrentRotation = 270.0f;
-				m_PreviewTile.GetSprite().setRotation(m_CurrentRotation);
+				m_PreviewTile.setRotation(m_CurrentRotation);
             }
 			else
 			{
 				m_FlipTileX = !m_FlipTileX;
-				m_PreviewTile.FlipX(m_FlipTileX);
+
+				if (m_FlipTileX)
+					m_PreviewTile.setScale(-1, 1);
+				else
+					m_PreviewTile.setScale(1, 1);
 			}
 
             return true;
@@ -368,12 +373,16 @@ namespace Maize {
 
                 if (m_CurrentRotation > 270.0f) m_CurrentRotation = 0.0f;
 
-				m_PreviewTile.GetSprite().setRotation(m_CurrentRotation);
+				m_PreviewTile.setRotation(m_CurrentRotation);
             }
 			else
 			{
 				m_FlipTileY = !m_FlipTileY;
-				m_PreviewTile.FlipY(m_FlipTileY);
+
+				if (m_FlipTileY)
+					m_PreviewTile.setScale(1, -1);
+				else
+					m_PreviewTile.setScale(1, 1);
 			}
 
             return true;

@@ -5,9 +5,9 @@
 
 namespace Maize {
 
-    Window::Window(const std::string& title, sf::Vector2u windowSize) : m_WindowSize(windowSize)
+    Window::Window(const std::string& title, sf::Vector2u windowSize)
     {
-        Create();
+        Create(windowSize);
         SetTitle(title);
         SetVSync(true);
     }
@@ -31,7 +31,7 @@ namespace Maize {
 
     void Window::PollEvents()
     {
-        sf::Event e;
+        sf::Event e{};
 
         while (m_Window.pollEvent(e))
         {
@@ -44,9 +44,6 @@ namespace Maize {
             }
             else if (e.type == sf::Event::Resized)
             {
-                m_WindowSize.x = e.size.width;
-                m_WindowSize.y = e.size.height;
-
                 WindowResizeEvent event(e.size.width, e.size.height);
                 m_EventCallback(event);
             }
@@ -85,38 +82,35 @@ namespace Maize {
 
     void Window::ToggleFullscreen()
     {
-        m_Window.close();
         m_IsFullscreen = !m_IsFullscreen;
-        Create();
-        m_WindowSize = m_Window.getSize();
+        Create({0, 0});
     }
 
-    sf::FloatRect Window::GetViewSpace() const
-    {
-        sf::Vector2f viewCenter(m_Window.getView().getCenter());
-        sf::Vector2f viewSize(m_Window.getView().getSize());
-        sf::Vector2f viewSizeHalf(viewSize.x / 2, viewSize.y / 2);
-        sf::FloatRect viewSpace(viewCenter - viewSizeHalf, viewSize);
-
-        return viewSpace;
-    }
-
-    void Window::BeginDrawing(Renderer& renderer, sf::Color clearColour)
+    void Window::BeginDrawing(sf::Color clearColour)
     {
         m_Window.clear(clearColour);
-        renderer.BeginDrawing();
+        Renderer::BeginDrawing();
     }
 
-    void Window::EndDrawing(Renderer& renderer)
+    void Window::EndDrawing()
     {
         m_Window.display();
-        renderer.EndDrawing();
+        Renderer::EndDrawing();
     }
 
-    void Window::Create()
-    {
-        uint32_t style = m_IsFullscreen ? sf::Style::Fullscreen : sf::Style::Default;
-        m_Window.create(sf::VideoMode(m_WindowSize.x, m_WindowSize.y), m_WindowTitle, style);
-    }
+	void Window::Create(sf::Vector2u windowSize)
+	{
+		if (m_IsFullscreen)
+		{
+			auto videoMode = sf::VideoMode::getDesktopMode();
+			m_Window.create(videoMode, m_WindowTitle, sf::Style::Fullscreen);
+
+			Renderer::OnWindowResize(sf::Vector2u(videoMode.width, videoMode.height));
+		}
+		else
+		{
+			m_Window.create(sf::VideoMode(windowSize.x, windowSize.y), m_WindowTitle, sf::Style::Close);
+		}
+	}
 
 } // Maize

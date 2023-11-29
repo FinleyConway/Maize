@@ -25,7 +25,6 @@ add_library(Maize STATIC
         src/Maize/Renderer/Renderer.cpp
         src/Maize/Renderer/Renderer.h
         src/Maize/Renderer/Texture.h
-        src/Maize/Renderer/Sprite.h
         src/Maize/ImGui/ImGuiLayer.cpp
         src/Maize/ImGui/ImGuiLayer.h
         src/Maize/Renderer/Camera.h
@@ -42,8 +41,18 @@ add_library(Maize STATIC
         src/Maize/Utils/Grids/CartesianGrid.h
         src/Maize/Utils/Grids/VertexGrid.cpp
         src/Maize/Utils/Grids/VertexGrid.h
-        src/Maize/Renderer/SpriteNew.cpp
-        src/Maize/Renderer/SpriteNew.h
+        src/Maize/Renderer/Sprite.cpp
+        src/Maize/Renderer/Sprite.h
+        src/Maize/Scene/RenderingSystem.cpp
+        src/Maize/Scene/RenderingSystem.h
+        src/Maize/Renderer/Animation.cpp
+        src/Maize/Renderer/Animation.h
+        src/Maize/Scene/AnimationSystem.cpp
+        src/Maize/Scene/AnimationSystem.h
+        src/Maize/Scene/CameraSystem.cpp
+        src/Maize/Scene/CameraSystem.h
+        src/Maize/Scene/LocalToWorldSystem.cpp
+        src/Maize/Scene/LocalToWorldSystem.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

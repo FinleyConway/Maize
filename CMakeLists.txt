@@ -18,7 +18,7 @@ set(BUILD_SHARED_LIBS OFF)
 FetchContent_Declare(
         SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
-        GIT_TAG 2.6.0
+        GIT_TAG 2.6.1
 )
 
 # Fetch ImGui library

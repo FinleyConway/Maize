@@ -38,8 +38,7 @@ public:
 
         m_Camera.OnUpdate(deltaTime);
 
-		auto& ren = Maize::Application::Get().GetRenderer();
-		ren.BeginSceneDrawing();
+		Maize::Renderer::BeginSceneDrawing();
 
 		if (m_TilemapComponent != nullptr)
 		{
@@ -50,11 +49,11 @@ public:
 		{
 			for (auto& layer : m_TilemapComponent->tilemapLayers)
 			{
-				ren.Draw(layer.GetVertexArray(), m_TilemapComponent->tilemapTexture.get());
+				Maize::Renderer::Draw(layer.GetVertexArray(), &m_TilemapComponent->tilemapTexture->GetTexture());
 			}
 		}
 
-        ren.EndSceneDrawing();
+		Maize::Renderer::EndSceneDrawing();
     }
 
 private:

@@ -29,13 +29,13 @@ namespace Maize {
 		textureInfo.reserve(tilesets.size());
 		for (auto& [tilesetID, tileset] : tilesets)
 		{
-			textureInfo.emplace_back(*tileset.GetTexture(), tilesetID);
+			textureInfo.emplace_back(tileset.GetTexture()->GetTexture(), tilesetID);
 		}
 
 		// pack textures into one big texture
 		auto results = TexturePacker::Pack(textureInfo, sf::Vector2u(1024, 1024));
 
-		tilemapComponent->tilemapTexture = std::make_shared<sf::Texture>(results.packedTexture);
+		tilemapComponent->tilemapTexture = std::make_shared<Texture>(std::move(results.packedTexture));
 
 		// offset all the tiles in the tileset of where they are in the packed texture
 		for (auto& [tilesetID, tileset] : tilesets)

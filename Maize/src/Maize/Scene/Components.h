@@ -1,7 +1,10 @@
 #pragma once
 
+#include <EntityComponentSystem/EntityWorld.h>
+
 #include "Maize/Renderer/Sprite.h"
 #include "Maize/Utils/Grids/VertexGrid.h"
+#include "Maize/Renderer/Animation.h"
 
 /*
  * Backend components
@@ -16,6 +19,23 @@ namespace Maize {
 		sf::Vector2f scale = sf::Vector2f(1, 1);
 	};
 
+	struct LocalTransformComponent
+	{
+		sf::Vector2f position = sf::Vector2f(0, 0);
+		float angle = 0;
+		sf::Vector2f scale = sf::Vector2f(1, 1);
+	};
+
+	struct ParentComponent
+	{
+		std::vector<ECS::Entity> children;
+	};
+
+	struct ChildComponent
+	{
+		ECS::Entity parent;
+	};
+
 	struct SpriteComponent
 	{
 		Sprite sprite;
@@ -23,10 +43,39 @@ namespace Maize {
 		int32_t orderInLayer = 0;
 	};
 
+	struct AnimatorComponent
+	{
+		float animationSpeed = 1.0f;
+		std::string currentState;
+		std::unordered_map<std::string, Animation> states;
+	};
+
+	struct CameraComponent
+	{
+		sf::Vector2f zoom = sf::Vector2f(1, 1);
+		sf::FloatRect viewport = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
+	};
+
+	struct CameraShakeComponent
+	{
+		float intensity = 0;
+		float duration = 0;
+		sf::Vector2f originalPosition;
+
+		void Shake(float shakeIntensity, float time, sf::Vector2f startingPosition)
+		{
+			if (duration > 0) return;
+
+			intensity = shakeIntensity;
+			duration = time;
+			originalPosition = startingPosition;
+		}
+	};
+
 	struct TilemapComponent
 	{
         std::vector<VertexGrid> tilemapLayers;
-		std::shared_ptr<sf::Texture> tilemapTexture;
+		std::shared_ptr<Texture> tilemapTexture;
         int32_t tileSizeX = 8;
         int32_t tileSizeY = 8;
 
@@ -45,7 +94,6 @@ namespace Maize {
 
 	struct TilemapColliderComponent
 	{
-
 	};
 
 	struct BoxColliderComponent

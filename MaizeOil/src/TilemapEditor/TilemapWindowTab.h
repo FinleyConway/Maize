@@ -36,7 +36,7 @@ namespace Maize {
         Tileset* m_SelectedTileset = nullptr;
         TilemapEditorTile m_SelectedTile;
         uint32_t m_SelectedTilemapLayer = 0;
-		Sprite m_PreviewTile;
+		sf::Sprite m_PreviewTile;
 		std::array<sf::Vertex, 4> m_CurrentTilePreview;
 
 		float m_TilesetZoomFactor = 4.0f;

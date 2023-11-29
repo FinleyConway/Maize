@@ -10,26 +10,22 @@ namespace Maize {
     public:
         Camera()
         {
-            auto& ren = Application::Get().GetRenderer();
-
-            m_Camera = ren.GetCurrentTexture()->getDefaultView();
+            m_Camera = Renderer::GetCurrentTexture()->getDefaultView();
             m_Camera.setCenter(0, 0);
         }
 
         static sf::Vector2f ScreenToWorld(sf::Vector2i screenPosition)
         {
-            auto& ren = Application::Get().GetRenderer();
             auto& window = Application::Get().GetWindow().GetRenderWindow();
 
-            return window.mapPixelToCoords(screenPosition, ren.GetCurrentTexture()->getView());
+            return window.mapPixelToCoords(screenPosition, Renderer::GetCurrentTexture()->getView());
         }
 
         static sf::Vector2i WorldToScreen(sf::Vector2f worldPosition)
         {
-            auto& ren = Application::Get().GetRenderer();
             auto& window = Application::Get().GetWindow().GetRenderWindow();
 
-            return window.mapCoordsToPixel(worldPosition, ren.GetCurrentTexture()->getView());
+            return window.mapCoordsToPixel(worldPosition, Renderer::GetCurrentTexture()->getView());
         }
 
     protected:

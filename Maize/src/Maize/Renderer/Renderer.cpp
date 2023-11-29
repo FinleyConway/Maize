@@ -5,71 +5,77 @@
 
 namespace Maize {
 
-    Renderer::Renderer(Window& window) : m_Window(window)
-    {
-        CreateTextures();
-    }
+	void Renderer::Initialize(sf::Vector2u resize)
+	{
+		for (auto& texture : s_Textures)
+		{
+			texture = new sf::RenderTexture();
+		}
+
+		OnWindowResize(resize);
+	}
+
+	void Renderer::Shutdown()
+	{
+		for (auto& texture : s_Textures)
+		{
+			delete texture;
+		}
+	}
+
+	void Renderer::OnWindowResize(sf::Vector2u resize)
+	{
+		CreateTextures(resize);
+
+		auto view = GetCurrentTexture()->getView();
+		view.setSize((sf::Vector2f)resize);
+		GetCurrentTexture()->setView(view);
+	}
 
     sf::RenderTexture* Renderer::GetCurrentTexture()
     {
-        return &m_Textures[m_CurrentTextureIndex];
+        return s_Textures.at(s_CurrentTextureIndex);
     }
 
     sf::RenderTexture* Renderer::GetFinishedTexture()
     {
-        uint32_t finishedTextureIndex = (m_CurrentTextureIndex + 1) % 2;
-        return &m_Textures[finishedTextureIndex];
+        uint32_t finishedTextureIndex = (s_CurrentTextureIndex + 1) % 2;
+        return s_Textures.at(finishedTextureIndex);
     }
 
-    void Renderer::CreateTextures()
-    {
-        for (auto& m_Texture : m_Textures)
-        {
-            m_Texture.create(m_Window.GetWidth(), m_Window.GetHeight());
-            m_Texture.clear();
-            m_Texture.display();
-        }
-    }
+	void Renderer::CreateTextures(sf::Vector2u resize)
+	{
+		for (auto& texture : s_Textures)
+		{
+			texture->create(resize.x, resize.y);
+			texture->clear();
+			texture->display();
+		}
+	}
 
-    void Renderer::SwapTextures()
+	void Renderer::SwapTextures()
     {
-        m_CurrentTextureIndex = (m_CurrentTextureIndex + 1) % 2; // toggle between 0 and 1
+		s_CurrentTextureIndex = (s_CurrentTextureIndex + 1) % 2; // toggle between 0 and 1
     }
 
     void Renderer::BeginSceneDrawing()
     {
-        m_Textures[m_CurrentTextureIndex].clear();
+		s_Textures.at(s_CurrentTextureIndex)->clear();
     }
 
     void Renderer::BeginDrawing()
     {
-        m_IsDrawing = true;
-        m_DrawCalls = 0;
+		s_IsDrawing = true;
+		s_DrawCalls = 0;
     }
 
     void Renderer::Draw(const sf::Shape& shape, sf::RenderTarget* renderTarget)
     {
-        if (renderTarget == nullptr)
-        {
-            if (!m_Window.GetViewSpace().intersects(shape.getGlobalBounds()))
-            {
-                return;
-            }
-        }
-
         Draw(static_cast<const sf::Drawable&>(shape), sf::RenderStates::Default, renderTarget);
     }
 
     void Renderer::Draw(const sf::Sprite& sprite, sf::RenderTarget* renderTarget)
     {
-        if (renderTarget == nullptr)
-        {
-            if (!m_Window.GetViewSpace().intersects(sprite.getGlobalBounds()))
-            {
-                //return;
-            }
-        }
-
         Draw(static_cast<const sf::Drawable&>(sprite), sf::RenderStates::Default,  renderTarget);
     }
 
@@ -78,29 +84,29 @@ namespace Maize {
         // look more into this section in the future
         if (renderTarget == nullptr)
         {
-            renderTarget = &m_Textures[m_CurrentTextureIndex];
+            renderTarget = s_Textures.at(s_CurrentTextureIndex);
         }
 
         renderTarget->draw(drawable, state);
-        m_DrawCalls++;
+        s_DrawCalls++;
     }
 
     void Renderer::DrawBufferTexture()
     {
         auto& window = Application::Get().GetWindow().GetRenderWindow();
 
-        m_BufferSprite.setTexture(m_Textures[m_CurrentTextureIndex].getTexture());
-        Draw(m_BufferSprite, &window);
+		s_BufferSprite.setTexture(s_Textures.at(s_CurrentTextureIndex)->getTexture());
+        Draw(s_BufferSprite, &window);
     }
 
-    void Renderer::EndDrawing() { m_IsDrawing = false; }
+    void Renderer::EndDrawing() { s_IsDrawing = false; }
 
     void Renderer::EndSceneDrawing()
     {
         SwapTextures();
     }
 
-    bool Renderer::IsDrawing() const { return m_IsDrawing; }
+    bool Renderer::IsDrawing() { return s_IsDrawing; }
 
 	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord)
 	{
