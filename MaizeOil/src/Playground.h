@@ -28,7 +28,7 @@ namespace Maize {
 
 			m_Player = m_Reg.CreateEntity();
 			auto& transform1 = m_Reg.AddComponent<TransformComponent>(m_Player);
-			transform1.position.y = 1;
+			transform1.position.y = 2;
 
 			auto& sprite = m_Reg.AddComponent<SpriteComponent>(m_Player);
 			sprite.sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(24, 24), 48);
@@ -51,10 +51,10 @@ namespace Maize {
 
 		void OnUpdate(float deltaTime) override
 		{
-			const auto& [t, r] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent>(m_Player);
+			const auto& [t, r, b] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent, CapsuleColliderComponent>(m_Player);
 
 			sf::Vector2f movement;
-			float angle = 0;
+			float size = 1;
 
 			if (Input::IsKeyPressed(KeyCode::W))
 			{
@@ -75,12 +75,15 @@ namespace Maize {
 
 			if (Input::IsKeyPressed(KeyCode::Q))
 			{
-				angle++;
+				size++;
 			}
 			if (Input::IsKeyPressed(KeyCode::E))
 			{
-				angle--;
+				b.isTrigger = true;
 			}
+
+			t.scale.x = size;
+			t.scale.y = size;
 
 			r.body->ApplyForceToCenter({ movement.x * 2.0f, movement.y * 5.0f }, true);
 
@@ -88,11 +91,11 @@ namespace Maize {
 			b2Vec2 velocity = r.body->GetLinearVelocity();
 			float currentVelocity = velocity.Length();
 
-			if (currentVelocity > maxVelocity) {
-				// Scale the velocity to have a magnitude of maxVelocity
+			/*if (currentVelocity > maxVelocity)
+			{
 				velocity *= maxVelocity / currentVelocity;
 				r.body->SetLinearVelocity(velocity);
-			}
+			}*/
 
 			// custom
 			m_Shake.Update(m_Reg, deltaTime);

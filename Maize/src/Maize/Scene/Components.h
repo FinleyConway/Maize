@@ -62,8 +62,10 @@ namespace Maize {
 	struct RigidbodyComponent
 	{
 		enum class BodyType { Static = 0, Kinematic, Dynamic };
+		enum class CollisionDetection { Discrete = 0, Continuous };
 
 		BodyType type = BodyType::Static;
+		CollisionDetection detectionMode = CollisionDetection::Discrete;
 		bool fixedRotation = false;
 		float gravityScale = 1;
 		b2Body* body = nullptr;
