@@ -21,6 +21,7 @@ namespace Maize {
 
 				camera.setCenter(transformComponent.position);
 				camera.setRotation(transformComponent.angle);
+
 				camera.setSize(view.getSize().x * cameraComponent.zoom.x * transformComponent.scale.x ,view.getSize().y * cameraComponent.zoom.y * transformComponent.scale.y);
 
 				camera.setViewport(cameraComponent.viewport);

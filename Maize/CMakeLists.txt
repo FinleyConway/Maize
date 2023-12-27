@@ -53,6 +53,8 @@ add_library(Maize STATIC
         src/Maize/Scene/CameraSystem.h
         src/Maize/Scene/LocalToWorldSystem.cpp
         src/Maize/Scene/LocalToWorldSystem.h
+        src/Maize/Scene/CollisionSystem.cpp
+        src/Maize/Scene/CollisionSystem.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -12,75 +12,113 @@ namespace Maize {
 	public:
 		void OnAttach() override
 		{
-			m_YellowPlayerIdle = Texture::Create("Assets/Players/Yellow/Gunner_Yellow_Idle.png");
-			m_YellowPlayerRun = Texture::Create("Assets/Players/Yellow/Gunner_Yellow_Run.png");
+			m_YellowPlayerIdle = Texture::Create("Assets/Players/Black/Gunner_Black_Idle.png");
 
 			CreateCamera();
 
+			for (float i = -10; i < 10; i += 0.48f)
+			{
+				auto ref = m_Reg.CreateEntity();
+				auto& t = m_Reg.AddComponent<TransformComponent>(ref);
+				t.position.x = i;
+				m_Reg.AddComponent<RigidbodyComponent>(ref);
+				auto& c = m_Reg.AddComponent<BoxColliderComponent>(ref);
+				c.size = sf::Vector2f(0.48f, 0.48f);
+			}
+
 			m_Player = m_Reg.CreateEntity();
-			auto gun = m_Reg.CreateEntity();
+			auto& transform1 = m_Reg.AddComponent<TransformComponent>(m_Player);
+			transform1.position.y = 1;
 
-			SetupParentChildRelation(m_Player, gun);
+			auto& sprite = m_Reg.AddComponent<SpriteComponent>(m_Player);
+			sprite.sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(24, 24), 48);
 
-			m_Reg.GetComponent<LocalTransformComponent>(gun).position = sf::Vector2f(20, 20);
+			auto& rb1 = m_Reg.AddComponent<RigidbodyComponent>(m_Player);
+			rb1.type = RigidbodyComponent::BodyType::Dynamic;
+			rb1.gravityScale = 1;
+			rb1.fixedRotation = true;
+			auto& col1 = m_Reg.AddComponent<CapsuleColliderComponent>(m_Player);
+			col1.offset = sf::Vector2f(-0.04174951, 0.02186877);
+			col1.size = sf::Vector2f(0.2962226, 0.6660039);
 
-			m_Reg.AddComponent<SpriteComponent>(m_Player).sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(48, 48) / 2.0f);
-			m_Reg.AddComponent<SpriteComponent>(gun).sprite = Sprite(*m_YellowPlayerRun);
+			m_Collision.OnStart(m_Reg);
+		}
 
-			auto& animator = m_Reg.AddComponent<AnimatorComponent>(m_Player);
-			animator.currentState = "Idle";
-			for (int32_t i = 0 ; i < 5; i++)
-				animator.states["Idle"].AddFrame(i, sf::IntRect(48 * i, 0, 48, 48), 0.1f);
-			for (int32_t i = 0 ; i < 5; i++)
-				animator.states["Run"].AddFrame(i, sf::IntRect(48 * i, 0, 48, 48), 0.1f);
+		void OnDetach() override
+		{
+			m_Collision.OnDestroy();
 		}
 
 		void OnUpdate(float deltaTime) override
 		{
-			auto [transform, sprite, animator] = m_Reg.GetComponents<TransformComponent, SpriteComponent, AnimatorComponent>(m_Player);
+			const auto& [t, r] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent>(m_Player);
+
 			sf::Vector2f movement;
+			float angle = 0;
 
 			if (Input::IsKeyPressed(KeyCode::W))
+			{
+				movement.y++;
+			}
+			if (Input::IsKeyPressed(KeyCode::S))
 			{
 				movement.y--;
 			}
             if (Input::IsKeyPressed(KeyCode::A))
 			{
 				movement.x--;
-				transform.scale.x = -1;
-			}
-            if (Input::IsKeyPressed(KeyCode::S))
-			{
-				movement.y++;
 			}
             if (Input::IsKeyPressed(KeyCode::D))
 			{
 				movement.x++;
-				transform.scale.x = 1;
 			}
 
-			if (movement != sf::Vector2f(0,0))
+			if (Input::IsKeyPressed(KeyCode::Q))
 			{
-				animator.currentState = "Run";
-				sprite.sprite.SetTexture(*m_YellowPlayerRun);
+				angle++;
 			}
-			else
+			if (Input::IsKeyPressed(KeyCode::E))
 			{
-				animator.currentState = "Idle";
-				sprite.sprite.SetTexture(*m_YellowPlayerIdle);
+				angle--;
 			}
 
-			transform.position += movement * deltaTime * 100.0f;
+			r.body->ApplyForceToCenter({ movement.x * 2.0f, movement.y * 5.0f }, true);
 
+			float maxVelocity = 2.0f;
+			b2Vec2 velocity = r.body->GetLinearVelocity();
+			float currentVelocity = velocity.Length();
+
+			if (currentVelocity > maxVelocity) {
+				// Scale the velocity to have a magnitude of maxVelocity
+				velocity *= maxVelocity / currentVelocity;
+				r.body->SetLinearVelocity(velocity);
+			}
 
 			// custom
 			m_Shake.Update(m_Reg, deltaTime);
 
 			// backend
+			m_Collision.OnUpdate(m_Reg, deltaTime);
 			m_LocalToWorld.OnUpdate(m_Reg, deltaTime);
 			m_Animate.OnUpdate(m_Reg, deltaTime);
 			m_CameraSystem.OnUpdate(m_Reg, deltaTime);
-			m_Render.OnRender(m_Reg);
+			RenderingSystem::OnRender(m_Reg);
+
+			if (ImGui::Begin("Debug"))
+			{
+				if (ImGui::Button("Show Colliders")) RenderingSystem::drawDebug = !RenderingSystem::drawDebug;
+
+				ImGui::Text("Entity: %zu", m_Player);
+
+				ImGui::Text("Position: %1.5f, %1.5f", t.position.x, t.position.y);
+				ImGui::Text("Rotation: %1.5f", t.angle);
+
+				ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
+
+				ImGui::Text("Draw Calls: %d", Renderer::GetDrawCall());
+
+				ImGui::End();
+			}
 		}
 
 	private:
@@ -94,19 +132,6 @@ namespace Maize {
 			return camera;
 		}
 
-		void SetupParentChildRelation(ECS::Entity parentEntity, ECS::Entity childEntity)
-		{
-			m_Reg.AddComponent<TransformComponent>(parentEntity);
-			auto& parent = m_Reg.AddComponent<ParentComponent>(parentEntity);
-
-			m_Reg.AddComponent<TransformComponent>(childEntity);
-			m_Reg.AddComponent<LocalTransformComponent>(childEntity);
-			auto& child = m_Reg.AddComponent<ChildComponent>(childEntity);
-
-			parent.children.push_back(childEntity);
-			child.parent = parentEntity;
-		}
-
 	private:
 		ECS::EntityWorld m_Reg;
 
@@ -114,13 +139,12 @@ namespace Maize {
 		CameraShakeSystem m_Shake;
 
 		// backend
+		CollisionSystem m_Collision;
 		LocalToWorldSystem m_LocalToWorld;
 		AnimationSystem m_Animate;
 		CameraSystem m_CameraSystem;
-		RenderingSystem m_Render;
 
 		std::shared_ptr<Texture> m_YellowPlayerIdle;
-		std::shared_ptr<Texture> m_YellowPlayerRun;
 
 		ECS::Entity m_Player;
 	};

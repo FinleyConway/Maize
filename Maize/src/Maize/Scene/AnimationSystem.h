@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EntityComponentSystem/EntityWorld.h>
+
 #include "Maize/Scene/Components.h"
 
 namespace Maize {

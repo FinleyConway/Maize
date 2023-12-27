@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EntityComponentSystem/EntityWorld.h>
+
 #include "Maize/Scene/Components.h"
 
 namespace Maize {
@@ -12,7 +13,7 @@ namespace Maize {
 		{
 			for (auto parentEntity : reg.GetEntityGroup<TransformComponent, ParentComponent>())
 			{
-				auto [parentTransform, parent] = reg.GetComponents<TransformComponent, ParentComponent>(parentEntity);
+				const auto& [parentTransform, parent] = reg.GetComponents<TransformComponent, ParentComponent>(parentEntity);
 
 				// recursively update transforms for children
 				UpdateChildTransforms(reg, parentEntity, parentTransform, deltaTime);
@@ -24,7 +25,7 @@ namespace Maize {
 		{
 			for (auto childEntity : reg.GetEntityGroup<ChildComponent>())
 			{
-				auto [childTransform, childLocalTransform, childParent] = reg.GetComponents<TransformComponent, LocalTransformComponent, ChildComponent>(childEntity);
+				const auto& [childTransform, childLocalTransform, childParent] = reg.GetComponents<TransformComponent, LocalTransformComponent, ChildComponent>(childEntity);
 
 				// check if this childEntity is a child of the current parentEntity
 				if (childParent.parent == parentEntity)

@@ -3,22 +3,23 @@
 
 namespace Maize {
 
-	Sprite::Sprite(const Texture& texture)
-	{
-		SetTexture(texture, true);
-	}
-
-	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle)
-	{
-		SetTextureRect(rectangle);
-		SetTexture(texture, false);
-	}
-
 	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin)
 	{
 		SetTextureRect(rectangle);
 		SetTexture(texture, false);
 		setOrigin(origin);
+	}
+
+	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin, float pixelPerUnit)
+	{
+		SetTextureRect(rectangle);
+		SetTexture(texture, false);
+		setOrigin(origin);
+
+		float scale = m_PixelPerUnit / pixelPerUnit;
+		setScale(scale, scale);
+
+		m_PixelPerUnit = pixelPerUnit;
 	}
 
 	void Sprite::SetTexture(const Texture& texture, bool resetRect)
@@ -111,44 +112,6 @@ namespace Maize {
 		m_Vertices[1].texCoords = sf::Vector2f(left, bottom);
 		m_Vertices[2].texCoords = sf::Vector2f(right, top);
 		m_Vertices[3].texCoords = sf::Vector2f(right, bottom);
-	}
-
-	void Sprite::FlipX(bool flip)
-	{
-		if (flip)
-		{
-			setScale(-1, 1);
-		}
-		else
-		{
-			setScale(1, 1);
-		}
-
-		m_FlippedX = flip;
-	}
-
-	void Sprite::FlipY(bool flip)
-	{
-		if (flip)
-		{
-			setScale(1, -1);
-		}
-		else
-		{
-			setScale(1, 1);
-		}
-
-		m_FlippedY = flip;
-	}
-
-	bool Sprite::IsFlippedX() const
-	{
-		return m_FlippedX;
-	}
-
-	bool Sprite::IsFlippedY() const
-	{
-		return m_FlippedY;
 	}
 
 } // Maize

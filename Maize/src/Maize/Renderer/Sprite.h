@@ -8,9 +8,8 @@ namespace Maize {
 	{
 	public:
 		Sprite() = default;
-		explicit Sprite(const Texture& texture);
-		Sprite(const Texture& texture, const sf::IntRect& rectangle);
 		Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin);
+		Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin, float pixelPerUnit);
 
 		void SetTexture(const Texture& texture, bool resetRect = false);
 		void SetTextureRect(const sf::IntRect& rectangle);
@@ -19,15 +18,10 @@ namespace Maize {
 		const Texture* GetTexture() const;
 		const sf::IntRect& GetTextureRect() const;
 		sf::Color GetColour() const;
+		float GetPixelPerUnit() const { return m_PixelPerUnit; }
 
 		sf::FloatRect GetLocalBounds() const;
 		sf::FloatRect GetGlobalBounds() const;
-
-		void FlipX(bool flip);
-		void FlipY(bool flip);
-
-		bool IsFlippedX() const;
-		bool IsFlippedY() const;
 
 	private:
 		friend class RenderingSystem;
@@ -40,8 +34,7 @@ namespace Maize {
 		std::array<sf::Vertex, 4> m_Vertices;
 		const Texture* m_Texture = nullptr;
 		sf::IntRect m_TextureRect;
-		bool m_FlippedX = false;
-		bool m_FlippedY = false;
+		float m_PixelPerUnit = 100;
 	};
 
 } // Maize

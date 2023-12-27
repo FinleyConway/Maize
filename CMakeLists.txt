@@ -56,9 +56,15 @@ FetchContent_Declare(
         GIT_TAG master
 )
 
+# Fetch box2d
+FetchContent_Declare(
+        box2d
+        GIT_REPOSITORY https://github.com/erincatto/box2d.git
+        GIT_TAG v2.4.1
+)
+
 # Set SFML_DIR to point to sfml_BINARY_DIR
 set(SFML_DIR "${sfml_BINARY_DIR}")
-
 FetchContent_MakeAvailable(SFML)
 FetchContent_MakeAvailable(imgui)
 
@@ -71,6 +77,7 @@ FetchContent_MakeAvailable(imgui-sfml)
 FetchContent_MakeAvailable(nlohmann_json)
 FetchContent_MakeAvailable(pfd)
 FetchContent_MakeAvailable(ecs)
+FetchContent_MakeAvailable(box2d)
 
 # Add subdirectories for your projects
 add_subdirectory(Maize)
@@ -89,4 +96,5 @@ target_link_libraries(Maize
         sfml-network
         ImGui-SFML::ImGui-SFML
         nlohmann_json::nlohmann_json
+        box2d
 )

@@ -20,8 +20,10 @@
 
 #include "Maize/Scene/Components.h"
 
+// temp
 #include "Maize/Scene/AnimationSystem.h"
 
+#include "Maize/Scene/CollisionSystem.h"
 #include "Maize/Scene/LocalToWorldSystem.h"
 #include "Maize/Scene/CameraSystem.h"
 #include "Maize/Scene/RenderingSystem.h"

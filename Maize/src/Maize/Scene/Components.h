@@ -1,6 +1,7 @@
 #pragma once
 
 #include <EntityComponentSystem/EntityWorld.h>
+#include <box2d/box2d.h>
 
 #include "Maize/Renderer/Sprite.h"
 #include "Maize/Utils/Grids/VertexGrid.h"
@@ -14,16 +15,16 @@ namespace Maize {
 
 	struct TransformComponent
 	{
-		sf::Vector2f position = sf::Vector2f(0, 0);
-		float angle = 0;
-		sf::Vector2f scale = sf::Vector2f(1, 1);
+		sf::Vector2f position = sf::Vector2f(0.0f, 0.0f);
+		float angle = 0.0f;
+		sf::Vector2f scale = sf::Vector2f(1.0f, 1.0f);
 	};
 
 	struct LocalTransformComponent
 	{
-		sf::Vector2f position = sf::Vector2f(0, 0);
-		float angle = 0;
-		sf::Vector2f scale = sf::Vector2f(1, 1);
+		sf::Vector2f position = sf::Vector2f(0.0f, 0.0f);
+		float angle = 0.0f;
+		sf::Vector2f scale = sf::Vector2f(1.0f, 1.0f);
 	};
 
 	struct ParentComponent
@@ -33,12 +34,14 @@ namespace Maize {
 
 	struct ChildComponent
 	{
-		ECS::Entity parent;
+		ECS::Entity parent = -1;
 	};
 
 	struct SpriteComponent
 	{
 		Sprite sprite;
+		bool flipX = false;
+		bool flipY = false;
 		std::string sortingLayer = "Default";
 		int32_t orderInLayer = 0;
 	};
@@ -52,8 +55,66 @@ namespace Maize {
 
 	struct CameraComponent
 	{
-		sf::Vector2f zoom = sf::Vector2f(1, 1);
+		sf::Vector2f zoom = sf::Vector2f(1.0f, 1.0f);
 		sf::FloatRect viewport = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
+	};
+
+	struct RigidbodyComponent
+	{
+		enum class BodyType { Static = 0, Kinematic, Dynamic };
+
+		BodyType type = BodyType::Static;
+		bool fixedRotation = false;
+		float gravityScale = 1;
+		b2Body* body = nullptr;
+	};
+
+	struct BoxColliderComponent
+	{
+		sf::Vector2f offset = sf::Vector2f(0.0f, 0.0f);
+		sf::Vector2f size = sf::Vector2f(1.0f, 1.0f);
+
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
+	};
+
+	struct CircleColliderComponent
+	{
+		sf::Vector2f offset = sf::Vector2f(0.0f, 0.0f);
+		float radius = 0.5f;
+
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
+	};
+
+	struct CapsuleColliderComponent
+	{
+		enum class Direction { Vertical = 0, Horizontal };
+
+		Direction direction = Direction::Vertical;
+
+		sf::Vector2f offset = sf::Vector2f(0.0f, 0.0f);
+		sf::Vector2f size = sf::Vector2f(0.5f, 1.0f);
+
+		bool isTrigger = false;
+
+		float density = 1.0f;
+		float friction = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
+	};
+
+	struct CollisionEventComponent
+	{
+		ECS::Entity otherEntity = -1;
 	};
 
 	struct CameraShakeComponent
@@ -81,58 +142,6 @@ namespace Maize {
 
         std::string sortingLayer = "Default";
         int32_t orderInLayer = 0;
-	};
-
-	struct RigidbodyComponent
-	{
-		enum class BodyType { Static = 0, Kinematic, Dynamic };
-
-		BodyType type = BodyType::Static;
-		bool fixedRotation = false;
-		void* body = nullptr;
-	};
-
-	struct TilemapColliderComponent
-	{
-	};
-
-	struct BoxColliderComponent
-	{
-		sf::Vector2f offset;
-		sf::Vector2f size = sf::Vector2f(0.5f, 0.5f);
-
-		bool isTrigger = false;
-
-		float density = 1.0f;
-		float friction = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
-	};
-
-	struct CircleColliderComponent
-	{
-		sf::Vector2f offset;
-		float radius = 0.5f;
-
-		bool isTrigger = false;
-
-		float density = 1.0f;
-		float friction = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
-	};
-
-	struct CapsuleColliderComponent
-	{
-		sf::Vector2f offset;
-		sf::Vector2f size = sf::Vector2f(0.5f, 1.0f);
-
-		bool isTrigger = false;
-
-		float density = 1.0f;
-		float friction = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
 	};
 
 } // Maize

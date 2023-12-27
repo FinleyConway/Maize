@@ -10,24 +10,9 @@ namespace Maize {
 	class RenderingSystem
 	{
 	public:
-		void OnRender(ECS::EntityWorld& reg)
-		{
-			Renderer::BeginSceneDrawing();
+		static void OnRender(ECS::EntityWorld& reg);
 
-			for (auto entity : reg.GetEntityGroup<TransformComponent, CameraComponent>())
-			{
-				std::unordered_map<std::string, std::vector<Drawable>> drawableOrder;
-				const auto& camera = Renderer::GetCurrentTexture()->getView();
-
-				// gather drawables
-				GetSprites(reg, camera, drawableOrder);
-
-				// draw
-				RenderDrawables(drawableOrder);
-			}
-
-			Renderer::EndSceneDrawing();
-		}
+		inline static bool drawDebug = false;
 
 	private:
 		struct Drawable
@@ -36,59 +21,19 @@ namespace Maize {
 			int32_t orderInLayer = 0;
 		};
 
-		sf::FloatRect GetViewSpace(const sf::View& camera) const
-		{
-			sf::Vector2f viewSize = camera.getSize();
-			sf::Vector2f viewSizeHalf = sf::Vector2f(viewSize.x / 2.0f, viewSize.y / 2.0f);
+		static sf::FloatRect GetViewSpace(const sf::View& camera);
 
+		static void GetSprites(ECS::EntityWorld& reg, const sf::View& camera, std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder);
+
+		static void RenderDrawables(std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder);
+		static void RenderDebugColliders(ECS::EntityWorld& reg, const sf::View& camera);
+
+		static sf::Vector2f Rotate(sf::Vector2f point, float degrees)
+		{
 			sf::Transform transform;
-			transform.translate(camera.getCenter());
-			transform.rotate(camera.getRotation());
-			transform.translate(-viewSizeHalf);
+			transform.rotate(degrees);
 
-			return transform.transformRect(sf::FloatRect(0.0f, 0.0f, viewSize.x, viewSize.y));
-		}
-
-		void GetSprites(ECS::EntityWorld& reg, const sf::View& camera, std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder)
-		{
-			for (auto entity : reg.GetEntityGroup<TransformComponent, SpriteComponent>())
-			{
-				auto [transformComponent, spriteComponent] = reg.GetComponents<TransformComponent, SpriteComponent>(entity);
-
-				sf::FloatRect spriteBounds = spriteComponent.sprite.GetGlobalBounds();
-
-				// check if sprite bounds is within camera bounds
-				if (GetViewSpace(camera).intersects(spriteBounds))
-				{
-					// Set sprite properties based on transform component
-					spriteComponent.sprite.setPosition(transformComponent.position);
-					spriteComponent.sprite.setRotation(transformComponent.angle);
-					spriteComponent.sprite.setScale(transformComponent.scale);
-
-					if (spriteComponent.sprite.GetTexture() != nullptr)
-					{
-						drawableOrder[spriteComponent.sortingLayer].emplace_back(Drawable(static_cast<const sf::Drawable*>(&spriteComponent.sprite), spriteComponent.orderInLayer));
-					}
-				}
-			}
-		}
-
-		void RenderDrawables(std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder)
-		{
-			// loop through each layer
-			for (auto& [layer, order] : drawableOrder)
-			{
-				// sort the sprites in that layer
-				std::sort(order.begin(), order.end(), [](const Drawable& drawable1, const Drawable& drawable2)
-				{
-					return drawable1.orderInLayer < drawable2.orderInLayer;
-				});
-
-				for (const auto& drawable : order)
-				{
-					Renderer::Draw(*drawable.drawable);
-				}
-			}
+			return transform.transformPoint(point);
 		}
 	};
 
