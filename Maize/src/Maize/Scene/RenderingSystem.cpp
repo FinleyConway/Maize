@@ -161,19 +161,23 @@ namespace Maize {
 		{
 			const auto& [transform, capsuleCollider] = reg.GetComponents<TransformComponent, CapsuleColliderComponent>(entity);
 
+			const sf::Vector2f scale = sf::Vector2f(std::abs(transform.scale.x), std::abs(transform.scale.y));
+			const float signX = (transform.scale.x < 0.0f) ? -1.0f : 1.0f;
+			const float signY = (transform.scale.y < 0.0f) ? -1.0f : 1.0f;
+
 			const sf::Vector2f colliderSize = capsuleCollider.size * ppu;
 
-			const float scaledCircleRadius = (capsuleCollider.size.x * ppu / 2.0f) * transform.scale.x;
+			const float scaledCircleRadius = (capsuleCollider.size.x * ppu / 2.0f) * scale.x;
 			const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
-			const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(capsuleCollider.offset.x * ppu, capsuleCollider.offset.y * ppu * flip), transform.angle);
+			const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, capsuleCollider.offset.y * signY * ppu * flip), transform.angle);
 
-			colliderRectShape.setSize({ colliderSize.x * transform.scale.x, (colliderSize.x - capsuleCollider.size.y) * transform.scale.y });
+			colliderRectShape.setSize({ colliderSize.x * scale.x, (colliderSize.x - capsuleCollider.size.y) * scale.y });
 			colliderRectShape.setOrigin(colliderRectShape.getSize() / 2.0f);
 			colliderRectShape.setPosition(colliderPosition.x + rotatedOffset.x, colliderPosition.y + rotatedOffset.y);
 			colliderRectShape.setRotation(transform.angle);
 
-			const sf::Vector2f circleOffset1 = Rotate(sf::Vector2f(capsuleCollider.offset.x * ppu, (-capsuleCollider.size.y * transform.scale.y / 4.0f - capsuleCollider.offset.y) * ppu), transform.angle);
-			const sf::Vector2f circleOffset2 = Rotate(sf::Vector2f(capsuleCollider.offset.x * ppu, (capsuleCollider.size.y * transform.scale.y / 4.0f - capsuleCollider.offset.y) * ppu), transform.angle);
+			const sf::Vector2f circleOffset1 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, (-capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), transform.angle);
+			const sf::Vector2f circleOffset2 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, (capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), transform.angle);
 
 			colliderCircleShape1.setRadius(scaledCircleRadius);
 			colliderCircleShape1.setOrigin(colliderCircleShape1.getRadius(), colliderCircleShape1.getRadius());

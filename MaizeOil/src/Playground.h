@@ -14,21 +14,29 @@ namespace Maize {
 		{
 			m_YellowPlayerIdle = Texture::Create("Assets/Players/Black/Gunner_Black_Idle.png");
 
-			CreateCamera();
+			m_Camera = CreateCamera();
 
-			for (float i = -10; i < 10; i += 0.48f)
+			for (float i = -10; i < 10; i += 0.50f)
 			{
 				auto ref = m_Reg.CreateEntity();
 				auto& t = m_Reg.AddComponent<TransformComponent>(ref);
 				t.position.x = i;
 				m_Reg.AddComponent<RigidbodyComponent>(ref);
 				auto& c = m_Reg.AddComponent<BoxColliderComponent>(ref);
-				c.size = sf::Vector2f(0.48f, 0.48f);
+				c.size = sf::Vector2f(0.50f, 0.50f);
 			}
+
+			auto ref = m_Reg.CreateEntity();
+			auto& t = m_Reg.AddComponent<TransformComponent>(ref);
+			t.position.y = 1;
+			m_Reg.AddComponent<RigidbodyComponent>(ref);
+			auto& c = m_Reg.AddComponent<BoxColliderComponent>(ref);
+			c.size = sf::Vector2f(0.50f, 0.50f);
 
 			m_Player = m_Reg.CreateEntity();
 			auto& transform1 = m_Reg.AddComponent<TransformComponent>(m_Player);
 			transform1.position.y = 2;
+			transform1.scale.x = -1;
 
 			auto& sprite = m_Reg.AddComponent<SpriteComponent>(m_Player);
 			sprite.sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(24, 24), 48);
@@ -51,10 +59,10 @@ namespace Maize {
 
 		void OnUpdate(float deltaTime) override
 		{
-			const auto& [t, r, b] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent, CapsuleColliderComponent>(m_Player);
+			const auto& [t, r] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent>(m_Player);
+			const auto& [t1, c] = m_Reg.GetComponents<TransformComponent, CameraComponent>(m_Camera);
 
 			sf::Vector2f movement;
-			float size = 1;
 
 			if (Input::IsKeyPressed(KeyCode::W))
 			{
@@ -67,35 +75,17 @@ namespace Maize {
             if (Input::IsKeyPressed(KeyCode::A))
 			{
 				movement.x--;
+				t.scale.x = -1;
 			}
             if (Input::IsKeyPressed(KeyCode::D))
 			{
 				movement.x++;
+				t.scale.x = 1;
 			}
-
-			if (Input::IsKeyPressed(KeyCode::Q))
-			{
-				size++;
-			}
-			if (Input::IsKeyPressed(KeyCode::E))
-			{
-				b.isTrigger = true;
-			}
-
-			t.scale.x = size;
-			t.scale.y = size;
 
 			r.body->ApplyForceToCenter({ movement.x * 2.0f, movement.y * 5.0f }, true);
 
-			float maxVelocity = 2.0f;
-			b2Vec2 velocity = r.body->GetLinearVelocity();
-			float currentVelocity = velocity.Length();
-
-			/*if (currentVelocity > maxVelocity)
-			{
-				velocity *= maxVelocity / currentVelocity;
-				r.body->SetLinearVelocity(velocity);
-			}*/
+			t1.position = t.position;
 
 			// custom
 			m_Shake.Update(m_Reg, deltaTime);
@@ -107,7 +97,7 @@ namespace Maize {
 			m_CameraSystem.OnUpdate(m_Reg, deltaTime);
 			RenderingSystem::OnRender(m_Reg);
 
-			if (ImGui::Begin("Debug"))
+			if (ImGui::Begin("Debug Info"))
 			{
 				if (ImGui::Button("Show Colliders")) RenderingSystem::drawDebug = !RenderingSystem::drawDebug;
 
@@ -115,10 +105,12 @@ namespace Maize {
 
 				ImGui::Text("Position: %1.5f, %1.5f", t.position.x, t.position.y);
 				ImGui::Text("Rotation: %1.5f", t.angle);
+				ImGui::Text("Scale: %1.5f, %1.5f", t.scale.x, t.scale.y);
 
 				ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
 
 				ImGui::Text("Draw Calls: %d", Renderer::GetDrawCall());
+				ImGui::Text("Frame Time: %1.5f", deltaTime);
 
 				ImGui::End();
 			}
@@ -149,6 +141,7 @@ namespace Maize {
 
 		std::shared_ptr<Texture> m_YellowPlayerIdle;
 
+		ECS::Entity m_Camera;
 		ECS::Entity m_Player;
 	};
 

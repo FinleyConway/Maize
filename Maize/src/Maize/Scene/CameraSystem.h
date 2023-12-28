@@ -14,15 +14,17 @@ namespace Maize {
 		{
 			for (auto entity : reg.GetEntityGroup<TransformComponent, CameraComponent>())
 			{
-				const auto& [transformComponent, cameraComponent] = reg.GetComponents<TransformComponent, CameraComponent>(entity);
+				const auto& [transform, cameraComponent] = reg.GetComponents<TransformComponent, CameraComponent>(entity);
 
+				const float ppu = 100.0f;
+				const int32_t flip = -1;
 				const auto& view = Renderer::GetCurrentTexture()->getView();
 				sf::View camera;
 
-				camera.setCenter(transformComponent.position);
-				camera.setRotation(transformComponent.angle);
+				camera.setCenter({ transform.position.x * ppu, transform.position.y * ppu * flip });
+				camera.setRotation(transform.angle);
 
-				camera.setSize(view.getSize().x * cameraComponent.zoom.x * transformComponent.scale.x ,view.getSize().y * cameraComponent.zoom.y * transformComponent.scale.y);
+				camera.setSize(view.getSize().x * cameraComponent.zoom.x * transform.scale.x ,view.getSize().y * cameraComponent.zoom.y * transform.scale.y);
 
 				camera.setViewport(cameraComponent.viewport);
 

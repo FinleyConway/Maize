@@ -1,6 +1,5 @@
 #include "mpch.h"
 #include "Maize/Renderer/Renderer.h"
-#include "Maize/Core/Window.h"
 #include "Maize/Core/Application.h"
 
 namespace Maize {
