@@ -6,7 +6,7 @@
 #include "Maize/Renderer/Sprite.h"
 #include "Maize/Utils/Grids/VertexGrid.h"
 #include "Maize/Renderer/Animation.h"
-#include "Maize/Math/Vector2.h"
+#include "Maize/Physics/PhysicsEngine.h"
 
 /*
  * Backend components
@@ -62,13 +62,11 @@ namespace Maize {
 
 	struct RigidbodyComponent
 	{
-		enum class BodyType { Static = 0, Kinematic, Dynamic };
-		enum class CollisionDetection { Discrete = 0, Continuous };
-
 		BodyType type = BodyType::Static;
-		CollisionDetection detectionMode = CollisionDetection::Discrete;
-		bool fixedRotation = false;
 		float gravityScale = 1;
+		bool fixedRotation = false;
+		bool isContinuous = false;
+
 		b2Body* body = nullptr;
 	};
 
@@ -104,9 +102,7 @@ namespace Maize {
 
 	struct CapsuleColliderComponent
 	{
-		enum class Direction { Vertical = 0, Horizontal };
-
-		Direction direction = Direction::Vertical;
+		CapsuleDirection direction = CapsuleDirection::Vertical;
 
 		Vector2 offset = Vector2(0.0f, 0.0f);
 		Vector2 size = Vector2(0.5f, 1.0f);

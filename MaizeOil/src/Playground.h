@@ -5,59 +5,6 @@
 
 namespace Maize {
 
-	struct RaycastResult
-	{
-		b2Fixture* collider = nullptr; 	// the collider that was hit
-		float distance = 0; 			// distance from origin to point
-		Vector2 point;       			// point of intersection in world coordinates
-		Vector2 normal;      			// normal vector at the point of intersection
-		float fraction = 0;     		// fraction along the ray where the intersection occurred
-	};
-
-	struct RaycastCallback : public b2RayCastCallback
-	{
-		RaycastResult result;
-		Vector2 origin;
-		uint16_t layer = 0x0001;
-
-		RaycastCallback(Vector2 origin, uint16_t layer) : origin(origin), layer(layer)
-		{
-		}
-
-		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
-		{
-			b2Filter filter = fixture->GetFilterData();
-
-			if (filter.categoryBits & layer)
-			{
-				Vector2 hitPoint = Vector2(point.x, point.y);
-
-				result.collider = fixture;
-				result.distance = Vector2::Distance(hitPoint, origin);
-				result.point = hitPoint;
-				result.normal = Vector2(normal.x, normal.y);
-				result.fraction = fraction;
-
-				return fraction;
-			}
-
-			return -1.0f;
-		}
-	};
-
-	RaycastResult Raycast(b2World* world, Vector2 origin, Vector2 direction, float distance = Math::Infinity(), uint16_t layer = 0x0001)
-	{
-		RaycastCallback callback(origin, layer);
-
-		b2Vec2 from = b2Vec2(origin.x, origin.y);
-		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
-
-		// Perform the raycast
-		world->RayCast(&callback, from, to);
-
-		return callback.result;
-	}
-
 	class Playground : public Layer
 	{
 	public:
@@ -84,7 +31,7 @@ namespace Maize {
 			sprite.sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(24, 24), 48);
 
 			auto& rb1 = m_Reg.AddComponent<RigidbodyComponent>(m_Player);
-			rb1.type = RigidbodyComponent::BodyType::Dynamic;
+			rb1.type = BodyType::Dynamic;
 			rb1.gravityScale = 1;
 			rb1.fixedRotation = true;
 			auto& col1 = m_Reg.AddComponent<CapsuleColliderComponent>(m_Player);
@@ -92,12 +39,12 @@ namespace Maize {
 			col1.size = Vector2(0.2962226, 0.6660039);
 			col1.categoryBits = 0x0002;
 
-			m_Collision.OnStart(m_Reg);
+			CollisionSystem::OnStart(m_Reg);
 		}
 
 		void OnDetach() override
 		{
-			m_Collision.OnDestroy();
+			CollisionSystem::OnDestroy();
 		}
 
 		void OnUpdate(float deltaTime) override
@@ -121,7 +68,7 @@ namespace Maize {
 
 			// Jumping
 			float jumpHeight = 1;
-			float jumpForce = Math::Sqrt(jumpHeight * -2.0f * m_Collision.m_PhysicsWorld->GetGravity().y);
+			float jumpForce = Math::Sqrt(jumpHeight * -2.0f * PhysicsEngine::GetGravity().y);
 			Vector2 origin(t.position.x, t.position.y - 0.3f);
 
 			bool isGrounded = IsGrounded(origin);
@@ -153,7 +100,7 @@ namespace Maize {
 			t1.position = Vector2::Lerp(t1.position, t.position, deltaTime * 3.0f);
 
 			// backend
-			m_Collision.OnUpdate(m_Reg, deltaTime);
+			CollisionSystem::OnUpdate(m_Reg, deltaTime);
 			m_LocalToWorld.OnUpdate(m_Reg, deltaTime);
 
 			m_Animate.OnUpdate(m_Reg, deltaTime);
@@ -164,14 +111,14 @@ namespace Maize {
 			if (ImGui::Begin("Debug Info"))
 			{
 				if (ImGui::Button("Show Colliders")) RenderingSystem::drawDebug = !RenderingSystem::drawDebug;
+				if (ImGui::Button("Toggle chaos mode")) m_ToggleChaos = true;
 
 				ImGui::Text("Entity: %zu", m_Player);
 
 				ImGui::Text("Position: %1.5f, %1.5f", t.position.x, t.position.y);
 				ImGui::Text("Rotation: %1.5f", t.angle);
 				ImGui::Text("Scale: %1.5f, %1.5f", t.scale.x, t.scale.y);
-
-				//ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
+				ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
 
 				ImGui::Text("Draw Calls: %d", Renderer::GetDrawCall());
 				ImGui::Text("Frame Time: %1.5f", deltaTime);
@@ -183,10 +130,18 @@ namespace Maize {
 	private:
 		bool IsGrounded(Vector2 origin)
 		{
-			RaycastResult hit = Raycast(m_Collision.m_PhysicsWorld, origin, Vector2::Down(), 0.05f);
+			RaycastResult hit = Physics::Raycast(origin, Vector2::Down(), 0.05f, 0x0001);
 
-			if (hit.collider != nullptr)
+			if (hit.entity != -1)
 			{
+				if (m_ToggleChaos)
+				{
+					// to cause absolute chaos
+					const auto& [r, b] = m_Reg.GetComponents<RigidbodyComponent, BoxColliderComponent>(hit.entity);
+					r.type = BodyType::Dynamic;
+					r.fixedRotation = true;
+				}
+
 				return true;
 			}
 
@@ -204,10 +159,11 @@ namespace Maize {
 		}
 
 	private:
+		bool m_ToggleChaos = false;
+
 		ECS::EntityWorld m_Reg;
 
 		// backend
-		CollisionSystem m_Collision;
 		LocalToWorldSystem m_LocalToWorld;
 		AnimationSystem m_Animate;
 		CameraSystem m_CameraSystem;

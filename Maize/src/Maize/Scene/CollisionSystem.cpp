@@ -1,137 +1,88 @@
 #include "mpch.h"
 #include "Maize/Scene/CollisionSystem.h"
+#include "Maize/Physics/PhysicsEngine.h"
+#include "Maize/Scene/Components.h"
 #include "Maize/Math/Math.h"
 
 namespace Maize {
 
 	void CollisionSystem::OnStart(ECS::EntityWorld& reg)
 	{
-		m_PhysicsWorld = new b2World({ 0.0f, -9.807f });
+		PhysicsEngine::Initialize();
 
 		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
 		{
 			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
 
-			const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
-			const float signY = Math::Sign(transform.scale.y);
-			const float signX = Math::Sign(transform.scale.x);
-			const float minSize = 0.0001f;
+			// apply rigidbody properties
+			BodyProperties bProp;
+			bProp.position = transform.position;
+			bProp.angle = transform.angle * Math::Deg2Rad();
+			bProp.type = rigidbody.type;
+			bProp.gravityScale = rigidbody.gravityScale;
+			bProp.fixedRotation = rigidbody.fixedRotation;
+			bProp.isContinuous = rigidbody.isContinuous;
+			bProp.entity = entity;
 
-			b2BodyDef bodyDef;
-			bodyDef.type = static_cast<b2BodyType>(rigidbody.type);
-			bodyDef.position.Set(transform.position.x, transform.position.y);
-			bodyDef.angle = transform.angle * Math::Deg2Rad();
-			bodyDef.gravityScale = rigidbody.gravityScale;
-			bodyDef.fixedRotation = rigidbody.fixedRotation;
-			if (rigidbody.detectionMode == RigidbodyComponent::CollisionDetection::Continuous)
-			{
-				bodyDef.bullet = true;
-			}
-
-			b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+			// create body
+			b2Body* body = PhysicsEngine::CreateBody(bProp);
 			rigidbody.body = body;
 
+			// add a collider if that entity has this component
 			if (reg.HasComponent<BoxColliderComponent>(entity))
 			{
 				auto& boxCollider = reg.GetComponent<BoxColliderComponent>(entity);
 
-				// TODO:
-				// add warnings when this happens
-				if (boxCollider.size.x <= minSize)
-				{
-					boxCollider.size.x = minSize;
-				}
-				if (boxCollider.size.y <= minSize)
-				{
-					boxCollider.size.y = minSize;
-				}
+				// apply collider properties
+				ColliderProperties cProp;
+				cProp.friction = boxCollider.friction;
+				cProp.bounciness = boxCollider.restitution;
+				cProp.bouncinessThreshold = boxCollider.restitutionThreshold;
 
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox((boxCollider.size.x / 2.0f) * scale.x, (boxCollider.size.y / 2.0f) * scale.y, { boxCollider.offset.x * signX, boxCollider.offset.y * signY }, 0.0f);
+				cProp.density = boxCollider.density;
+				cProp.isTrigger = boxCollider.isTrigger;
+				cProp.filter.categoryBits = boxCollider.categoryBits;
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = boxCollider.density;
-				fixtureDef.friction = boxCollider.friction;
-				fixtureDef.restitution = boxCollider.restitution;
-				fixtureDef.restitutionThreshold = boxCollider.restitutionThreshold;
-				fixtureDef.isSensor = boxCollider.isTrigger;
-				fixtureDef.filter.categoryBits = boxCollider.categoryBits;
-				body->CreateFixture(&fixtureDef);
+				// create collider
+				PhysicsEngine::CreateBoxCollider(body, boxCollider.size, transform.scale, boxCollider.offset, cProp);
 			}
 
+			// add a collider if that entity has this component
 			if (reg.HasComponent<CircleColliderComponent>(entity))
 			{
 				auto& circleCollider = reg.GetComponent<CircleColliderComponent>(entity);
 
-				// TODO:
-				// add warnings when this happens
-				if (circleCollider.radius <= minSize)
-				{
-					circleCollider.radius = minSize;
-				}
+				// apply collider properties
+				ColliderProperties cProp;
+				cProp.friction = circleCollider.friction;
+				cProp.bounciness = circleCollider.restitution;
+				cProp.bouncinessThreshold = circleCollider.restitutionThreshold;
 
-				b2CircleShape circleShape;
-				circleShape.m_p = { circleCollider.offset.x * signX, circleCollider.offset.y * signY };
-				circleShape.m_radius = circleCollider.radius * Math::Max(scale.x, scale.y);
+				cProp.density = circleCollider.density;
+				cProp.isTrigger = circleCollider.isTrigger;
+				cProp.filter.categoryBits = circleCollider.categoryBits;
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = circleCollider.density;
-				fixtureDef.friction = circleCollider.friction;
-				fixtureDef.restitution = circleCollider.restitution;
-				fixtureDef.restitutionThreshold = circleCollider.restitutionThreshold;
-				fixtureDef.isSensor = circleCollider.isTrigger;
-				fixtureDef.filter.categoryBits = circleCollider.categoryBits;
-				body->CreateFixture(&fixtureDef);
+				// create collider
+				PhysicsEngine::CreateCircleCollider(body, circleCollider.radius, transform.scale, circleCollider.offset, cProp);
 			}
 
+			// add a collider if that entity has this component
 			if (reg.HasComponent<CapsuleColliderComponent>(entity))
 			{
 				auto& capsuleCollider = reg.GetComponent<CapsuleColliderComponent>(entity);
 
-				// TODO:
-				// add warnings when this happens
-				if (capsuleCollider.size.x <= minSize)
-				{
-					capsuleCollider.size.x = minSize;
-				}
-				if (capsuleCollider.size.y <= minSize)
-				{
-					capsuleCollider.size.y = minSize;
-				}
+				// apply collider properties
+				ColliderProperties cProp;
+				cProp.friction = capsuleCollider.friction;
+				cProp.bounciness = capsuleCollider.restitution;
+				cProp.bouncinessThreshold = capsuleCollider.restitutionThreshold;
 
-				// calculate the dimensions for circles and rectangle
-				const float circleSize = (capsuleCollider.size.x / 2.0f) * scale.x;
-				const float rectWidth = (capsuleCollider.size.x / 2.0f) * scale.x;
-				const float rectHeight = ((capsuleCollider.size.y - capsuleCollider.size.x) / 2.0f) * scale.y;
+				cProp.density = capsuleCollider.density;
+				cProp.isTrigger = capsuleCollider.isTrigger;
+				cProp.filter.categoryBits = capsuleCollider.categoryBits;
 
-				b2CircleShape circleShape1;
-				circleShape1.m_radius = circleSize;
-				circleShape1.m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight };
-
-				b2CircleShape circleShape2;
-				circleShape2.m_radius = circleSize;
-				circleShape2.m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight };
-
-				b2PolygonShape rectangleShape;
-				rectangleShape.SetAsBox(rectWidth - 0.015f, rectHeight, { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY }, 0.0f); // provided a very small offset to prevent the edges to collide with other bodies
-
-				b2FixtureDef fixtureDef;
-				fixtureDef.density = capsuleCollider.density;
-				fixtureDef.friction = capsuleCollider.friction;
-				fixtureDef.restitution = capsuleCollider.restitution;
-				fixtureDef.restitutionThreshold = capsuleCollider.restitutionThreshold;
-				fixtureDef.isSensor = capsuleCollider.isTrigger;
-				fixtureDef.filter.categoryBits = capsuleCollider.categoryBits;
-				fixtureDef.shape = &circleShape1;
-				body->CreateFixture(&fixtureDef);
-
-				fixtureDef.shape = &circleShape2;
-				body->CreateFixture(&fixtureDef);
-
-				fixtureDef.shape = &rectangleShape;
-				body->CreateFixture(&fixtureDef);
+				// create collider
+				PhysicsEngine::CreateCapsuleCollider(body, capsuleCollider.size, transform.scale, capsuleCollider.offset, cProp, capsuleCollider.direction);
 			}
 		}
 	}
@@ -140,26 +91,15 @@ namespace Maize {
 	{
 		UpdateBox2d(reg);
 
-		const int32_t velocityIterations = 6;
-		const int32_t positionIterations = 2;
-		m_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
+		// update physics engine
+		PhysicsEngine::Step(deltaTime);
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
-		{
-			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
-
-			b2Body* body = rigidbody.body;
-			auto position = body->GetPosition();
-
-			transform.position = Vector2(position.x, position.y);
-			transform.angle = NormalizeAngle(body->GetAngle() * Math::Rad2Deg());;
-		}
+		UpdateECS(reg);
 	}
 
 	void CollisionSystem::OnDestroy()
 	{
-		delete m_PhysicsWorld;
-		m_PhysicsWorld = nullptr;
+		PhysicsEngine::Shutdown();
 	}
 
 	void CollisionSystem::UpdateBox2d(ECS::EntityWorld& reg)
@@ -179,14 +119,7 @@ namespace Maize {
 			body->SetTransform({ transform.position.x, transform.position.y }, transform.angle * Math::Deg2Rad());
 			body->SetGravityScale(rigidbody.gravityScale);
 			body->SetFixedRotation(rigidbody.fixedRotation);
-			if (rigidbody.detectionMode == RigidbodyComponent::CollisionDetection::Continuous)
-			{
-				body->SetBullet(true);
-			}
-			else
-			{
-				body->SetBullet(false);
-			}
+			body->SetBullet(rigidbody.isContinuous);
 
 			if (reg.HasComponent<BoxColliderComponent>(entity))
 			{
@@ -292,6 +225,22 @@ namespace Maize {
 					fixture->SetSensor(capsuleCollider.isTrigger);
 				}
 			}
+		}
+	}
+
+	void CollisionSystem::UpdateECS(ECS::EntityWorld& reg)
+	{
+		// update entities
+		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
+		{
+			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
+
+			b2Body* body = rigidbody.body;
+			auto position = body->GetPosition();
+
+
+			transform.position = Vector2(position.x, position.y);
+			transform.angle = NormalizeAngle(body->GetAngle() * Math::Rad2Deg());;
 		}
 	}
 

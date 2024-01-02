@@ -60,6 +60,10 @@ add_library(Maize STATIC
         src/Maize/Math/Vector2Int.h
         src/Maize/Math/Vector2.cpp
         src/Maize/Math/Vector2Int.cpp
+        src/Maize/Physics/PhysicsEngine.cpp
+        src/Maize/Physics/PhysicsEngine.h
+        src/Maize/Physics/Physics.cpp
+        src/Maize/Physics/Physics.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

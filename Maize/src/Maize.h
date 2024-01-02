@@ -9,6 +9,7 @@
 #include "Maize/Math/Math.h"
 //#include "Maize/Math/Vector2.h"
 #include "Maize/Math/Vector2Int.h"
+#include "Maize/Physics/Physics.h"
 
 #include "Maize/Renderer/EditorCamera.h"
 #include "Maize/Renderer/Renderer.h"
