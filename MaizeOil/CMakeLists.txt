@@ -24,8 +24,6 @@ add_executable(MaizeOil src/MaizeOilApp.cpp
         src/TilemapEditor/TilemapEditorHelper.cpp
         src/TilemapEditor/TilemapEditorHelper.h
         src/Playground.h
-        src/CameraShakeSystem.cpp
-        src/CameraShakeSystem.h
 )
 
 target_link_libraries(MaizeOil PRIVATE Maize)

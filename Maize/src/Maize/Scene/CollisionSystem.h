@@ -14,10 +14,22 @@ namespace Maize {
 		void OnUpdate(ECS::EntityWorld& reg, float deltaTime);
 		void OnDestroy();
 
+		b2World* m_PhysicsWorld;
+
 	private:
 		void UpdateBox2d(ECS::EntityWorld& reg);
+		float NormalizeAngle(float angle) {
+			while (angle > 180.0f) {
+				angle -= 360.0f;
+			}
 
-		b2World* m_PhysicsWorld;
+			while (angle < -180.0f) {
+				angle += 360.0f;
+			}
+
+			return angle;
+		}
+
 	};
 
 } // Maize

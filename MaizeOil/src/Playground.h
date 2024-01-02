@@ -3,9 +3,60 @@
 #include <EntityComponentSystem/EntityWorld.h>
 #include <Maize.h>
 
-#include "CameraShakeSystem.h"
-
 namespace Maize {
+
+	struct RaycastResult
+	{
+		b2Fixture* collider = nullptr; 	// the collider that was hit
+		float distance = 0; 			// distance from origin to point
+		Vector2 point;       			// point of intersection in world coordinates
+		Vector2 normal;      			// normal vector at the point of intersection
+		float fraction = 0;     		// fraction along the ray where the intersection occurred
+	};
+
+	struct RaycastCallback : public b2RayCastCallback
+	{
+		RaycastResult result;
+		Vector2 origin;
+		uint16_t layer = 0x0001;
+
+		RaycastCallback(Vector2 origin, uint16_t layer) : origin(origin), layer(layer)
+		{
+		}
+
+		float ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float fraction) override
+		{
+			b2Filter filter = fixture->GetFilterData();
+
+			if (filter.categoryBits & layer)
+			{
+				Vector2 hitPoint = Vector2(point.x, point.y);
+
+				result.collider = fixture;
+				result.distance = Vector2::Distance(hitPoint, origin);
+				result.point = hitPoint;
+				result.normal = Vector2(normal.x, normal.y);
+				result.fraction = fraction;
+
+				return fraction;
+			}
+
+			return -1.0f;
+		}
+	};
+
+	RaycastResult Raycast(b2World* world, Vector2 origin, Vector2 direction, float distance = Math::Infinity(), uint16_t layer = 0x0001)
+	{
+		RaycastCallback callback(origin, layer);
+
+		b2Vec2 from = b2Vec2(origin.x, origin.y);
+		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
+
+		// Perform the raycast
+		world->RayCast(&callback, from, to);
+
+		return callback.result;
+	}
 
 	class Playground : public Layer
 	{
@@ -16,27 +67,18 @@ namespace Maize {
 
 			m_Camera = CreateCamera();
 
-			for (float i = -10; i < 10; i += 0.50f)
+			for (float i = -50; i < 50; i += 1.0f)
 			{
 				auto ref = m_Reg.CreateEntity();
 				auto& t = m_Reg.AddComponent<TransformComponent>(ref);
 				t.position.x = i;
 				m_Reg.AddComponent<RigidbodyComponent>(ref);
 				auto& c = m_Reg.AddComponent<BoxColliderComponent>(ref);
-				c.size = sf::Vector2f(0.50f, 0.50f);
 			}
-
-			auto ref = m_Reg.CreateEntity();
-			auto& t = m_Reg.AddComponent<TransformComponent>(ref);
-			t.position.y = 1;
-			m_Reg.AddComponent<RigidbodyComponent>(ref);
-			auto& c = m_Reg.AddComponent<BoxColliderComponent>(ref);
-			c.size = sf::Vector2f(0.50f, 0.50f);
 
 			m_Player = m_Reg.CreateEntity();
 			auto& transform1 = m_Reg.AddComponent<TransformComponent>(m_Player);
 			transform1.position.y = 2;
-			transform1.scale.x = -1;
 
 			auto& sprite = m_Reg.AddComponent<SpriteComponent>(m_Player);
 			sprite.sprite = Sprite(*m_YellowPlayerIdle, sf::IntRect(0, 0, 48, 48), sf::Vector2f(24, 24), 48);
@@ -46,8 +88,9 @@ namespace Maize {
 			rb1.gravityScale = 1;
 			rb1.fixedRotation = true;
 			auto& col1 = m_Reg.AddComponent<CapsuleColliderComponent>(m_Player);
-			col1.offset = sf::Vector2f(-0.04174951, 0.02186877);
-			col1.size = sf::Vector2f(0.2962226, 0.6660039);
+			col1.offset = Vector2(-0.04174951, 0.02186877);
+			col1.size = Vector2(0.2962226, 0.6660039);
+			col1.categoryBits = 0x0002;
 
 			m_Collision.OnStart(m_Reg);
 		}
@@ -59,41 +102,62 @@ namespace Maize {
 
 		void OnUpdate(float deltaTime) override
 		{
-			const auto& [t, r] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent>(m_Player);
+			const auto& [t, r, col] = m_Reg.GetComponents<TransformComponent, RigidbodyComponent, CapsuleColliderComponent>(m_Player);
 			const auto& [t1, c] = m_Reg.GetComponents<TransformComponent, CameraComponent>(m_Camera);
 
-			sf::Vector2f movement;
+			Vector2 movement;
 
-			if (Input::IsKeyPressed(KeyCode::W))
+			// Horizontal Movement
+			if (Input::IsKeyPressed(KeyCode::A))
 			{
-				movement.y++;
-			}
-			if (Input::IsKeyPressed(KeyCode::S))
-			{
-				movement.y--;
-			}
-            if (Input::IsKeyPressed(KeyCode::A))
-			{
-				movement.x--;
+				movement.x = -1.0f;
 				t.scale.x = -1;
 			}
-            if (Input::IsKeyPressed(KeyCode::D))
+			if (Input::IsKeyPressed(KeyCode::D))
 			{
-				movement.x++;
+				movement.x = 1.0f;
 				t.scale.x = 1;
 			}
 
-			r.body->ApplyForceToCenter({ movement.x * 2.0f, movement.y * 5.0f }, true);
+			// Jumping
+			float jumpHeight = 1;
+			float jumpForce = Math::Sqrt(jumpHeight * -2.0f * m_Collision.m_PhysicsWorld->GetGravity().y);
+			Vector2 origin(t.position.x, t.position.y - 0.3f);
 
-			t1.position = t.position;
+			bool isGrounded = IsGrounded(origin);
 
-			// custom
-			m_Shake.Update(m_Reg, deltaTime);
+			if (Input::IsKeyPressed(KeyCode::Space) && isGrounded)
+			{
+				r.body->SetLinearVelocity({ r.body->GetLinearVelocity().x, jumpForce });
+			}
+
+			// Apply horizontal force with clamping
+			float maxSpeed = 3; // Adjust as needed
+			float desiredSpeed = movement.x * 3;
+			float currentSpeed = r.body->GetLinearVelocity().x;
+			float force = desiredSpeed - currentSpeed;
+
+			// Apply force with clamping
+			if (force > 0)
+			{
+				force = std::min(force, maxSpeed - currentSpeed);
+			}
+			else if (force < 0)
+			{
+				force = std::max(force, -maxSpeed - currentSpeed);
+			}
+
+			r.body->ApplyForceToCenter({ force, 0.0f }, true);
+
+
+			t1.position = Vector2::Lerp(t1.position, t.position, deltaTime * 3.0f);
 
 			// backend
 			m_Collision.OnUpdate(m_Reg, deltaTime);
 			m_LocalToWorld.OnUpdate(m_Reg, deltaTime);
+
 			m_Animate.OnUpdate(m_Reg, deltaTime);
+
 			m_CameraSystem.OnUpdate(m_Reg, deltaTime);
 			RenderingSystem::OnRender(m_Reg);
 
@@ -107,7 +171,7 @@ namespace Maize {
 				ImGui::Text("Rotation: %1.5f", t.angle);
 				ImGui::Text("Scale: %1.5f, %1.5f", t.scale.x, t.scale.y);
 
-				ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
+				//ImGui::Text("Velocity: %1.5f, %1.5f", r.body->GetLinearVelocity().x, r.body->GetLinearVelocity().y);
 
 				ImGui::Text("Draw Calls: %d", Renderer::GetDrawCall());
 				ImGui::Text("Frame Time: %1.5f", deltaTime);
@@ -117,6 +181,18 @@ namespace Maize {
 		}
 
 	private:
+		bool IsGrounded(Vector2 origin)
+		{
+			RaycastResult hit = Raycast(m_Collision.m_PhysicsWorld, origin, Vector2::Down(), 0.05f);
+
+			if (hit.collider != nullptr)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
 		ECS::Entity CreateCamera()
 		{
 			auto camera = m_Reg.CreateEntity();
@@ -129,9 +205,6 @@ namespace Maize {
 
 	private:
 		ECS::EntityWorld m_Reg;
-
-		// custom
-		CameraShakeSystem m_Shake;
 
 		// backend
 		CollisionSystem m_Collision;

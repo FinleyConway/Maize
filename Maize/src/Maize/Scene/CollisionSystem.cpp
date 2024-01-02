@@ -1,5 +1,6 @@
 #include "mpch.h"
 #include "Maize/Scene/CollisionSystem.h"
+#include "Maize/Math/Math.h"
 
 namespace Maize {
 
@@ -11,15 +12,15 @@ namespace Maize {
 		{
 			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
 
-			const sf::Vector2f scale = sf::Vector2f(std::abs(transform.scale.x), std::abs(transform.scale.y));
-			const float signX = (transform.scale.x < 0.0f) ? -1.0f : 1.0f;
-			const float signY = (transform.scale.y < 0.0f) ? -1.0f : 1.0f;
+			const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
+			const float signY = Math::Sign(transform.scale.y);
+			const float signX = Math::Sign(transform.scale.x);
 			const float minSize = 0.0001f;
 
 			b2BodyDef bodyDef;
 			bodyDef.type = static_cast<b2BodyType>(rigidbody.type);
 			bodyDef.position.Set(transform.position.x, transform.position.y);
-			bodyDef.angle = transform.angle;
+			bodyDef.angle = transform.angle * Math::Deg2Rad();
 			bodyDef.gravityScale = rigidbody.gravityScale;
 			bodyDef.fixedRotation = rigidbody.fixedRotation;
 			if (rigidbody.detectionMode == RigidbodyComponent::CollisionDetection::Continuous)
@@ -55,6 +56,7 @@ namespace Maize {
 				fixtureDef.restitution = boxCollider.restitution;
 				fixtureDef.restitutionThreshold = boxCollider.restitutionThreshold;
 				fixtureDef.isSensor = boxCollider.isTrigger;
+				fixtureDef.filter.categoryBits = boxCollider.categoryBits;
 				body->CreateFixture(&fixtureDef);
 			}
 
@@ -71,7 +73,7 @@ namespace Maize {
 
 				b2CircleShape circleShape;
 				circleShape.m_p = { circleCollider.offset.x * signX, circleCollider.offset.y * signY };
-				circleShape.m_radius = circleCollider.radius * std::max(scale.x, scale.y);
+				circleShape.m_radius = circleCollider.radius * Math::Max(scale.x, scale.y);
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &circleShape;
@@ -80,6 +82,7 @@ namespace Maize {
 				fixtureDef.restitution = circleCollider.restitution;
 				fixtureDef.restitutionThreshold = circleCollider.restitutionThreshold;
 				fixtureDef.isSensor = circleCollider.isTrigger;
+				fixtureDef.filter.categoryBits = circleCollider.categoryBits;
 				body->CreateFixture(&fixtureDef);
 			}
 
@@ -105,11 +108,11 @@ namespace Maize {
 
 				b2CircleShape circleShape1;
 				circleShape1.m_radius = circleSize;
-				circleShape1.m_p = b2Vec2(capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight);
+				circleShape1.m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight };
 
 				b2CircleShape circleShape2;
 				circleShape2.m_radius = circleSize;
-				circleShape2.m_p = b2Vec2(capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight);
+				circleShape2.m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight };
 
 				b2PolygonShape rectangleShape;
 				rectangleShape.SetAsBox(rectWidth - 0.015f, rectHeight, { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY }, 0.0f); // provided a very small offset to prevent the edges to collide with other bodies
@@ -120,8 +123,8 @@ namespace Maize {
 				fixtureDef.restitution = capsuleCollider.restitution;
 				fixtureDef.restitutionThreshold = capsuleCollider.restitutionThreshold;
 				fixtureDef.isSensor = capsuleCollider.isTrigger;
+				fixtureDef.filter.categoryBits = capsuleCollider.categoryBits;
 				fixtureDef.shape = &circleShape1;
-
 				body->CreateFixture(&fixtureDef);
 
 				fixtureDef.shape = &circleShape2;
@@ -148,8 +151,8 @@ namespace Maize {
 			b2Body* body = rigidbody.body;
 			auto position = body->GetPosition();
 
-			transform.position = sf::Vector2f(position.x, position.y);
-			transform.angle = -body->GetAngle() * 180.0f / 3.14f; // rad to deg
+			transform.position = Vector2(position.x, position.y);
+			transform.angle = NormalizeAngle(body->GetAngle() * Math::Rad2Deg());;
 		}
 	}
 
@@ -165,15 +168,15 @@ namespace Maize {
 		{
 			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
 
-			const sf::Vector2f scale = sf::Vector2f(std::abs(transform.scale.x), std::abs(transform.scale.y));
-			const float signX = (transform.scale.x < 0.0f) ? -1.0f : 1.0f;
-			const float signY = (transform.scale.y < 0.0f) ? -1.0f : 1.0f;
+			const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
+			const float signY = Math::Sign(transform.scale.y);
+			const float signX = Math::Sign(transform.scale.x);
 			const float minSize = 0.0001f;
 
 			b2Body* body = rigidbody.body;
 
 			body->SetType(static_cast<b2BodyType>(rigidbody.type));
-			body->SetTransform({ transform.position.x, transform.position.y }, transform.angle);
+			body->SetTransform({ transform.position.x, transform.position.y }, transform.angle * Math::Deg2Rad());
 			body->SetGravityScale(rigidbody.gravityScale);
 			body->SetFixedRotation(rigidbody.fixedRotation);
 			if (rigidbody.detectionMode == RigidbodyComponent::CollisionDetection::Continuous)
@@ -224,7 +227,7 @@ namespace Maize {
 
 				auto* circleShape = static_cast<b2CircleShape*>(body->GetFixtureList()->GetShape());
 				circleShape->m_p = { circleCollider.offset.x * signX, circleCollider.offset.y * signY };
-				circleShape->m_radius = circleCollider.radius * std::max(scale.x, scale.y);
+				circleShape->m_radius = circleCollider.radius * Math::Max(scale.x, scale.y);
 
 				b2Fixture* fixture = body->GetFixtureList();
 				fixture->SetDensity(circleCollider.density);
@@ -266,16 +269,16 @@ namespace Maize {
 						// circle1
 						if (current == 0)
 						{
-							circleShape->m_p = b2Vec2(capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight);
+							circleShape->m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight };
 							current++;
 						}
 							// circle2
 						else
 						{
-							circleShape->m_p = b2Vec2(capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight);
+							circleShape->m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight };
 						}
 					}
-						// update rectangle
+					// update rectangle
 					else if (fixture->GetType() == b2Shape::e_polygon)
 					{
 						auto* rectangleShape = static_cast<b2PolygonShape*>(fixture->GetShape());

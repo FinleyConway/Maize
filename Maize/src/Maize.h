@@ -6,6 +6,10 @@
 #include "Maize/Core/KeyCodes.h"
 #include "Maize/Core/Input.h"
 
+#include "Maize/Math/Math.h"
+//#include "Maize/Math/Vector2.h"
+#include "Maize/Math/Vector2Int.h"
+
 #include "Maize/Renderer/EditorCamera.h"
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Renderer/Texture.h"

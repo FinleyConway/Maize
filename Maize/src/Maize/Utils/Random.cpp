@@ -23,7 +23,8 @@ namespace Maize {
 
 	float Random::Value01()
 	{
-		return Range(0.0f, 1.0f);
+		std::uniform_real_distribution<float> distribution(0.0f, 1.0f);
+		return distribution(m_Generator);
 	}
 
 } // Maize
