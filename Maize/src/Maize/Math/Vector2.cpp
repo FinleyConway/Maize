@@ -157,7 +157,7 @@ namespace Maize {
 		float x = omega * deltaTime;
 		float exp = 1.0f / (1.0f + x + 0.48f * x * x + 0.235f * x * x * x);
 		Vector2 change = (current - target) * (1.0f - exp);
-		Vector2 result = target + (currentVelocity + change) * deltaTime;
+		Vector2 result = current - change;
 		currentVelocity = (currentVelocity - change) * exp;
 
 		// ensure we don't exceed the max speed

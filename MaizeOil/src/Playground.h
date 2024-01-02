@@ -78,13 +78,11 @@ namespace Maize {
 				r.body->SetLinearVelocity({ r.body->GetLinearVelocity().x, jumpForce });
 			}
 
-			// Apply horizontal force with clamping
-			float maxSpeed = 3; // Adjust as needed
+			float maxSpeed = 3;
 			float desiredSpeed = movement.x * 3;
 			float currentSpeed = r.body->GetLinearVelocity().x;
 			float force = desiredSpeed - currentSpeed;
 
-			// Apply force with clamping
 			if (force > 0)
 			{
 				force = std::min(force, maxSpeed - currentSpeed);
@@ -96,8 +94,7 @@ namespace Maize {
 
 			r.body->ApplyForceToCenter({ force, 0.0f }, true);
 
-
-			t1.position = Vector2::Lerp(t1.position, t.position, deltaTime * 3.0f);
+			t1.position = Vector2::SmoothDamp(t1.position, t.position, ref, 0.3f, Math::Infinity(), deltaTime);
 
 			// backend
 			CollisionSystem::OnUpdate(m_Reg, deltaTime);
@@ -126,6 +123,8 @@ namespace Maize {
 				ImGui::End();
 			}
 		}
+
+		Vector2 ref;
 
 	private:
 		bool IsGrounded(Vector2 origin)
