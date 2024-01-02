@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Maize/Scene/RenderingSystem.h"
+#include "RenderingSystem.h"
 #include "Maize/Math/Math.h"
 
 namespace Maize {

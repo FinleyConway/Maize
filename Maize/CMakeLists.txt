@@ -27,8 +27,6 @@ add_library(Maize STATIC
         src/Maize/Renderer/Texture.h
         src/Maize/ImGui/ImGuiLayer.cpp
         src/Maize/ImGui/ImGuiLayer.h
-        src/Maize/Renderer/Camera.h
-        src/Maize/Renderer/EditorCamera.h
         src/Maize/Utils/FileDialog.cpp
         src/Maize/Utils/FileDialog.h
         src/Maize/Utils/SystemNotify.cpp
@@ -38,23 +36,20 @@ add_library(Maize STATIC
         src/Maize/Utils/Random.cpp
         src/Maize/Renderer/TexturePacker.cpp
         src/Maize/Renderer/TexturePacker.h
-        src/Maize/Utils/Grids/CartesianGrid.h
-        src/Maize/Utils/Grids/VertexGrid.cpp
-        src/Maize/Utils/Grids/VertexGrid.h
         src/Maize/Renderer/Sprite.cpp
         src/Maize/Renderer/Sprite.h
-        src/Maize/Scene/RenderingSystem.cpp
-        src/Maize/Scene/RenderingSystem.h
+        src/Maize/Scene/Systems/RenderingSystem.cpp
+        src/Maize/Scene/Systems/RenderingSystem.h
         src/Maize/Renderer/Animation.cpp
         src/Maize/Renderer/Animation.h
-        src/Maize/Scene/AnimationSystem.cpp
-        src/Maize/Scene/AnimationSystem.h
-        src/Maize/Scene/CameraSystem.cpp
-        src/Maize/Scene/CameraSystem.h
-        src/Maize/Scene/LocalToWorldSystem.cpp
-        src/Maize/Scene/LocalToWorldSystem.h
-        src/Maize/Scene/CollisionSystem.cpp
-        src/Maize/Scene/CollisionSystem.h
+        src/Maize/Scene/Systems/AnimationSystem.cpp
+        src/Maize/Scene/Systems/AnimationSystem.h
+        src/Maize/Scene/Systems/CameraSystem.cpp
+        src/Maize/Scene/Systems/CameraSystem.h
+        src/Maize/Scene/Systems/LocalToWorldSystem.cpp
+        src/Maize/Scene/Systems/LocalToWorldSystem.h
+        src/Maize/Scene/Systems/CollisionSystem.cpp
+        src/Maize/Scene/Systems/CollisionSystem.h
         src/Maize/Math/Math.h
         src/Maize/Math/Vector2.h
         src/Maize/Math/Vector2Int.h

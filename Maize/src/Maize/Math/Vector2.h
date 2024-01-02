@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Maize/Math/Math.h"
 
 namespace Maize {
@@ -51,7 +53,7 @@ namespace Maize {
 			y += other.y;
 			return *this;
 		}
-		Vector2 operator*(float scalar);
+		Vector2 operator*(float scalar) const;
 		friend Vector2 operator*(float scalar, const Vector2& vec);
 		Vector2 operator/(float scalar) const;
 		friend Vector2 operator/(float scalar, const Vector2& vec);

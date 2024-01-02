@@ -12,17 +12,6 @@ file(COPY ${SAVES_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) #temp
 
 add_executable(MaizeOil src/MaizeOilApp.cpp
         src/LevelEditor.h
-        src/TilemapEditor/TilesetWindowTab.cpp
-        src/TilemapEditor/TilesetWindowTab.h
-        src/TilemapEditor/TilemapWindowTab.cpp
-        src/TilemapEditor/TilemapWindowTab.h
-        src/TilemapEditor/TilemapEditorWindow.h
-        src/TilemapEditor/TilemapEditorWindow.cpp
-        src/TilemapEditor/TilemapEditorTile.h
-        src/TilemapEditor/Tileset.h
-        src/TilemapEditor/Tileset.cpp
-        src/TilemapEditor/TilemapEditorHelper.cpp
-        src/TilemapEditor/TilemapEditorHelper.h
         src/Playground.h
 )
 

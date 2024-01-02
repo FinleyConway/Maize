@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Math/Vector2.h"
+
 #include "Maize/Math/Vector2Int.h"
+#include "Maize/Math/Math.h"
 
 namespace Maize {
 
@@ -226,7 +228,7 @@ namespace Maize {
 		return { x + other.x, y + other.y };
 	}
 
-	Vector2 Vector2::operator*(float scalar)
+	Vector2 Vector2::operator*(float scalar) const
 	{
 		return { x * scalar, y * scalar };
 	}

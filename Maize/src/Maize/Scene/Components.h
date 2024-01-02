@@ -4,8 +4,9 @@
 #include <box2d/box2d.h>
 
 #include "Maize/Renderer/Sprite.h"
-#include "Maize/Utils/Grids/VertexGrid.h"
 #include "Maize/Renderer/Animation.h"
+
+#include "Maize/Math/Vector2.h"
 #include "Maize/Physics/PhysicsEngine.h"
 
 /*
@@ -120,17 +121,6 @@ namespace Maize {
 	struct CollisionEventComponent
 	{
 		ECS::Entity otherEntity = -1;
-	};
-
-	struct TilemapComponent
-	{
-        std::vector<VertexGrid> tilemapLayers;
-		std::shared_ptr<Texture> tilemapTexture;
-        int32_t tileSizeX = 8;
-        int32_t tileSizeY = 8;
-
-        std::string sortingLayer = "Default";
-        int32_t orderInLayer = 0;
 	};
 
 } // Maize

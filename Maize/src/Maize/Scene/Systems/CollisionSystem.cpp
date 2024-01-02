@@ -1,8 +1,9 @@
 #include "mpch.h"
-#include "Maize/Scene/CollisionSystem.h"
+#include "CollisionSystem.h"
 #include "Maize/Physics/PhysicsEngine.h"
 #include "Maize/Scene/Components.h"
 #include "Maize/Math/Math.h"
+#include "Maize/Math/Vector2.h"
 
 namespace Maize {
 
@@ -108,7 +109,7 @@ namespace Maize {
 		{
 			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
 
-			const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
+			const Vector2 scale = Vector2(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
 			const float signY = Math::Sign(transform.scale.y);
 			const float signX = Math::Sign(transform.scale.x);
 			const float minSize = 0.0001f;

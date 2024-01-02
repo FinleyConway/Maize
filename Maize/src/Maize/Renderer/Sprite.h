@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Maize/Renderer/Texture.h"
+#include "Maize/Math/Vector2.h"
 
 namespace Maize {
 
@@ -8,8 +9,8 @@ namespace Maize {
 	{
 	public:
 		Sprite() = default;
-		Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin);
-		Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin, float pixelPerUnit);
+		Sprite(const Texture& texture, const sf::IntRect& rectangle, Vector2 origin);
+		Sprite(const Texture& texture, const sf::IntRect& rectangle, Vector2 origin, float pixelPerUnit);
 
 		void SetTexture(const Texture& texture, bool resetRect = false);
 		void SetTextureRect(const sf::IntRect& rectangle);

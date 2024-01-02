@@ -1,20 +1,21 @@
 #include "mpch.h"
 #include "Maize/Renderer/Sprite.h"
 
+
 namespace Maize {
 
-	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin)
+	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, Vector2 origin)
 	{
 		SetTextureRect(rectangle);
 		SetTexture(texture, false);
-		setOrigin(origin);
+		setOrigin(origin.x, origin.y);
 	}
 
-	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, sf::Vector2f origin, float pixelPerUnit)
+	Sprite::Sprite(const Texture& texture, const sf::IntRect& rectangle, Vector2 origin, float pixelPerUnit)
 	{
 		SetTextureRect(rectangle);
 		SetTexture(texture, false);
-		setOrigin(origin);
+		setOrigin(origin.x, origin.y);
 
 		float scale = m_PixelPerUnit / pixelPerUnit;
 		setScale(scale, scale);

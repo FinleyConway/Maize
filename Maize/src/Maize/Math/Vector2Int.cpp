@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Math/Vector2Int.h"
+
 #include "Maize/Math/Vector2.h"
+#include "Maize/Math/Math.h"
 
 namespace Maize {
 
@@ -98,29 +100,29 @@ namespace Maize {
 
 	Vector2Int Vector2Int::operator-(const Vector2Int& other) const
 	{
-		return Vector2Int(x - other.x, y - other.y);
+		return {x - other.x, y - other.y};
 	}
 
 	Vector2Int Vector2Int::operator+(const Vector2Int& other) const
 	{
-		return Vector2Int(x + other.x, y + other.y);
+		return {x + other.x, y + other.y};
 	}
 
 	Vector2Int Vector2Int::operator*(const Vector2Int& other) const
 	{
-		return Vector2Int(x * other.x, y * other.y);
+		return {x * other.x, y * other.y};
 	}
 
 	Vector2Int Vector2Int::operator*(int32_t scalar) const
 	{
-		return Vector2Int(scalar * x, scalar * y);
+		return {scalar * x, scalar * y};
 	}
 
 	Vector2Int Vector2Int::operator/(int32_t divisor) const
 	{
 		if (divisor != 0)
 		{
-			return Vector2Int(x / divisor, y / divisor);
+			return {x / divisor, y / divisor};
 		}
 
 		return Vector2Int::Zero();

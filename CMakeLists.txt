@@ -7,6 +7,9 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# warnings
+# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
 IF (WIN32)
     set(CMAKE_EXE_LINKER_FLAGS "-static")
 ENDIF ()
