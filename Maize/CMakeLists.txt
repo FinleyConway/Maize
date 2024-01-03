@@ -46,8 +46,6 @@ add_library(Maize STATIC
         src/Maize/Scene/Systems/AnimationSystem.h
         src/Maize/Scene/Systems/CameraSystem.cpp
         src/Maize/Scene/Systems/CameraSystem.h
-        src/Maize/Scene/Systems/LocalToWorldSystem.cpp
-        src/Maize/Scene/Systems/LocalToWorldSystem.h
         src/Maize/Scene/Systems/CollisionSystem.cpp
         src/Maize/Scene/Systems/CollisionSystem.h
         src/Maize/Math/Math.h

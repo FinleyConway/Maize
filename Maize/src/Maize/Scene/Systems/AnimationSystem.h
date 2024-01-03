@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntityComponentSystem/EntityWorld.h"
+#include <entt/entt.hpp>
 
 #include "Maize/Scene/Components.h"
 
@@ -9,12 +9,11 @@ namespace Maize {
 	class AnimationSystem
 	{
 	public:
-		void OnUpdate(ECS::EntityWorld& reg, float deltaTime)
+		void OnUpdate(entt::registry& reg, float deltaTime)
 		{
-			for (auto entity : reg.GetEntityGroup<TransformComponent, SpriteComponent, AnimatorComponent>())
+			auto view = reg.view<TransformComponent, SpriteComponent, AnimatorComponent>();
+			for (auto [entity, transform, sprite, animator] : view.each())
 			{
-				const auto& [transform, sprite, animator] = reg.GetComponents<TransformComponent, SpriteComponent, AnimatorComponent>(entity);
-
 				Animation& animation = animator.states[animator.currentState];
 				float animationDeltaSpeed = deltaTime * animator.animationSpeed;
 

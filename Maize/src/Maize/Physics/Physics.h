@@ -6,7 +6,6 @@ namespace Maize {
 
 	struct RaycastResult
 	{
-		ECS::Entity entity = -1;		// entity that was hit
 		float distance = 0; 			// distance from origin to point
 		Vector2 point;       			// point of intersection in world coordinates
 		Vector2 normal;      			// normal vector at the point of intersection
@@ -41,7 +40,6 @@ namespace Maize {
 				{
 					Vector2 hitPoint = Vector2(point.x, point.y);
 
-					result.entity = fixture->GetBody()->GetUserData().pointer;
 					result.distance = Vector2::Distance(hitPoint, origin);
 					result.point = hitPoint;
 					result.normal = Vector2(normal.x, normal.y);
@@ -52,16 +50,6 @@ namespace Maize {
 
 				// filter fixture
 				return -1.0f;
-			}
-		};
-
-		struct QueryCallback : public b2QueryCallback
-		{
-			bool ReportFixture(b2Fixture* fixture)
-			{
-				// Perform additional checks for rotation (e.g., using b2TestOverlap)
-				// Handle the fixture as needed
-				return true; // Continue the query
 			}
 		};
 	};

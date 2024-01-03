@@ -1,7 +1,6 @@
 #pragma once
 
 #include <box2d/box2d.h>
-#include <EntityComponentSystem/EntityWorld.h>
 
 #include "Maize/Math/Vector2.h"
 
@@ -11,8 +10,6 @@ namespace Maize {
 
 	struct BodyProperties
 	{
-		ECS::Entity entity = -1;
-
 		Vector2 position;
 		float angle = 0;
 		BodyType type = BodyType::Static;

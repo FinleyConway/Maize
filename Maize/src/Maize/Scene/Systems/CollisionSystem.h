@@ -1,19 +1,19 @@
 #pragma once
 
-#include "EntityComponentSystem/EntityWorld.h"
+#include <entt/entt.hpp>
 
 namespace Maize {
 
 	class CollisionSystem
 	{
 	public:
-		static void OnStart(ECS::EntityWorld& reg);
-		static void OnUpdate(ECS::EntityWorld& reg, float deltaTime);
+		static void OnStart(entt::registry& reg);
+		static void OnUpdate(entt::registry& reg, float deltaTime);
 		static void OnDestroy();
 
 	private:
-		static void UpdateBox2d(ECS::EntityWorld& reg);
-		static void UpdateECS(ECS::EntityWorld& reg);
+		static void UpdateBox2d(entt::registry& reg);
+		static void UpdateECS(entt::registry& reg);
 
 		static float NormalizeAngle(float angle)
 		{

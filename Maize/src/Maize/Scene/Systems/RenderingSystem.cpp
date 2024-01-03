@@ -4,21 +4,22 @@
 
 namespace Maize {
 
-	void RenderingSystem::OnRender(ECS::EntityWorld& reg)
+	void RenderingSystem::OnRender(entt::registry& reg)
 	{
 		Renderer::BeginSceneDrawing();
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, CameraComponent>())
+		auto view = reg.view<TransformComponent, CameraComponent>();
+		for (auto entity : view)
 		{
 			std::unordered_map<std::string, std::vector<Drawable>> drawableOrder;
-			const auto& camera = Renderer::GetCurrentTexture()->getView();
+			const auto& gameView = Renderer::GetCurrentTexture()->getView();
 
 			// gather drawables
-			GetSprites(reg, camera, drawableOrder);
+			GetSprites(reg, gameView, drawableOrder);
 
 			// draw
 			RenderDrawables(drawableOrder);
-			RenderDebugColliders(reg, camera);
+			RenderDebugColliders(reg, gameView);
 		}
 
 		Renderer::EndSceneDrawing();
@@ -37,15 +38,14 @@ namespace Maize {
 		return transform.transformRect(sf::FloatRect(0.0f, 0.0f, viewSize.x, viewSize.y));
 	}
 
-	void RenderingSystem::GetSprites(ECS::EntityWorld& reg, const sf::View& camera, std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder)
+	void RenderingSystem::GetSprites(entt::registry& reg, const sf::View& camera, std::unordered_map<std::string, std::vector<Drawable>>& drawableOrder)
 	{
 		const int32_t flip = -1; // make sure so that up is positive y and down is negative y when drawing
 		const float ppu = 100.0f; // scaling factor
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, SpriteComponent>())
+		auto view = reg.view<TransformComponent, SpriteComponent>();
+		for (auto [entity, transform, spriteComponent] : view.each())
 		{
-			const auto& [transform, spriteComponent] = reg.GetComponents<TransformComponent, SpriteComponent>(entity);
-
 			const sf::Vector2f spritePosition = sf::Vector2f(transform.position.x, transform.position.y * flip) * ppu;
 
 			spriteComponent.sprite.setPosition(spritePosition);
@@ -93,9 +93,16 @@ namespace Maize {
 		}
 	}
 
-	void RenderingSystem::RenderDebugColliders(ECS::EntityWorld& reg, const sf::View& camera)
+	void RenderingSystem::RenderDebugColliders(entt::registry& reg, const sf::View& camera)
 	{
-		if (!drawDebug) return;
+		/*
+		 * Refactor this sooner or later
+		 */
+
+		if (!drawDebug)
+		{
+			return;
+		}
 
 		const int32_t flip = -1; // make sure up is positive y and down is negative y when drawing
 		const float ppu = 100.0f;
@@ -115,87 +122,92 @@ namespace Maize {
 		colliderCircleShape2.setOutlineColor(sf::Color::Green);
 		colliderCircleShape2.setOutlineThickness(1.0f);
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, BoxColliderComponent>())
+		// box collider
 		{
-			const auto& [transform, boxCollider] = reg.GetComponents<TransformComponent, BoxColliderComponent>(entity);
-
-			const sf::Vector2f colliderSize = sf::Vector2f(boxCollider.size.x * ppu, boxCollider.size.y * ppu);
-			const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
-			const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(boxCollider.offset.x * ppu, boxCollider.offset.y * ppu * flip), -transform.angle);
-
-			colliderRectShape.setOrigin(colliderSize / 2.0f);
-
-			colliderRectShape.setSize(colliderSize);
-			colliderRectShape.setScale(transform.scale.x, transform.scale.y);
-
-			colliderRectShape.setRotation(-transform.angle);
-			colliderRectShape.setPosition(colliderPosition + rotatedOffset);
-
-			if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
+			auto view = reg.view<TransformComponent, BoxColliderComponent>();
+			for (auto [entity, transform, boxCollider] : view.each())
 			{
-				Renderer::Draw(colliderRectShape);
+				const sf::Vector2f colliderSize = sf::Vector2f(boxCollider.size.x * ppu, boxCollider.size.y * ppu);
+				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
+				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(boxCollider.offset.x * ppu, boxCollider.offset.y * ppu * flip), -transform.angle);
+
+				colliderRectShape.setOrigin(colliderSize / 2.0f);
+
+				colliderRectShape.setSize(colliderSize);
+				colliderRectShape.setScale(transform.scale.x, transform.scale.y);
+
+				colliderRectShape.setRotation(-transform.angle);
+				colliderRectShape.setPosition(colliderPosition + rotatedOffset);
+
+				if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
+				{
+					Renderer::Draw(colliderRectShape);
+				}
 			}
 		}
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, CircleColliderComponent>())
+		// circle collider
 		{
-			const auto& [transform, circleCollider] = reg.GetComponents<TransformComponent, CircleColliderComponent>(entity);
-
-			const float scaledRadius = (circleCollider.radius * ppu) * Math::Max(transform.scale.x, transform.scale.y);
-			const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
-			const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(circleCollider.offset.x * ppu, circleCollider.offset.y * ppu * flip), -transform.angle);
-
-			colliderCircleShape1.setOrigin(scaledRadius, scaledRadius);
-
-			colliderCircleShape1.setRadius(scaledRadius);
-
-			colliderCircleShape1.setRotation(-transform.angle);
-			colliderCircleShape1.setPosition(colliderPosition + rotatedOffset);
-
-			if (GetViewSpace(camera).intersects(colliderCircleShape1.getGlobalBounds()))
+			auto view = reg.view<TransformComponent, CircleColliderComponent>();
+			for (auto [entity, transform, circleCollider] : view.each())
 			{
-				Renderer::Draw(colliderCircleShape1);
+				const float scaledRadius = (circleCollider.radius * ppu) * Math::Max(transform.scale.x, transform.scale.y);
+				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
+				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(circleCollider.offset.x * ppu, circleCollider.offset.y * ppu * flip), -transform.angle);
+
+				colliderCircleShape1.setOrigin(scaledRadius, scaledRadius);
+
+				colliderCircleShape1.setRadius(scaledRadius);
+
+				colliderCircleShape1.setRotation(-transform.angle);
+				colliderCircleShape1.setPosition(colliderPosition + rotatedOffset);
+
+				if (GetViewSpace(camera).intersects(colliderCircleShape1.getGlobalBounds()))
+				{
+					Renderer::Draw(colliderCircleShape1);
+				}
 			}
 		}
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, CapsuleColliderComponent>())
+		// capsule collider
 		{
-			const auto& [transform, capsuleCollider] = reg.GetComponents<TransformComponent, CapsuleColliderComponent>(entity);
-
-			const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
-			const float signX = Math::Sign(transform.scale.x);
-			const float signY = Math::Sign(transform.scale.y);
-
-			const sf::Vector2f colliderSize = sf::Vector2f(capsuleCollider.size.x * ppu, capsuleCollider.size.y * ppu);
-
-			const float scaledCircleRadius = (capsuleCollider.size.x * ppu / 2.0f) * scale.x;
-			const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
-			const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, capsuleCollider.offset.y * signY * ppu * flip), -transform.angle);
-
-			colliderRectShape.setSize({ colliderSize.x * scale.x, (colliderSize.x - capsuleCollider.size.y) * scale.y });
-			colliderRectShape.setOrigin(colliderRectShape.getSize() / 2.0f);
-			colliderRectShape.setPosition(colliderPosition.x + rotatedOffset.x, colliderPosition.y + rotatedOffset.y);
-			colliderRectShape.setRotation(-transform.angle);
-
-			const sf::Vector2f circleOffset1 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, (-capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
-			const sf::Vector2f circleOffset2 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, (capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
-
-			colliderCircleShape1.setRadius(scaledCircleRadius);
-			colliderCircleShape1.setOrigin(colliderCircleShape1.getRadius(), colliderCircleShape1.getRadius());
-			colliderCircleShape1.setPosition(colliderPosition.x + circleOffset1.x, colliderPosition.y + circleOffset1.y);
-
-			colliderCircleShape2.setRadius(scaledCircleRadius);
-			colliderCircleShape2.setOrigin(colliderCircleShape2.getRadius(), colliderCircleShape2.getRadius());
-			colliderCircleShape2.setPosition(colliderPosition.x + circleOffset2.x, colliderPosition.y + circleOffset2.y);
-
-			if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
+			auto view = reg.view<TransformComponent, CapsuleColliderComponent>();
+			for (auto [entity, transform, capsuleCollider] : view.each())
 			{
-				Renderer::Draw(colliderRectShape);
-				Renderer::Draw(colliderCircleShape1);
-				Renderer::Draw(colliderCircleShape2);
+				const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
+				const float signX = Math::Sign(transform.scale.x);
+				const float signY = Math::Sign(transform.scale.y);
+
+				const sf::Vector2f colliderSize = sf::Vector2f(capsuleCollider.size.x * ppu, capsuleCollider.size.y * ppu);
+
+				const float scaledCircleRadius = (capsuleCollider.size.x * ppu / 2.0f) * scale.x;
+				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
+				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, capsuleCollider.offset.y * signY * ppu * flip), -transform.angle);
+
+				colliderRectShape.setSize({ colliderSize.x * scale.x, (colliderSize.x - capsuleCollider.size.y) * scale.y });
+				colliderRectShape.setOrigin(colliderRectShape.getSize() / 2.0f);
+				colliderRectShape.setPosition(colliderPosition.x + rotatedOffset.x, colliderPosition.y + rotatedOffset.y);
+				colliderRectShape.setRotation(-transform.angle);
+
+				const sf::Vector2f circleOffset1 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu,(-capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
+				const sf::Vector2f circleOffset2 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu,(capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
+
+				colliderCircleShape1.setRadius(scaledCircleRadius);
+				colliderCircleShape1.setOrigin(colliderCircleShape1.getRadius(), colliderCircleShape1.getRadius());
+				colliderCircleShape1.setPosition(colliderPosition.x + circleOffset1.x, colliderPosition.y + circleOffset1.y);
+
+				colliderCircleShape2.setRadius(scaledCircleRadius);
+				colliderCircleShape2.setOrigin(colliderCircleShape2.getRadius(), colliderCircleShape2.getRadius());
+				colliderCircleShape2.setPosition(colliderPosition.x + circleOffset2.x, colliderPosition.y + circleOffset2.y);
+
+				if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
+				{
+					Renderer::Draw(colliderRectShape);
+					Renderer::Draw(colliderCircleShape1);
+					Renderer::Draw(colliderCircleShape2);
+				}
 			}
 		}
-
 	}
 
 } // Maize

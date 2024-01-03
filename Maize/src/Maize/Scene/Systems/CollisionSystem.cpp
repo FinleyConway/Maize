@@ -7,14 +7,13 @@
 
 namespace Maize {
 
-	void CollisionSystem::OnStart(ECS::EntityWorld& reg)
+	void CollisionSystem::OnStart(entt::registry& reg)
 	{
 		PhysicsEngine::Initialize();
 
-		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
+		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		for (auto [entity, transform, rigidbody] : view.each())
 		{
-			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
-
 			// apply rigidbody properties
 			BodyProperties bProp;
 			bProp.position = transform.position;
@@ -23,16 +22,15 @@ namespace Maize {
 			bProp.gravityScale = rigidbody.gravityScale;
 			bProp.fixedRotation = rigidbody.fixedRotation;
 			bProp.isContinuous = rigidbody.isContinuous;
-			bProp.entity = entity;
 
 			// create body
 			b2Body* body = PhysicsEngine::CreateBody(bProp);
 			rigidbody.body = body;
 
 			// add a collider if that entity has this component
-			if (reg.HasComponent<BoxColliderComponent>(entity))
+			if (reg.all_of<BoxColliderComponent>(entity))
 			{
-				auto& boxCollider = reg.GetComponent<BoxColliderComponent>(entity);
+				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -49,9 +47,9 @@ namespace Maize {
 			}
 
 			// add a collider if that entity has this component
-			if (reg.HasComponent<CircleColliderComponent>(entity))
+			if (reg.all_of<CircleColliderComponent>(entity))
 			{
-				auto& circleCollider = reg.GetComponent<CircleColliderComponent>(entity);
+				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -68,9 +66,9 @@ namespace Maize {
 			}
 
 			// add a collider if that entity has this component
-			if (reg.HasComponent<CapsuleColliderComponent>(entity))
+			if (reg.all_of<CapsuleColliderComponent>(entity))
 			{
-				auto& capsuleCollider = reg.GetComponent<CapsuleColliderComponent>(entity);
+				auto& capsuleCollider = reg.get<CapsuleColliderComponent>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -88,7 +86,7 @@ namespace Maize {
 		}
 	}
 
-	void CollisionSystem::OnUpdate(ECS::EntityWorld& reg, float deltaTime)
+	void CollisionSystem::OnUpdate(entt::registry& reg, float deltaTime)
 	{
 		UpdateBox2d(reg);
 
@@ -103,12 +101,11 @@ namespace Maize {
 		PhysicsEngine::Shutdown();
 	}
 
-	void CollisionSystem::UpdateBox2d(ECS::EntityWorld& reg)
+	void CollisionSystem::UpdateBox2d(entt::registry& reg)
 	{
-		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
+		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		for (auto [entity, transform, rigidbody] : view.each())
 		{
-			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
-
 			const Vector2 scale = Vector2(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
 			const float signY = Math::Sign(transform.scale.y);
 			const float signX = Math::Sign(transform.scale.x);
@@ -122,9 +119,9 @@ namespace Maize {
 			body->SetFixedRotation(rigidbody.fixedRotation);
 			body->SetBullet(rigidbody.isContinuous);
 
-			if (reg.HasComponent<BoxColliderComponent>(entity))
+			if (reg.all_of<BoxColliderComponent>(entity))
 			{
-				auto& boxCollider = reg.GetComponent<BoxColliderComponent>(entity);
+				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
 
 				// TODO:
 				// add warnings when this happens
@@ -148,9 +145,9 @@ namespace Maize {
 				fixture->SetSensor(boxCollider.isTrigger);
 			}
 
-			if (reg.HasComponent<CircleColliderComponent>(entity))
+			if (reg.all_of<CircleColliderComponent>(entity))
 			{
-				auto& circleCollider = reg.GetComponent<CircleColliderComponent>(entity);
+				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
 
 				// TODO:
 				// add warnings when this happens
@@ -171,9 +168,9 @@ namespace Maize {
 				fixture->SetSensor(circleCollider.isTrigger);
 			}
 
-			if (reg.HasComponent<CapsuleColliderComponent>(entity))
+			if (reg.all_of<CapsuleColliderComponent>(entity))
 			{
-				auto& capsuleCollider = reg.GetComponent<CapsuleColliderComponent>(entity);
+				auto& capsuleCollider = reg.get<CapsuleColliderComponent>(entity);
 
 				// TODO:
 				// add warnings when this happens
@@ -229,16 +226,14 @@ namespace Maize {
 		}
 	}
 
-	void CollisionSystem::UpdateECS(ECS::EntityWorld& reg)
+	void CollisionSystem::UpdateECS(entt::registry& reg)
 	{
 		// update entities
-		for (auto entity : reg.GetEntityGroup<TransformComponent, RigidbodyComponent>())
+		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		for (auto [entity, transform, rigidbody] : view.each())
 		{
-			const auto& [transform, rigidbody] = reg.GetComponents<TransformComponent, RigidbodyComponent>(entity);
-
 			b2Body* body = rigidbody.body;
 			auto position = body->GetPosition();
-
 
 			transform.position = Vector2(position.x, position.y);
 			transform.angle = NormalizeAngle(body->GetAngle() * Math::Rad2Deg());;

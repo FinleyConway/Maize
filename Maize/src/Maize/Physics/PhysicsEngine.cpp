@@ -36,8 +36,6 @@ namespace Maize {
 		bodyDef.fixedRotation = bProp.fixedRotation;
 		bodyDef.bullet = bProp.isContinuous;
 
-		bodyDef.userData.pointer = bProp.entity;
-
 		return m_PhysicsWorld->CreateBody(&bodyDef);
 	}
 

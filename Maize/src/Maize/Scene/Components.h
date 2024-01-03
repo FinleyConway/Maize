@@ -1,6 +1,6 @@
 #pragma once
 
-#include <EntityComponentSystem/EntityWorld.h>
+#include <entt/entt.hpp>
 #include <box2d/box2d.h>
 
 #include "Maize/Renderer/Sprite.h"
@@ -20,23 +20,6 @@ namespace Maize {
 		Vector2 position = Vector2(0.0f, 0.0f);
 		float angle = 0.0f;
 		Vector2 scale = Vector2(1.0f, 1.0f);
-	};
-
-	struct LocalTransformComponent
-	{
-		Vector2 position = Vector2(0.0f, 0.0f);
-		float angle = 0.0f;
-		Vector2 scale = Vector2(1.0f, 1.0f);
-	};
-
-	struct ParentComponent
-	{
-		std::vector<ECS::Entity> children;
-	};
-
-	struct ChildComponent
-	{
-		ECS::Entity parent = -1;
 	};
 
 	struct SpriteComponent
@@ -116,11 +99,6 @@ namespace Maize {
 		float friction = 0.5f;
 		float restitution = 0.0f;
 		float restitutionThreshold = 0.5f;
-	};
-
-	struct CollisionEventComponent
-	{
-		ECS::Entity otherEntity = -1;
 	};
 
 } // Maize

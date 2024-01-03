@@ -52,11 +52,11 @@ FetchContent_Declare(
         GIT_TAG 0.1.0
 )
 
-# Fetch my ecs project
+# Fetch entt
 FetchContent_Declare(
-        ecs
-        GIT_REPOSITORY https://github.com/FinleyConway/EntityComponentSystem.git
-        GIT_TAG master
+        entt
+        GIT_REPOSITORY https://github.com/skypjack/entt.git
+        GIT_TAG v3.12.2
 )
 
 # Fetch box2d
@@ -79,7 +79,7 @@ option(IMGUI_SFML_IMGUI_DEMO "Build imgui_demo.cpp" ON)
 FetchContent_MakeAvailable(imgui-sfml)
 FetchContent_MakeAvailable(nlohmann_json)
 FetchContent_MakeAvailable(pfd)
-FetchContent_MakeAvailable(ecs)
+FetchContent_MakeAvailable(entt)
 FetchContent_MakeAvailable(box2d)
 
 # Add subdirectories for your projects
@@ -99,5 +99,6 @@ target_link_libraries(Maize
         sfml-network
         ImGui-SFML::ImGui-SFML
         nlohmann_json::nlohmann_json
+        EnTT::EnTT
         box2d
 )
