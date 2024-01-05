@@ -3,29 +3,34 @@
 
 namespace Maize {
 
-	void PhysicsEngine::Initialize(Vector2 gravity)
+	void PhysicsEngine::Initialize(Vector2 gravity, b2ContactListener* contactListener)
 	{
-		m_PhysicsWorld = new b2World({ gravity.x, gravity.y });
+		s_PhysicsWorld = new b2World({ gravity.x, gravity.y });
+
+		if (contactListener != nullptr)
+		{
+			s_PhysicsWorld->SetContactListener(contactListener);
+		}
 	}
 
 	void PhysicsEngine::Step(float deltaTime)
 	{
 		const int32_t velocityIterations = 6;
 		const int32_t positionIterations = 2;
-		m_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
+		s_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
 	}
 
 	void PhysicsEngine::Shutdown()
 	{
-		delete m_PhysicsWorld;
-		m_PhysicsWorld = nullptr;
+		delete s_PhysicsWorld;
+		s_PhysicsWorld = nullptr;
 	}
 
-	void PhysicsEngine::SetGravity(Vector2 gravity) { m_PhysicsWorld->SetGravity({ gravity.x, gravity.y }); }
+	void PhysicsEngine::SetGravity(Vector2 gravity) { s_PhysicsWorld->SetGravity({ gravity.x, gravity.y }); }
 
-	Vector2 PhysicsEngine::GetGravity() { return { m_PhysicsWorld->GetGravity().x, m_PhysicsWorld->GetGravity().y }; }
+	Vector2 PhysicsEngine::GetGravity() { return { s_PhysicsWorld->GetGravity().x, s_PhysicsWorld->GetGravity().y }; }
 
-	b2Body* PhysicsEngine::CreateBody(const BodyProperties& bProp)
+	b2Body* PhysicsEngine::CreateBody(const BodyProperties& bProp, void* userData)
 	{
 		b2BodyDef bodyDef;
 
@@ -36,12 +41,15 @@ namespace Maize {
 		bodyDef.fixedRotation = bProp.fixedRotation;
 		bodyDef.bullet = bProp.isContinuous;
 
-		return m_PhysicsWorld->CreateBody(&bodyDef);
+		if (userData != nullptr)
+			bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(userData);
+
+		return s_PhysicsWorld->CreateBody(&bodyDef);
 	}
 
 	void PhysicsEngine::RemoveBody(b2Body*body)
 	{
-		m_PhysicsWorld->DestroyBody(body);
+		s_PhysicsWorld->DestroyBody(body);
 	}
 
 	void PhysicsEngine::CreateBoxCollider(b2Body*body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp)

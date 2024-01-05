@@ -1,5 +1,7 @@
 #include <Maize/Core/EntryPoint.h>
 
+#include "Playground.h"
+
 namespace Maize {
 
     class MaizeOil : public Application
@@ -7,6 +9,7 @@ namespace Maize {
     public:
         explicit MaizeOil(const ApplicationSpecification& specification) : Application(specification)
         {
+			PushLayer(new Playground);
         }
     };
 

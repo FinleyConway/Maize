@@ -95,14 +95,7 @@ namespace Maize {
 
 	void RenderingSystem::RenderDebugColliders(entt::registry& reg, const sf::View& camera)
 	{
-		/*
-		 * Refactor this sooner or later
-		 */
-
-		if (!drawDebug)
-		{
-			return;
-		}
+		if (!drawDebug) { return; }
 
 		const int32_t flip = -1; // make sure up is positive y and down is negative y when drawing
 		const float ppu = 100.0f;
@@ -112,21 +105,19 @@ namespace Maize {
 		colliderRectShape.setOutlineColor(sf::Color::Green);
 		colliderRectShape.setOutlineThickness(1.0f);
 
-		sf::CircleShape colliderCircleShape1;
-		colliderCircleShape1.setFillColor(sf::Color::Transparent);
-		colliderCircleShape1.setOutlineColor(sf::Color::Green);
-		colliderCircleShape1.setOutlineThickness(1.0f);
+		sf::CircleShape colliderCircleShape;
+		colliderCircleShape.setFillColor(sf::Color::Transparent);
+		colliderCircleShape.setOutlineColor({ 0, 255, 0, 127 });
+		colliderCircleShape.setOutlineThickness(1.0f);
 
-		sf::CircleShape colliderCircleShape2;
-		colliderCircleShape2.setFillColor(sf::Color::Transparent);
-		colliderCircleShape2.setOutlineColor(sf::Color::Green);
-		colliderCircleShape2.setOutlineThickness(1.0f);
-
-		// box collider
+		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		for (auto [entity, transform, rigidbody] : view.each())
 		{
-			auto view = reg.view<TransformComponent, BoxColliderComponent>();
-			for (auto [entity, transform, boxCollider] : view.each())
+			// add a collider if that entity has this component
+			if (reg.all_of<BoxColliderComponent>(entity))
 			{
+				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
+
 				const sf::Vector2f colliderSize = sf::Vector2f(boxCollider.size.x * ppu, boxCollider.size.y * ppu);
 				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
 				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(boxCollider.offset.x * ppu, boxCollider.offset.y * ppu * flip), -transform.angle);
@@ -139,72 +130,49 @@ namespace Maize {
 				colliderRectShape.setRotation(-transform.angle);
 				colliderRectShape.setPosition(colliderPosition + rotatedOffset);
 
+				if (rigidbody.body->IsAwake())
+				{
+					colliderRectShape.setOutlineColor({ 0, 255, 0, 255 });
+				}
+				else
+				{
+					colliderRectShape.setOutlineColor({ 0, 255, 0, 127 });
+				}
+
 				if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
 				{
 					Renderer::Draw(colliderRectShape);
 				}
 			}
-		}
 
-		// circle collider
-		{
-			auto view = reg.view<TransformComponent, CircleColliderComponent>();
-			for (auto [entity, transform, circleCollider] : view.each())
+			// add a collider if that entity has this component
+			if (reg.all_of<CircleColliderComponent>(entity))
 			{
+				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
+
 				const float scaledRadius = (circleCollider.radius * ppu) * Math::Max(transform.scale.x, transform.scale.y);
 				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
 				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(circleCollider.offset.x * ppu, circleCollider.offset.y * ppu * flip), -transform.angle);
 
-				colliderCircleShape1.setOrigin(scaledRadius, scaledRadius);
+				colliderCircleShape.setOrigin(scaledRadius, scaledRadius);
 
-				colliderCircleShape1.setRadius(scaledRadius);
+				colliderCircleShape.setRadius(scaledRadius);
 
-				colliderCircleShape1.setRotation(-transform.angle);
-				colliderCircleShape1.setPosition(colliderPosition + rotatedOffset);
+				colliderCircleShape.setRotation(-transform.angle);
+				colliderCircleShape.setPosition(colliderPosition + rotatedOffset);
 
-				if (GetViewSpace(camera).intersects(colliderCircleShape1.getGlobalBounds()))
+				if (rigidbody.body->IsAwake())
 				{
-					Renderer::Draw(colliderCircleShape1);
+					colliderCircleShape.setOutlineColor({ 0, 255, 0, 255 });
 				}
-			}
-		}
-
-		// capsule collider
-		{
-			auto view = reg.view<TransformComponent, CapsuleColliderComponent>();
-			for (auto [entity, transform, capsuleCollider] : view.each())
-			{
-				const sf::Vector2f scale = sf::Vector2f(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
-				const float signX = Math::Sign(transform.scale.x);
-				const float signY = Math::Sign(transform.scale.y);
-
-				const sf::Vector2f colliderSize = sf::Vector2f(capsuleCollider.size.x * ppu, capsuleCollider.size.y * ppu);
-
-				const float scaledCircleRadius = (capsuleCollider.size.x * ppu / 2.0f) * scale.x;
-				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
-				const sf::Vector2f rotatedOffset = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu, capsuleCollider.offset.y * signY * ppu * flip), -transform.angle);
-
-				colliderRectShape.setSize({ colliderSize.x * scale.x, (colliderSize.x - capsuleCollider.size.y) * scale.y });
-				colliderRectShape.setOrigin(colliderRectShape.getSize() / 2.0f);
-				colliderRectShape.setPosition(colliderPosition.x + rotatedOffset.x, colliderPosition.y + rotatedOffset.y);
-				colliderRectShape.setRotation(-transform.angle);
-
-				const sf::Vector2f circleOffset1 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu,(-capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
-				const sf::Vector2f circleOffset2 = Rotate(sf::Vector2f(capsuleCollider.offset.x * signX * ppu,(capsuleCollider.size.y * scale.y / 4.0f - capsuleCollider.offset.y * signY) * ppu), -transform.angle);
-
-				colliderCircleShape1.setRadius(scaledCircleRadius);
-				colliderCircleShape1.setOrigin(colliderCircleShape1.getRadius(), colliderCircleShape1.getRadius());
-				colliderCircleShape1.setPosition(colliderPosition.x + circleOffset1.x, colliderPosition.y + circleOffset1.y);
-
-				colliderCircleShape2.setRadius(scaledCircleRadius);
-				colliderCircleShape2.setOrigin(colliderCircleShape2.getRadius(), colliderCircleShape2.getRadius());
-				colliderCircleShape2.setPosition(colliderPosition.x + circleOffset2.x, colliderPosition.y + circleOffset2.y);
-
-				if (GetViewSpace(camera).intersects(colliderRectShape.getGlobalBounds()))
+				else
 				{
-					Renderer::Draw(colliderRectShape);
-					Renderer::Draw(colliderCircleShape1);
-					Renderer::Draw(colliderCircleShape2);
+					colliderCircleShape.setOutlineColor({ 0, 255, 0, 127 });
+				}
+
+				if (GetViewSpace(camera).intersects(colliderCircleShape.getGlobalBounds()))
+				{
+					Renderer::Draw(colliderCircleShape);
 				}
 			}
 		}

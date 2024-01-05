@@ -7,7 +7,7 @@
 #include "Maize/Renderer/Animation.h"
 
 #include "Maize/Math/Vector2.h"
-#include "Maize/Physics/PhysicsEngine.h"
+#include "Maize/Physics/Physics.h"
 
 /*
  * Backend components
@@ -84,21 +84,24 @@ namespace Maize {
 		float restitutionThreshold = 0.5f;
 	};
 
-	struct CapsuleColliderComponent
+	struct TriggerEnterContactComponent
 	{
-		CapsuleDirection direction = CapsuleDirection::Vertical;
+		entt::entity otherEntity = entt::null;
+	};
 
-		Vector2 offset = Vector2(0.0f, 0.0f);
-		Vector2 size = Vector2(0.5f, 1.0f);
+	struct TriggerExitContactComponent
+	{
+		entt::entity otherEntity = entt::null;
+	};
 
-		bool isTrigger = false;
+	struct CollisionEnterContactComponent
+	{
+		entt::entity otherEntity = entt::null;
+	};
 
-		uint16_t categoryBits = 0x0001;
-
-		float density = 1.0f;
-		float friction = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
+	struct CollisionExitContactComponent
+	{
+		entt::entity otherEntity = entt::null;
 	};
 
 } // Maize

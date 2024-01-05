@@ -1,6 +1,9 @@
 #pragma once
 
+#include <entt/entt.hpp>
+
 #include "Maize/Physics/PhysicsEngine.h"
+#include "Maize/Math/Vector2.h"
 
 namespace Maize {
 

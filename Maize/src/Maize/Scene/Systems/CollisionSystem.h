@@ -2,7 +2,14 @@
 
 #include <entt/entt.hpp>
 
+#include "Maize/Physics/PhysicsContactListener.h"
+
 namespace Maize {
+
+	struct BodyUserData
+	{
+		entt::entity attachedEntity = entt::null;
+	};
 
 	class CollisionSystem
 	{
@@ -12,6 +19,8 @@ namespace Maize {
 		static void OnDestroy();
 
 	private:
+		inline static PhysicsContactListener s_ContactListener;
+
 		static void UpdateBox2d(entt::registry& reg);
 		static void UpdateECS(entt::registry& reg);
 

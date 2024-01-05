@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "CollisionSystem.h"
+#include "Maize/Scene/Systems/CollisionSystem.h"
 #include "Maize/Physics/PhysicsEngine.h"
 #include "Maize/Scene/Components.h"
 #include "Maize/Math/Math.h"
@@ -9,7 +9,9 @@ namespace Maize {
 
 	void CollisionSystem::OnStart(entt::registry& reg)
 	{
-		PhysicsEngine::Initialize();
+		s_ContactListener.registry = &reg;
+
+		PhysicsEngine::Initialize({ 0, -9.807 }, &s_ContactListener);
 
 		auto view = reg.view<TransformComponent, RigidbodyComponent>();
 		for (auto [entity, transform, rigidbody] : view.each())
@@ -23,8 +25,11 @@ namespace Maize {
 			bProp.fixedRotation = rigidbody.fixedRotation;
 			bProp.isContinuous = rigidbody.isContinuous;
 
+			auto* userData = new BodyUserData(); // don't forget to clean up the user data for when the body is removed
+			userData->attachedEntity = entity;
+
 			// create body
-			b2Body* body = PhysicsEngine::CreateBody(bProp);
+			b2Body* body = PhysicsEngine::CreateBody(bProp, userData);
 			rigidbody.body = body;
 
 			// add a collider if that entity has this component
@@ -63,25 +68,6 @@ namespace Maize {
 
 				// create collider
 				PhysicsEngine::CreateCircleCollider(body, circleCollider.radius, transform.scale, circleCollider.offset, cProp);
-			}
-
-			// add a collider if that entity has this component
-			if (reg.all_of<CapsuleColliderComponent>(entity))
-			{
-				auto& capsuleCollider = reg.get<CapsuleColliderComponent>(entity);
-
-				// apply collider properties
-				ColliderProperties cProp;
-				cProp.friction = capsuleCollider.friction;
-				cProp.bounciness = capsuleCollider.restitution;
-				cProp.bouncinessThreshold = capsuleCollider.restitutionThreshold;
-
-				cProp.density = capsuleCollider.density;
-				cProp.isTrigger = capsuleCollider.isTrigger;
-				cProp.filter.categoryBits = capsuleCollider.categoryBits;
-
-				// create collider
-				PhysicsEngine::CreateCapsuleCollider(body, capsuleCollider.size, transform.scale, capsuleCollider.offset, cProp, capsuleCollider.direction);
 			}
 		}
 	}
@@ -166,62 +152,6 @@ namespace Maize {
 				fixture->SetRestitution(circleCollider.restitution);
 				fixture->SetRestitutionThreshold(circleCollider.restitutionThreshold);
 				fixture->SetSensor(circleCollider.isTrigger);
-			}
-
-			if (reg.all_of<CapsuleColliderComponent>(entity))
-			{
-				auto& capsuleCollider = reg.get<CapsuleColliderComponent>(entity);
-
-				// TODO:
-				// add warnings when this happens
-				if (capsuleCollider.size.x <= minSize)
-				{
-					capsuleCollider.size.x = minSize;
-				}
-				if (capsuleCollider.size.y <= minSize)
-				{
-					capsuleCollider.size.y = minSize;
-				}
-
-				const float circleSize = (capsuleCollider.size.x / 2.0f) * scale.x;
-				const float rectWidth = (capsuleCollider.size.x / 2.0f) * scale.x;
-				const float rectHeight = ((capsuleCollider.size.y - capsuleCollider.size.x) / 2.0f) * scale.y;
-
-				// loop through each segment of the capsule collider
-				uint8_t current = 0;
-				for (b2Fixture* fixture = body->GetFixtureList(); fixture; fixture = fixture->GetNext())
-				{
-					//  update circle
-					if (fixture->GetType() == b2Shape::e_circle)
-					{
-						auto* circleShape = static_cast<b2CircleShape*>(fixture->GetShape());
-						circleShape->m_radius = circleSize;
-
-						// circle1
-						if (current == 0)
-						{
-							circleShape->m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY - rectHeight };
-							current++;
-						}
-							// circle2
-						else
-						{
-							circleShape->m_p = { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY + rectHeight };
-						}
-					}
-					// update rectangle
-					else if (fixture->GetType() == b2Shape::e_polygon)
-					{
-						auto* rectangleShape = static_cast<b2PolygonShape*>(fixture->GetShape());
-						rectangleShape->SetAsBox(rectWidth - 0.015f, rectHeight, { capsuleCollider.offset.x * signX, capsuleCollider.offset.y * signY }, 0.0f);
-					}
-
-					fixture->SetDensity(capsuleCollider.density);
-					fixture->SetFriction(capsuleCollider.friction);
-					fixture->SetRestitution(capsuleCollider.restitution);
-					fixture->SetRestitutionThreshold(capsuleCollider.restitutionThreshold);
-					fixture->SetSensor(capsuleCollider.isTrigger);
-				}
 			}
 		}
 	}

@@ -57,6 +57,10 @@ add_library(Maize STATIC
         src/Maize/Physics/PhysicsEngine.h
         src/Maize/Physics/Physics.cpp
         src/Maize/Physics/Physics.h
+        src/Maize/Physics/PhysicsContactListener.h
+        src/Maize/Scene/Scene.cpp
+        src/Maize/Scene/Scene.h
+        src/Maize/Physics/PhysicsContactListener.cpp
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

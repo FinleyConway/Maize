@@ -21,7 +21,7 @@ namespace Maize {
 		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
 
 		// perform the raycast
-		PhysicsEngine::m_PhysicsWorld->RayCast(&callback, from, to);
+		PhysicsEngine::s_PhysicsWorld->RayCast(&callback, from, to);
 
 		return callback.result;
 	}

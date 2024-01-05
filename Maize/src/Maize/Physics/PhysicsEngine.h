@@ -34,14 +34,14 @@ namespace Maize {
 	class PhysicsEngine
 	{
 	public:
-		static void Initialize(Vector2 gravity = { 0.0f, -9.807f });
+		static void Initialize(Vector2 gravity = { 0.0f, -9.807f }, b2ContactListener* contactListener = nullptr);
 		static void Step(float deltaTime);
 		static void Shutdown();
 
 		static void SetGravity(Vector2 gravity);
 		static Vector2 GetGravity();
 
-		static b2Body* CreateBody(const BodyProperties& bProp);
+		static b2Body* CreateBody(const BodyProperties& bProp, void* userData);
 		static void RemoveBody(b2Body* body);
 
 		static void CreateBoxCollider(b2Body* body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp);
@@ -51,7 +51,7 @@ namespace Maize {
 	private:
 		friend class Physics;
 
-		inline static b2World* m_PhysicsWorld;
+		inline static b2World* s_PhysicsWorld;
 		inline const static float cs_MinColliderSize = 0.0001f;
 	};
 
