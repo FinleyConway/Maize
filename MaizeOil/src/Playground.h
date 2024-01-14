@@ -9,7 +9,9 @@ namespace Maize {
 	public:
 		Playground() :
 		m_MusicClip("/home/finley/Downloads/719098__gregorquendel__julian-eltinge-tango-percy-wenrich-arranged-for-piano.wav"),
-		m_FxClip("/home/finley/Downloads/Pew.wav") { }
+		m_FxClip("/home/finley/Downloads/Pew.wav")
+		{
+		}
 
 		void OnAttach() override
 		{
@@ -42,13 +44,20 @@ namespace Maize {
 		{
 			m_Scene.Run(deltaTime);
 
-			if (ImGui::Button("Play Music"))
-			{
-				m_Music.Play();
-			}
+			if (ImGui::Button("Play Music")) m_Music.Play();
+			if (ImGui::Button("Pause Music")) m_Music.Pause();
+			if (ImGui::Button("Mute Music")) m_Music.ToggleMute();
+			if (ImGui::Button("Stop Music")) m_Music.Stop();
+
+			static float volume = 0;
+			static float pitch = 0;
+			if (ImGui::SliderFloat("Volume", &volume, 0, 100)) m_Music.SetVolume(volume);
+			if (ImGui::SliderFloat("Pitch", &pitch, 0, 100)) m_Music.SetPitch(pitch);
 
 			if(ImGui::Button("Pew"))
 			{
+				float random = Random::Range(0.25f, 1.75f);
+				m_Fx.SetPitch(random);
 				m_Fx.Play();
 			}
 
