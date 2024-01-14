@@ -17,6 +17,9 @@
 #include "Maize/Renderer/Sprite.h"
 #include "Maize/Renderer/TexturePacker.h"
 
+#include "Maize/Audio/AudioClip.h"
+#include "Maize/Audio/AudioSource.h"
+
 #include "Maize/Utils/FileDialog.h"
 #include "Maize/Utils/SystemNotify.h"
 #include "Maize/Utils/Random.h"

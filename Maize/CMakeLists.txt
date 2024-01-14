@@ -63,6 +63,10 @@ add_library(Maize STATIC
         src/Maize/Physics/PhysicsContactListener.cpp
         src/Maize/Scene/System.h
         src/Maize/Scene/Entity.h
+        src/Maize/Audio/AudioClip.cpp
+        src/Maize/Audio/AudioClip.h
+        src/Maize/Audio/AudioSource.cpp
+        src/Maize/Audio/AudioSource.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
