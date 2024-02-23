@@ -2,12 +2,15 @@
 
 #include "Maize/Core/Window.h"
 #include "Maize/Core/LayerStack.h"
-#include "Maize/Events/EventDispatcher.h"
-#include "Maize/ImGui/ImGuiLayer.h"
 
 int main();
 
 namespace Maize {
+
+	class Layer;
+	class Event;
+	class WindowCloseEvent;
+	class WindowResizeEvent;
 
     struct ApplicationSpecification
     {
@@ -26,9 +29,6 @@ namespace Maize {
         void PushOverlay(Layer* layer);
 
         Window& GetWindow() { return m_Window; }
-        ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
-
-        void Close() { m_IsRunning = false; }
 
     private:
         friend int ::main();
@@ -43,12 +43,8 @@ namespace Maize {
         inline static Application* s_Instance = nullptr;
 
         Window m_Window;
-
         LayerStack m_LayerStack;
-        ImGuiLayer* m_ImGuiLayer;
-
         bool m_IsRunning = true;
-        bool m_Minimized = false;
     };
 
     // to be used init maize

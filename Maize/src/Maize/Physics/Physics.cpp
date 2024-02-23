@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Physics/Physics.h"
 
+#include "Maize/Physics/PhysicsEngine.h"
+
 namespace Maize {
 
 	void Physics::Gravity(Vector2 gravity)

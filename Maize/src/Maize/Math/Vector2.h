@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Maize/Math/Math.h"
-
 namespace Maize {
 
 	struct Vector2Int;

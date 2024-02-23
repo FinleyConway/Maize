@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Maize/Renderer/Texture.h"
-#include "Maize/Math/Vector2.h"
-
 namespace Maize {
+
+	class Vector2;
+	class Texture;
 
 	class Sprite : public sf::Drawable, private sf::Transformable
 	{

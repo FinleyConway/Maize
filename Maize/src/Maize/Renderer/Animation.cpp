@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Renderer/Animation.h"
 
+#include "Maize/Renderer/Sprite.h"
+
 namespace Maize {
 
 	void Animation::AddFrame(uint32_t index, const sf::IntRect& rect, float duration)

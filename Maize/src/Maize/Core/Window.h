@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Maize/Events/Event.h"
-#include "Maize/Renderer/Renderer.h"
-
-#include "Maize/Events/WindowEvents.h"
-#include "Maize/Events/MouseEvents.h"
-#include "Maize/Events/KeyEvents.h"
-
 namespace Maize {
+
+	class Event;
 
 	class Window
 	{
@@ -15,7 +10,6 @@ namespace Maize {
 		using EventCallbackFn = std::function<void(Event&)>;
 
 		explicit Window(const std::string& title, sf::Vector2u windowSize = { 1280, 720 });
-		~Window();
 
 		void SetTitle(const std::string& title);
 		const std::string& GetTitle() const { return m_WindowTitle; }

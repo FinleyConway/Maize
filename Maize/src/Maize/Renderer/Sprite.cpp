@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Renderer/Sprite.h"
+#include "Maize/Renderer/Texture.h"
 
+#include "Maize/Math/Vector2.h"
 
 namespace Maize {
 

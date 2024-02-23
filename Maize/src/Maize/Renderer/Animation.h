@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Maize/Renderer/Sprite.h"
-
 namespace Maize {
+
+	class Sprite;
 
 	class Animation
 	{

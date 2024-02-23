@@ -8,6 +8,7 @@
 
 #include "Maize/Math/Vector2.h"
 #include "Maize/Physics/Physics.h"
+#include "Maize/Physics/PhysicsEngine.h"
 
 /*
  * Backend components

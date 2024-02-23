@@ -1,6 +1,8 @@
 #include "mpch.h"
 #include "Maize/Physics/PhysicsEngine.h"
 
+#include "Maize/Math/Math.h"
+
 namespace Maize {
 
 	void PhysicsEngine::Initialize(Vector2 gravity, b2ContactListener* contactListener)

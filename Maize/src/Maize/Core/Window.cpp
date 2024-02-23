@@ -1,7 +1,11 @@
 #include "mpch.h"
 #include "Maize/Core/Window.h"
 
-#include <imgui-SFML.h>
+#include "Maize/Renderer/Renderer.h"
+
+#include "Maize/Events/WindowEvents.h"
+#include "Maize/Events/MouseEvents.h"
+#include "Maize/Events/KeyEvents.h"
 
 namespace Maize {
 
@@ -10,11 +14,6 @@ namespace Maize {
         Create(windowSize);
         SetTitle(title);
         SetVSync(true);
-    }
-
-    Window::~Window()
-    {
-        m_Window.close();
     }
 
     void Window::SetTitle(const std::string& title)
@@ -35,8 +34,6 @@ namespace Maize {
 
         while (m_Window.pollEvent(e))
         {
-            ImGui::SFML::ProcessEvent(m_Window, e);
-
             if (e.type == sf::Event::Closed)
             {
                 WindowCloseEvent event;
@@ -83,7 +80,7 @@ namespace Maize {
     void Window::ToggleFullscreen()
     {
         m_IsFullscreen = !m_IsFullscreen;
-        Create({0, 0});
+        Create({ 1280, 720 });
     }
 
     void Window::BeginDrawing(sf::Color clearColour)
@@ -104,12 +101,10 @@ namespace Maize {
 		{
 			auto videoMode = sf::VideoMode::getDesktopMode();
 			m_Window.create(videoMode, m_WindowTitle, sf::Style::Fullscreen);
-
-			Renderer::OnWindowResize(sf::Vector2u(videoMode.width, videoMode.height));
 		}
 		else
 		{
-			m_Window.create(sf::VideoMode(windowSize.x, windowSize.y), m_WindowTitle, sf::Style::Close);
+			m_Window.create(sf::VideoMode(windowSize.x, windowSize.y), m_WindowTitle, sf::Style::Close | sf::Style::Resize);
 		}
 	}
 

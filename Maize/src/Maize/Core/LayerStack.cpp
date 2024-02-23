@@ -1,5 +1,6 @@
 #include "mpch.h"
 #include "Maize/Core/LayerStack.h"
+#include "Maize/Core/Layer.h"
 
 namespace Maize {
 

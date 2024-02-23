@@ -1,6 +1,13 @@
 #include "mpch.h"
 #include "Maize/Core/Application.h"
 
+#include "Maize/Renderer/Renderer.h"
+
+#include "Maize/Events/EventDispatcher.h"
+#include "Maize/Events/WindowEvents.h"
+
+#include "Maize/Core/Layer.h"
+
 namespace Maize {
 
     Application::Application(const ApplicationSpecification &specification) : m_Window(specification.name)
@@ -8,9 +15,6 @@ namespace Maize {
         s_Instance = this;
 
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
-
-        m_ImGuiLayer = new ImGuiLayer();
-        PushOverlay(m_ImGuiLayer);
 
 		Renderer::Initialize(m_Window.GetSize());
     }
@@ -48,9 +52,8 @@ namespace Maize {
     void Application::Run()
     {
         sf::Clock clock;
-
-        float lastFrameTime = 0.0f;
-        float deltaTime = 0.0f;
+        float lastFrameTime;
+        float deltaTime;
 
         while (m_IsRunning)
         {
@@ -60,26 +63,20 @@ namespace Maize {
 
             m_Window.PollEvents();
 
-            if (!m_Minimized)
-            {
-                m_ImGuiLayer->Begin(m_Window, deltaTime);
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate(deltaTime);
 
-                for (Layer* layer : m_LayerStack)
-                    layer->OnUpdate(deltaTime);
+			m_Window.BeginDrawing();
 
-                m_Window.BeginDrawing();
+			Renderer::DrawBufferTexture(); // temp
 
-                Renderer::DrawBufferTexture(); // temp
-                m_ImGuiLayer->End(m_Window);
-
-                m_Window.EndDrawing();
-            }
+			m_Window.EndDrawing();
         }
     }
 
     bool Application::OnWindowClose(const WindowCloseEvent &e)
     {
-        Close();
+       	m_IsRunning = false;
         return false;
     }
 

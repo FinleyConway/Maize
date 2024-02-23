@@ -11,7 +11,7 @@ namespace Maize {
 			texture = new sf::RenderTexture();
 		}
 
-		OnWindowResize(resize);
+		CreateTextures(resize);
 	}
 
 	void Renderer::Shutdown()
@@ -24,10 +24,8 @@ namespace Maize {
 
 	void Renderer::OnWindowResize(sf::Vector2u resize)
 	{
-		CreateTextures(resize);
-
 		auto view = GetCurrentTexture()->getView();
-		view.setSize((sf::Vector2f)resize);
+		view.setSize(static_cast<sf::Vector2f>(resize));
 		GetCurrentTexture()->setView(view);
 	}
 
@@ -85,6 +83,8 @@ namespace Maize {
         {
             renderTarget = s_Textures.at(s_CurrentTextureIndex);
         }
+
+		std::cout << GetCurrentTexture()->getSize().x << " " << GetCurrentTexture()->getSize().y << std::endl;
 
         renderTarget->draw(drawable, state);
         s_DrawCalls++;
