@@ -26,31 +26,42 @@ namespace Maize {
 				// check if this entity is the root entity
 				if (relation.parent == entt::null)
 				{
-					UpdateEntityPositions(registry, entity, transform.position);
+					UpdateEntityPositions(registry, entity, transform);
 				}
 			}
 		}
 
-		static void UpdateEntityPositions(entt::registry& registry, entt::entity entity, Vector2 parentPosition)
+		static void UpdateEntityPositions(entt::registry& registry, entt::entity entity, const Transform& parentTransform)
 		{
 			// set the child position relative to parents position
 			auto& transform = registry.get<Transform>(entity);
 			auto& localTransform = registry.get<LocalTransform>(entity);
 			auto& relation = registry.get<Relationship>(entity);
 
-			transform.position = parentPosition + localTransform.position;
+			transform.position = parentTransform.position + RotateVector(localTransform.position, parentTransform.angle);
+			transform.angle = parentTransform.angle + localTransform.angle;
+			transform.scale = Vector2(parentTransform.scale.x * localTransform.scale.x, parentTransform.scale.y * localTransform.scale.y);
 
 			// recursively loop though the children's grand children and so on...
 			entt::entity childEntity = relation.firstChild;
 
 			while (childEntity != entt::null)
 			{
-				UpdateEntityPositions(registry, childEntity, transform.position);
+				UpdateEntityPositions(registry, childEntity, transform);
 
 				auto& childRelation = registry.get<Relationship>(childEntity);
 				childEntity = childRelation.next;
 			}
 		}
+
+		static Vector2 RotateVector(Vector2 vector, float angle)
+		{
+			float angleRad = angle * (3.14159265358979323846 / 180.f); // Convert angle from degrees to radians
+			float cosA = std::cos(angleRad);
+			float sinA = std::sin(angleRad);
+			return Vector2(vector.x * cosA - vector.y * sinA, vector.x * sinA + vector.y * cosA);
+		}
+
 	};
 
 } // Maize

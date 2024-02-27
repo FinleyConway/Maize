@@ -43,39 +43,47 @@ namespace Maize {
 	public:
 		void OnAttach() override
 		{
-			tx = Texture::Create("/home/finley/GameShiz/Sprites/PNG/Retina/star_large.png");
+			tx = Texture::Create("/home/finley/GameShiz/Sprites/PNG/Retina/star_small.png");
 			auto sprite = Sprite(*tx, { 0, 0, 128, 128 }, { 128.0f / 2, 128.0f / 2});
 
 			auto camera = m_Scene.CreateEntity();
 			camera.AddComponent<Camera>();
 
-			a = m_Scene.CreateEntity();
-			a.AddComponent<SpriteRenderer>().sprite = sprite;
-			auto& relationA = a.GetComponent<Relationship>();
+			sun = m_Scene.CreateEntity();
+			sun.AddComponent<SpriteRenderer>().sprite = sprite;
+			auto& sunR = sun.GetComponent<Relationship>();
 
-			Entity b = m_Scene.CreateEntity();
-			b.GetComponent<LocalTransform>().position.x = 1.5;
-			b.AddComponent<SpriteRenderer>().sprite = sprite;
-			auto& relationB = b.GetComponent<Relationship>();
+			planet1 = m_Scene.CreateEntity();
+			planet1.GetComponent<LocalTransform>().scale = Vector2(0.75, 0.75);
+			planet1.GetComponent<LocalTransform>().position.x = 0.5;
+			planet1.AddComponent<SpriteRenderer>().sprite = sprite;
+			auto& relationPlanet1 = planet1.GetComponent<Relationship>();
 
-			relationB.parent = a;
-			relationA.firstChild = b;
+			sunR.firstChild = planet1;
 
-			Entity c = m_Scene.CreateEntity();
-			c.GetComponent<LocalTransform>().position.y = 0.5;
-			c.AddComponent<SpriteRenderer>().sprite = sprite;
-			auto& relationC = c.GetComponent<Relationship>();
+			planet2 = m_Scene.CreateEntity();
+			planet2.GetComponent<LocalTransform>().scale = Vector2(0.5, 0.5);
+			planet2.GetComponent<LocalTransform>().position.x = 1;
+			planet2.AddComponent<SpriteRenderer>().sprite = sprite;
+			auto& relationPlanet2 = planet2.GetComponent<Relationship>();
 
-			relationC.parent = b;
-			relationB.firstChild = c;
+			relationPlanet2.parent = planet1;
+			relationPlanet1.firstChild = planet2;
 
 			Entity d = m_Scene.CreateEntity();
-			d.GetComponent<LocalTransform>().position.y = 0.5;
+			d.GetComponent<LocalTransform>().position.x = 0.25;
 			d.AddComponent<SpriteRenderer>().sprite = sprite;
-			auto& relationD = d.GetComponent<Relationship>();
+			auto& dR = d.GetComponent<Relationship>();
 
-			relationD.parent = c;
-			relationC.firstChild = d;
+			dR.parent = planet2;
+			relationPlanet2.firstChild = d;
+
+			Entity e = m_Scene.CreateEntity();
+			e.GetComponent<LocalTransform>().position.x = 0.50;
+			e.AddComponent<SpriteRenderer>().sprite = sprite;
+			e.GetComponent<Relationship>().parent = planet2;
+
+			dR.firstChild = e;
 
 			m_Scene.Initialize();
 		}
@@ -87,18 +95,21 @@ namespace Maize {
 
 		void OnUpdate(float deltaTime) override
 		{
-			auto& t = a.GetComponent<Transform>();
+			auto& sun1 = sun.GetComponent<Transform>();
+			auto& t1 = planet1.GetComponent<LocalTransform>();
+			auto& t2 = planet2.GetComponent<LocalTransform>();
 
-			if (Input::IsKeyPressed(KeyCode::W)) t.position.y += 5 * deltaTime;
-			if (Input::IsKeyPressed(KeyCode::S)) t.position.y -= 5 * deltaTime;
-			if (Input::IsKeyPressed(KeyCode::D)) t.position.x += 5 * deltaTime;
-			if (Input::IsKeyPressed(KeyCode::A)) t.position.x -= 5 * deltaTime;
+			sun1.angle += 100 * deltaTime;
+			t1.angle += 50 * deltaTime;
+			t2.angle += 20 * deltaTime;
 
 			m_Scene.Run(deltaTime);
 		}
 
 	private:
-		Entity a;
+		Entity sun;
+		Entity planet1;
+		Entity planet2;
 
 		Scene m_Scene;
 
