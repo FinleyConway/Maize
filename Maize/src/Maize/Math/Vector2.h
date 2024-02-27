@@ -43,14 +43,11 @@ namespace Maize {
 		static Vector2 Reflect(Vector2 inDirection, Vector2 inNormal);
 		static float SignedAngle(Vector2 from, Vector2 to);
 
+		static Vector2 Rotate(Vector2 v, float angle);
+
 		Vector2 operator-(const Vector2& other) const;
 		Vector2 operator+(const Vector2& other) const;
-		Vector2& operator+=(const Vector2& other)
-		{
-			x += other.x;
-			y += other.y;
-			return *this;
-		}
+		Vector2& operator+=(const Vector2& other);
 		Vector2 operator*(float scalar) const;
 		friend Vector2 operator*(float scalar, const Vector2& vec);
 		Vector2 operator/(float scalar) const;

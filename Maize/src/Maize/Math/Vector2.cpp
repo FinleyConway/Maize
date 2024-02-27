@@ -218,6 +218,15 @@ namespace Maize {
 		return cross >= 0.0f ? unsignedAngle : -unsignedAngle;
 	}
 
+	Vector2 Vector2::Rotate(Vector2 v, float angle)
+	{
+		float angleRad = angle * Math::Deg2Rad();
+		float cosA = Math::Cos(angleRad);
+		float sinA = Math::Sin(angleRad);
+
+		return { v.x * cosA - v.y * sinA, v.x * sinA + v.y * cosA };
+	}
+
 	Vector2 Vector2::operator-(const Vector2& other) const
 	{
 		return { x - other.x, y - other.y };
@@ -226,6 +235,13 @@ namespace Maize {
 	Vector2 Vector2::operator+(const Vector2& other) const
 	{
 		return { x + other.x, y + other.y };
+	}
+
+	Vector2& Vector2::operator+=(const Vector2& other)
+	{
+		x += other.x;
+		y += other.y;
+		return *this;
 	}
 
 	Vector2 Vector2::operator*(float scalar) const

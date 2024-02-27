@@ -38,7 +38,7 @@ namespace Maize {
 			auto& localTransform = registry.get<LocalTransform>(entity);
 			auto& relation = registry.get<Relationship>(entity);
 
-			transform.position = parentTransform.position + RotateVector(localTransform.position, parentTransform.angle);
+			transform.position = parentTransform.position + Vector2::Rotate(localTransform.position, parentTransform.angle);
 			transform.angle = parentTransform.angle + localTransform.angle;
 			transform.scale = Vector2(parentTransform.scale.x * localTransform.scale.x, parentTransform.scale.y * localTransform.scale.y);
 
@@ -52,14 +52,6 @@ namespace Maize {
 				auto& childRelation = registry.get<Relationship>(childEntity);
 				childEntity = childRelation.next;
 			}
-		}
-
-		static Vector2 RotateVector(Vector2 vector, float angle)
-		{
-			float angleRad = angle * (3.14159265358979323846 / 180.f); // Convert angle from degrees to radians
-			float cosA = std::cos(angleRad);
-			float sinA = std::sin(angleRad);
-			return Vector2(vector.x * cosA - vector.y * sinA, vector.x * sinA + vector.y * cosA);
 		}
 
 	};
