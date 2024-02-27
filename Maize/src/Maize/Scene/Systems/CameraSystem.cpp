@@ -5,7 +5,7 @@ namespace Maize {
 
 	void CameraSystem::OnUpdate(entt::registry& reg, float deltaTime)
 	{
-		auto view = reg.view<TransformComponent, CameraComponent>();
+		auto view = reg.view<Transform, Camera>();
 		for (auto [entity, transform, cameraComponent] : view.each())
 		{
 			const float ppu = 100.0f;

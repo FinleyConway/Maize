@@ -51,11 +51,11 @@ namespace Maize {
 			// is a trigger
 			if (begin)
 			{
-				registry->emplace<TriggerEnterContactComponent>(entityA, entityB); // enter
+				registry->emplace<TriggerEnterContact>(entityA, entityB); // enter
 			}
 			else
 			{
-				registry->emplace<TriggerExitContactComponent>(entityA, entityB); // exit
+				registry->emplace<TriggerExitContact>(entityA, entityB); // exit
 			}
 		}
 		else
@@ -63,11 +63,11 @@ namespace Maize {
 			// involved in a collision
 			if (begin)
 			{
-				registry->emplace<CollisionEnterContactComponent>(entityA, entityB); // enter
+				registry->emplace<CollisionEnterContact>(entityA, entityB); // enter
 			}
 			else
 			{
-				registry->emplace<CollisionExitContactComponent>(entityA, entityB); //exit
+				registry->emplace<CollisionExitContact>(entityA, entityB); //exit
 			}
 		}
 	}

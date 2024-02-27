@@ -8,7 +8,7 @@ namespace Maize {
 	{
 		Renderer::BeginSceneDrawing();
 
-		auto view = reg.view<TransformComponent, CameraComponent>();
+		auto view = reg.view<Transform, Camera>();
 		for (auto entity : view)
 		{
 			std::unordered_map<std::string, std::vector<Drawable>> drawableOrder;
@@ -43,7 +43,7 @@ namespace Maize {
 		const int32_t flip = -1; // make sure so that up is positive y and down is negative y when drawing
 		const float ppu = 100.0f; // scaling factor
 
-		auto view = reg.view<TransformComponent, SpriteComponent>();
+		auto view = reg.view<Transform, SpriteRenderer>();
 		for (auto [entity, transform, spriteComponent] : view.each())
 		{
 			const sf::Vector2f spritePosition = sf::Vector2f(transform.position.x, transform.position.y * flip) * ppu;
@@ -110,13 +110,13 @@ namespace Maize {
 		colliderCircleShape.setOutlineColor({ 0, 255, 0, 127 });
 		colliderCircleShape.setOutlineThickness(1.0f);
 
-		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
 			// add a collider if that entity has this component
-			if (reg.all_of<BoxColliderComponent>(entity))
+			if (reg.all_of<BoxCollider>(entity))
 			{
-				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
+				auto& boxCollider = reg.get<BoxCollider>(entity);
 
 				const sf::Vector2f colliderSize = sf::Vector2f(boxCollider.size.x * ppu, boxCollider.size.y * ppu);
 				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);
@@ -146,9 +146,9 @@ namespace Maize {
 			}
 
 			// add a collider if that entity has this component
-			if (reg.all_of<CircleColliderComponent>(entity))
+			if (reg.all_of<CircleCollider>(entity))
 			{
-				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
+				auto& circleCollider = reg.get<CircleCollider>(entity);
 
 				const float scaledRadius = (circleCollider.radius * ppu) * Math::Max(transform.scale.x, transform.scale.y);
 				const sf::Vector2f colliderPosition = sf::Vector2f(transform.position.x * ppu, transform.position.y * flip * ppu);

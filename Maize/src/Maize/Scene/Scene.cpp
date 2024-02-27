@@ -2,6 +2,8 @@
 #include "Maize/Scene/Scene.h"
 #include "Maize/Scene/Entity.h"
 
+#include "Maize/Scene/Systems/HierarchySystem.h"
+
 namespace Maize {
 
 	void Scene::Initialize()
@@ -22,6 +24,8 @@ namespace Maize {
 
 		// any systems that want to handle collision callback logic
 		PhysicsCallback(deltaTime);
+
+		HierarchySystem::Update(m_Registry);
 
 		// main update for systems
 		Update(deltaTime);
@@ -49,7 +53,9 @@ namespace Maize {
 	{
 		Entity entity = Entity(m_Registry.create(), this);
 
-		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<Transform>();
+		entity.AddComponent<LocalTransform>();
+		entity.AddComponent<Relationship>();
 
 		m_Entities.emplace_back(entity);
 
@@ -108,7 +114,7 @@ namespace Maize {
 
 		// clear physics callback
 		// !!this needs to be always last in this function!!
-		m_Registry.clear<TriggerEnterContactComponent, TriggerExitContactComponent, CollisionEnterContactComponent, CollisionExitContactComponent>();
+		m_Registry.clear<TriggerEnterContact, TriggerExitContact, CollisionEnterContact, CollisionExitContact>();
 	}
 
 	void Scene::Update(float deltaTime)

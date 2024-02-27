@@ -11,7 +11,7 @@ namespace Maize {
 	public:
 		void OnUpdate(entt::registry& reg, float deltaTime)
 		{
-			auto view = reg.view<TransformComponent, SpriteComponent, AnimatorComponent>();
+			auto view = reg.view<Transform, SpriteRenderer, Animator>();
 			for (auto [entity, transform, sprite, animator] : view.each())
 			{
 				Animation& animation = animator.states[animator.currentState];

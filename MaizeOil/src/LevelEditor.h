@@ -12,7 +12,7 @@ public:
     LevelEditor()
     {
         auto tilemapE = m_Reg.CreateEntity();
-        m_Reg.AddComponent<Maize::TransformComponent>(tilemapE);
+        m_Reg.AddComponent<Maize::Transform>(tilemapE);
         m_TilemapComponent = &m_Reg.AddComponent<Maize::TilemapComponent>(tilemapE); // temp
 
 		m_TilemapEditorWindow.AddComponent(m_TilemapComponent);

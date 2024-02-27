@@ -84,8 +84,6 @@ namespace Maize {
             renderTarget = s_Textures.at(s_CurrentTextureIndex);
         }
 
-		std::cout << GetCurrentTexture()->getSize().x << " " << GetCurrentTexture()->getSize().y << std::endl;
-
         renderTarget->draw(drawable, state);
         s_DrawCalls++;
     }

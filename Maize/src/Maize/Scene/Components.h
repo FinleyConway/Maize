@@ -16,14 +16,29 @@
 
 namespace Maize {
 
-	struct TransformComponent
+	struct Transform
 	{
 		Vector2 position = Vector2(0.0f, 0.0f);
 		float angle = 0.0f;
 		Vector2 scale = Vector2(1.0f, 1.0f);
 	};
 
-	struct SpriteComponent
+	struct LocalTransform
+	{
+		Vector2 position = Vector2(0.0f, 0.0f);
+		float angle = 0.0f;
+		Vector2 scale = Vector2(1.0f, 1.0f);
+	};
+
+	struct Relationship
+	{
+		entt::entity firstChild = entt::null;
+		entt::entity prev = entt::null;
+		entt::entity next = entt::null;
+		entt::entity parent = entt::null;
+	};
+
+	struct SpriteRenderer
 	{
 		Sprite sprite;
 		bool flipX = false;
@@ -32,20 +47,20 @@ namespace Maize {
 		int32_t orderInLayer = 0;
 	};
 
-	struct AnimatorComponent
+	struct Animator
 	{
 		float animationSpeed = 1.0f;
 		std::string currentState;
 		std::unordered_map<std::string, Animation> states;
 	};
 
-	struct CameraComponent
+	struct Camera
 	{
 		Vector2 zoom = Vector2(1.0f, 1.0f);
 		sf::FloatRect viewport = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
 	};
 
-	struct RigidbodyComponent
+	struct Rigidbody
 	{
 		BodyType type = BodyType::Static;
 		float gravityScale = 1;
@@ -55,7 +70,7 @@ namespace Maize {
 		b2Body* body = nullptr;
 	};
 
-	struct BoxColliderComponent
+	struct BoxCollider
 	{
 		Vector2 offset = Vector2(0.0f, 0.0f);
 		Vector2 size = Vector2(1.0f, 1.0f);
@@ -70,7 +85,7 @@ namespace Maize {
 		float restitutionThreshold = 0.5f;
 	};
 
-	struct CircleColliderComponent
+	struct CircleCollider
 	{
 		Vector2 offset = Vector2(0.0f, 0.0f);
 		float radius = 0.5f;
@@ -85,22 +100,22 @@ namespace Maize {
 		float restitutionThreshold = 0.5f;
 	};
 
-	struct TriggerEnterContactComponent
+	struct TriggerEnterContact
 	{
 		entt::entity otherEntity = entt::null;
 	};
 
-	struct TriggerExitContactComponent
+	struct TriggerExitContact
 	{
 		entt::entity otherEntity = entt::null;
 	};
 
-	struct CollisionEnterContactComponent
+	struct CollisionEnterContact
 	{
 		entt::entity otherEntity = entt::null;
 	};
 
-	struct CollisionExitContactComponent
+	struct CollisionExitContact
 	{
 		entt::entity otherEntity = entt::null;
 	};

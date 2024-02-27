@@ -13,7 +13,7 @@ namespace Maize {
 
 		PhysicsEngine::Initialize({ 0, -9.807 }, &s_ContactListener);
 
-		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
 			// apply rigidbody properties
@@ -33,9 +33,9 @@ namespace Maize {
 			rigidbody.body = body;
 
 			// add a collider if that entity has this component
-			if (reg.all_of<BoxColliderComponent>(entity))
+			if (reg.all_of<BoxCollider>(entity))
 			{
-				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
+				auto& boxCollider = reg.get<BoxCollider>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -52,9 +52,9 @@ namespace Maize {
 			}
 
 			// add a collider if that entity has this component
-			if (reg.all_of<CircleColliderComponent>(entity))
+			if (reg.all_of<CircleCollider>(entity))
 			{
-				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
+				auto& circleCollider = reg.get<CircleCollider>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -89,7 +89,7 @@ namespace Maize {
 
 	void CollisionSystem::UpdateBox2d(entt::registry& reg)
 	{
-		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
 			const Vector2 scale = Vector2(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
@@ -105,9 +105,9 @@ namespace Maize {
 			body->SetFixedRotation(rigidbody.fixedRotation);
 			body->SetBullet(rigidbody.isContinuous);
 
-			if (reg.all_of<BoxColliderComponent>(entity))
+			if (reg.all_of<BoxCollider>(entity))
 			{
-				auto& boxCollider = reg.get<BoxColliderComponent>(entity);
+				auto& boxCollider = reg.get<BoxCollider>(entity);
 
 				// TODO:
 				// add warnings when this happens
@@ -131,9 +131,9 @@ namespace Maize {
 				fixture->SetSensor(boxCollider.isTrigger);
 			}
 
-			if (reg.all_of<CircleColliderComponent>(entity))
+			if (reg.all_of<CircleCollider>(entity))
 			{
-				auto& circleCollider = reg.get<CircleColliderComponent>(entity);
+				auto& circleCollider = reg.get<CircleCollider>(entity);
 
 				// TODO:
 				// add warnings when this happens
@@ -159,7 +159,7 @@ namespace Maize {
 	void CollisionSystem::UpdateECS(entt::registry& reg)
 	{
 		// update entities
-		auto view = reg.view<TransformComponent, RigidbodyComponent>();
+		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
 			b2Body* body = rigidbody.body;
