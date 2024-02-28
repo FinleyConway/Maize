@@ -9,6 +9,7 @@ namespace Maize {
 	void Scene::Initialize()
 	{
 		Start();
+		m_Renderer.OnStart(m_Registry);
 		CollisionSystem::OnStart(m_Registry);
 	}
 
@@ -33,11 +34,10 @@ namespace Maize {
 		// any systems that want to be updated after the main update
 		LateUpdate(deltaTime);
 
-		// update all cameras
-		CameraSystem::OnUpdate(m_Registry, deltaTime);
+		m_Renderer.OnUpdate(m_Registry, deltaTime);
 
 		// render all entities
-		RenderingSystem::OnRender(m_Registry);
+		m_Renderer.OnRender(m_Registry);
 
 		// update entities that want to be removed
 		End();

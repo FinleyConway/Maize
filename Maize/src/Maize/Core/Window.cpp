@@ -83,18 +83,6 @@ namespace Maize {
         Create({ 1280, 720 });
     }
 
-    void Window::BeginDrawing(sf::Color clearColour)
-    {
-        m_Window.clear(clearColour);
-        Renderer::BeginDrawing();
-    }
-
-    void Window::EndDrawing()
-    {
-        m_Window.display();
-        Renderer::EndDrawing();
-    }
-
 	void Window::Create(sf::Vector2u windowSize)
 	{
 		if (m_IsFullscreen)

@@ -26,9 +26,6 @@ namespace Maize {
 
 		void ToggleFullscreen();
 
-		void BeginDrawing(sf::Color clearColour = sf::Color::Black);
-		void EndDrawing();
-
 		sf::RenderWindow& GetRenderWindow() { return m_Window; }
 
 	private:

@@ -16,19 +16,17 @@ namespace Maize {
 
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-		Renderer::Initialize(m_Window.GetSize());
+		Renderer::Initialize(m_Window.GetRenderWindow());
     }
 
 	Application::~Application()
 	{
-		Renderer::Shutdown();
 	}
 
     void Application::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
-        dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
 
         for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
         {
@@ -63,14 +61,12 @@ namespace Maize {
 
             m_Window.PollEvents();
 
+			Renderer::BeginDrawing(sf::Color::Black);
+
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(deltaTime);
 
-			m_Window.BeginDrawing();
-
-			Renderer::DrawBufferTexture(); // temp
-
-			m_Window.EndDrawing();
+			Renderer::EndDrawing();
         }
     }
 
@@ -79,11 +75,5 @@ namespace Maize {
        	m_IsRunning = false;
         return false;
     }
-
-	bool Application::OnWindowResize(const WindowResizeEvent& e)
-	{
-		Renderer::OnWindowResize(sf::Vector2u(e.GetWidth(), e.GetHeight()));
-		return false;
-	}
 
 } // Maize

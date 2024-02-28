@@ -25,8 +25,6 @@ namespace Maize {
 		sf::FloatRect GetGlobalBounds() const;
 
 	private:
-		friend class RenderingSystem;
-
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		void UpdatePositions();
 		void UpdateTexCoords();

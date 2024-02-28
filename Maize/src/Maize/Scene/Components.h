@@ -43,7 +43,7 @@ namespace Maize {
 		Sprite sprite;
 		bool flipX = false;
 		bool flipY = false;
-		std::string sortingLayer = "Default";
+		int32_t sortingLayer = 0;
 		int32_t orderInLayer = 0;
 	};
 
@@ -52,12 +52,6 @@ namespace Maize {
 		float animationSpeed = 1.0f;
 		std::string currentState;
 		std::unordered_map<std::string, Animation> states;
-	};
-
-	struct Camera
-	{
-		Vector2 zoom = Vector2(1.0f, 1.0f);
-		sf::FloatRect viewport = sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f);
 	};
 
 	struct Rigidbody

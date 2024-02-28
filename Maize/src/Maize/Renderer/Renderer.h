@@ -2,49 +2,62 @@
 
 namespace Maize {
 
+	struct RenderData
+	{
+		const sf::Drawable* drawable = nullptr;
+		sf::FloatRect bounds;
+		int32_t sortingLayer = 0;
+		int32_t orderInLayer = 0;
+
+		bool operator<(const RenderData& other) const
+		{
+			if (sortingLayer < other.sortingLayer)
+			{
+				return true;
+			}
+			else if (sortingLayer == other.sortingLayer)
+			{
+				return orderInLayer < other.orderInLayer;
+			}
+
+			return false;
+		}
+	};
+
     class Renderer
     {
     public:
-		static void Initialize(sf::Vector2u resize);
-		static void Shutdown();
+		static void Initialize(sf::RenderWindow& window);
 
-		static void OnWindowResize(sf::Vector2u resize);
+		static void InsertDrawable(const std::vector<RenderData>& renderData);
+		static void InsertDrawable(const RenderData& renderData);
 
-        static sf::RenderTexture* GetCurrentTexture();
-        static sf::RenderTexture* GetFinishedTexture();
+		static void RemoveDrawable(const std::vector<sf::Drawable*>& drawables);
+		static void RemoveDrawable(const sf::Drawable* drawable);
 
-        static void BeginSceneDrawing();
-        static void BeginDrawing();
+		static void UpdateDrawable(const std::vector<RenderData>& renderData);
+		static void UpdateDrawable(const RenderData& renderData);
 
-        static void Draw(const sf::Shape& shape, sf::RenderTarget* renderTarget = nullptr);
-        static void Draw(const sf::Sprite& sprite, sf::RenderTarget* renderTarget = nullptr);
-        static void Draw(const sf::Drawable& drawable, const sf::RenderStates& state = sf::RenderStates::Default, sf::RenderTarget* renderTarget = nullptr);
-        static void DrawBufferTexture();
+        static void BeginDrawing(sf::Color clearColour);
 
-        static void EndDrawing();
-        static void EndSceneDrawing();
+		static void DrawScene();
+		static void DrawImmediately(const std::vector<sf::Drawable*>& drawable);
+		static void DrawImmediately(const sf::Drawable* drawable);
 
-        static bool IsDrawing();
-		static uint32_t GetDrawCall() { return s_DrawCalls; };
+		static void EndDrawing();
 
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord);
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Color colour);
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour);
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord);
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Color colour);
-		static std::array<sf::Vertex, 4> CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour);
+		static bool IsDrawing() { return s_IsDrawing; };
+		static size_t GetDrawCall() { return s_DrawCalls; }
 
     private:
-        static void CreateTextures(sf::Vector2u resize);
-        static void SwapTextures();
+		static bool InsideViewport(const RenderData& renderData);
 
-    private:
-		inline static sf::Sprite s_BufferSprite;
-		inline static std::array<sf::RenderTexture*, 2> s_Textures;
+		inline static std::vector<RenderData> s_Drawables;
 
-        inline static bool s_IsDrawing = false;
-        inline static uint32_t s_DrawCalls = 0;
-        inline static uint32_t s_CurrentTextureIndex = 0;
+		inline static bool s_IsDrawing = false;
+		inline static size_t s_DrawCalls = 0;
+
+		inline static sf::RenderWindow* s_RenderWindow = nullptr;
     };
 
 } // Maize

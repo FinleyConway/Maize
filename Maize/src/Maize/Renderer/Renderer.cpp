@@ -4,158 +4,166 @@
 
 namespace Maize {
 
-	void Renderer::Initialize(sf::Vector2u resize)
+	void Renderer::Initialize(sf::RenderWindow& window)
 	{
-		for (auto& texture : s_Textures)
-		{
-			texture = new sf::RenderTexture();
-		}
-
-		CreateTextures(resize);
+		s_RenderWindow = &window;
 	}
 
-	void Renderer::Shutdown()
+	void Renderer::InsertDrawable(const std::vector<RenderData>& renderData)
 	{
-		for (auto& texture : s_Textures)
-		{
-			delete texture;
-		}
+		// pre alloc and insert elements into drawables
+		s_Drawables.reserve(s_Drawables.size() + renderData.size());
+		s_Drawables.insert(s_Drawables.end(), renderData.begin(), renderData.end());
 	}
 
-	void Renderer::OnWindowResize(sf::Vector2u resize)
+	void Renderer::InsertDrawable(const RenderData& renderData)
 	{
-		auto view = GetCurrentTexture()->getView();
-		view.setSize(static_cast<sf::Vector2f>(resize));
-		GetCurrentTexture()->setView(view);
+		// add element to vector
+		s_Drawables.emplace_back(renderData);
 	}
 
-    sf::RenderTexture* Renderer::GetCurrentTexture()
-    {
-        return s_Textures.at(s_CurrentTextureIndex);
-    }
-
-    sf::RenderTexture* Renderer::GetFinishedTexture()
-    {
-        uint32_t finishedTextureIndex = (s_CurrentTextureIndex + 1) % 2;
-        return s_Textures.at(finishedTextureIndex);
-    }
-
-	void Renderer::CreateTextures(sf::Vector2u resize)
+	void Renderer::RemoveDrawable(const std::vector<sf::Drawable*>& drawables)
 	{
-		for (auto& texture : s_Textures)
+		if (drawables.empty()) return;
+
+		for (auto draw : drawables)
 		{
-			texture->create(resize.x, resize.y);
-			texture->clear();
-			texture->display();
+			RemoveDrawable(draw);
 		}
 	}
 
-	void Renderer::SwapTextures()
-    {
-		s_CurrentTextureIndex = (s_CurrentTextureIndex + 1) % 2; // toggle between 0 and 1
-    }
+	void Renderer::RemoveDrawable(const sf::Drawable* drawable)
+	{
+		// finds the element
+		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
+			[&drawable](const RenderData& data) { return data.drawable == drawable; });
 
-    void Renderer::BeginSceneDrawing()
-    {
-		s_Textures.at(s_CurrentTextureIndex)->clear();
-    }
+		// removes element if found
+		if (it != s_Drawables.end())
+		{
+			s_Drawables.erase(it);
+		}
+	}
 
-    void Renderer::BeginDrawing()
+	void Renderer::UpdateDrawable(const std::vector<RenderData>& renderData)
+	{
+		for (const auto& data : renderData)
+		{
+			// finds the element
+			auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
+				[drawable = data.drawable](const RenderData& d) { return d.drawable == drawable; });
+
+			// update element if found
+			if (it != s_Drawables.end())
+			{
+				it->bounds = data.bounds;
+				it->sortingLayer = data.orderInLayer;
+				it->orderInLayer = data.orderInLayer;
+			}
+		}
+	}
+
+	void Renderer::UpdateDrawable(const RenderData& renderData)
+	{
+		// finds the element
+		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
+			[drawable = renderData.drawable](const RenderData& d) { return d.drawable == drawable; });
+
+		// update element if found
+		if (it != s_Drawables.end())
+		{
+			it->bounds = renderData.bounds;
+			it->sortingLayer = renderData.orderInLayer;
+			it->orderInLayer = renderData.orderInLayer;
+		}
+	}
+
+	void Renderer::BeginDrawing(sf::Color clearColour)
     {
+		if (s_RenderWindow == nullptr)
+		{
+			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			return;
+		}
+
+		// mark as begin drawing
+		s_RenderWindow->clear(clearColour);
+
 		s_IsDrawing = true;
 		s_DrawCalls = 0;
     }
 
-    void Renderer::Draw(const sf::Shape& shape, sf::RenderTarget* renderTarget)
-    {
-        Draw(static_cast<const sf::Drawable&>(shape), sf::RenderStates::Default, renderTarget);
-    }
-
-    void Renderer::Draw(const sf::Sprite& sprite, sf::RenderTarget* renderTarget)
-    {
-        Draw(static_cast<const sf::Drawable&>(sprite), sf::RenderStates::Default,  renderTarget);
-    }
-
-    void Renderer::Draw(const sf::Drawable& drawable, const sf::RenderStates& state, sf::RenderTarget* renderTarget)
-    {
-        // look more into this section in the future
-        if (renderTarget == nullptr)
-        {
-            renderTarget = s_Textures.at(s_CurrentTextureIndex);
-        }
-
-        renderTarget->draw(drawable, state);
-        s_DrawCalls++;
-    }
-
-    void Renderer::DrawBufferTexture()
-    {
-        auto& window = Application::Get().GetWindow().GetRenderWindow();
-
-		s_BufferSprite.setTexture(s_Textures.at(s_CurrentTextureIndex)->getTexture());
-        Draw(s_BufferSprite, &window);
-    }
-
-    void Renderer::EndDrawing() { s_IsDrawing = false; }
-
-    void Renderer::EndSceneDrawing()
-    {
-        SwapTextures();
-    }
-
-    bool Renderer::IsDrawing() { return s_IsDrawing; }
-
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord)
+	void Renderer::DrawScene()
 	{
-		return CreateQuad(position, 0, size, texCoord, sf::Color(255, 255, 255));
+		// TODO: Look into something like a quad tree to only naive through nearby objects!
+		std::sort(s_Drawables.begin(), s_Drawables.end());
+
+		// naive through entire scene
+		for (auto draw : s_Drawables)
+		{
+			// only draw if inside the current viewport
+			if (InsideViewport(draw))
+			{
+				DrawImmediately(draw.drawable);
+			}
+		}
 	}
 
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Color colour)
+	void Renderer::DrawImmediately(const std::vector<sf::Drawable*>& drawable)
 	{
-		return CreateQuad(position, 0, size, colour);
+		for (auto draw : drawable)
+		{
+			DrawImmediately(draw);
+		}
 	}
 
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour)
+	void Renderer::DrawImmediately(const sf::Drawable* drawable)
 	{
-		return CreateQuad(position, 0, size, texCoord, colour);
+		if (s_RenderWindow == nullptr)
+		{
+			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			return;
+		}
+
+		if (drawable == nullptr)
+		{
+			std::cerr << "Attempting to draw a null object!" << std::endl;
+			return;
+		}
+
+		s_RenderWindow->draw(*drawable);
+
+		s_DrawCalls++;
 	}
 
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord)
+	void Renderer::EndDrawing()
 	{
-		return CreateQuad(position, rotation, size, texCoord, sf::Color(255, 255, 255));
+		if (s_RenderWindow == nullptr)
+		{
+			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			return;
+		}
+
+		// mark as ended drawing
+		s_RenderWindow->display();
+
+		s_IsDrawing = false;
 	}
 
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Color colour)
+	bool Renderer::InsideViewport(const RenderData& renderData)
 	{
-		return CreateQuad(position, rotation, size, sf::Vector2f(0, 0), colour);
-	}
+		auto view = s_RenderWindow->getView();
+		auto viewport = view.getViewport();
+		auto size = view.getSize();
 
-	std::array<sf::Vertex, 4> Renderer::CreateQuad(sf::Vector2f position, float rotation, sf::Vector2f size, sf::Vector2f texCoord, sf::Color colour)
-	{
-		std::array<sf::Vertex, 4> quad;
-		sf::Vector2f center = position + size * 0.5f;
-		sf::Transform transform;
+		auto viewportBounds = sf::FloatRect(viewport.left * size.x, viewport.top * size.y, viewport.width * size.x, viewport.height * size.y);
 
-		transform.translate(center);
-		transform.rotate(rotation);
-		transform.translate(-center);
+		if (renderData.bounds.intersects(viewportBounds))
+		{
+			return true;
+		}
 
-		quad[0].position = transform.transformPoint(sf::Vector2f(position.x, position.y));
-		quad[1].position = transform.transformPoint(sf::Vector2f(position.x + size.x, position.y));
-		quad[2].position = transform.transformPoint(sf::Vector2f(position.x + size.x, position.y + size.y));
-		quad[3].position = transform.transformPoint(sf::Vector2f(position.x, position.y + size.y));
-
-		quad[0].texCoords = sf::Vector2f((texCoord.x + 0) * size.x, (texCoord.y + 0) * size.y);
-		quad[1].texCoords = sf::Vector2f((texCoord.x + 1) * size.x, (texCoord.y + 0) * size.y);
-		quad[2].texCoords = sf::Vector2f((texCoord.x + 1) * size.x, (texCoord.y + 1) * size.y);
-		quad[3].texCoords = sf::Vector2f((texCoord.x + 0) * size.x, (texCoord.y + 1) * size.y);
-
-		quad[0].color = colour;
-		quad[1].color = colour;
-		quad[2].color = colour;
-		quad[3].color = colour;
-
-		return quad;
+		return false;
 	}
 
 } // Maize

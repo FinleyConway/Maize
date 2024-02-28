@@ -6,7 +6,6 @@
 #include "Maize/Scene/System.h"
 
 #include "Maize/Scene/Systems/CollisionSystem.h"
-#include "Maize/Scene/Systems/CameraSystem.h"
 #include "Maize/Scene/Systems/RenderingSystem.h"
 
 namespace Maize {
@@ -49,6 +48,8 @@ namespace Maize {
 		entt::registry m_Registry;
 		std::vector<entt::entity> m_Entities;
 		std::vector<System*> m_Systems;
+
+		RenderingSystem m_Renderer;
 	};
 
 } // Maize

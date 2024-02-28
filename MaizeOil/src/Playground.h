@@ -46,9 +46,6 @@ namespace Maize {
 			tx = Texture::Create("/home/finley/GameShiz/Sprites/PNG/Retina/star_small.png");
 			auto sprite = Sprite(*tx, { 0, 0, 128, 128 }, { 128.0f / 2, 128.0f / 2});
 
-			auto camera = m_Scene.CreateEntity();
-			camera.AddComponent<Camera>();
-
 			sun = m_Scene.CreateEntity();
 			sun.AddComponent<SpriteRenderer>().sprite = sprite;
 			auto& sunR = sun.GetComponent<Relationship>();
