@@ -52,7 +52,7 @@ namespace Maize {
 
 			planet1 = m_Scene.CreateEntity();
 			planet1.GetComponent<LocalTransform>().scale = Vector2(0.75, 0.75);
-			planet1.GetComponent<LocalTransform>().position.x = 0.5;
+			planet1.GetComponent<LocalTransform>().position.x = 1;
 			planet1.AddComponent<SpriteRenderer>().sprite = sprite;
 			auto& relationPlanet1 = planet1.GetComponent<Relationship>();
 
@@ -60,27 +60,12 @@ namespace Maize {
 
 			planet2 = m_Scene.CreateEntity();
 			planet2.GetComponent<LocalTransform>().scale = Vector2(0.5, 0.5);
-			planet2.GetComponent<LocalTransform>().position.x = 1;
+			planet2.GetComponent<LocalTransform>().position.x = 0.2;
 			planet2.AddComponent<SpriteRenderer>().sprite = sprite;
 			auto& relationPlanet2 = planet2.GetComponent<Relationship>();
 
 			relationPlanet2.parent = planet1;
 			relationPlanet1.firstChild = planet2;
-
-			Entity d = m_Scene.CreateEntity();
-			d.GetComponent<LocalTransform>().position.x = 0.25;
-			d.AddComponent<SpriteRenderer>().sprite = sprite;
-			auto& dR = d.GetComponent<Relationship>();
-
-			dR.parent = planet2;
-			relationPlanet2.firstChild = d;
-
-			Entity e = m_Scene.CreateEntity();
-			e.GetComponent<LocalTransform>().position.x = 0.50;
-			e.AddComponent<SpriteRenderer>().sprite = sprite;
-			e.GetComponent<Relationship>().parent = planet2;
-
-			dR.firstChild = e;
 
 			m_Scene.Initialize();
 		}
@@ -95,6 +80,9 @@ namespace Maize {
 			auto& sun1 = sun.GetComponent<Transform>();
 			auto& t1 = planet1.GetComponent<LocalTransform>();
 			auto& t2 = planet2.GetComponent<LocalTransform>();
+
+			if (Input::IsKeyPressed(KeyCode::A)) sun1.position.x -= 5 * deltaTime;
+			if (Input::IsKeyPressed(KeyCode::D)) sun1.position.x += 5 * deltaTime;
 
 			sun1.angle += 100 * deltaTime;
 			t1.angle += 50 * deltaTime;

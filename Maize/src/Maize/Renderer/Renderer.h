@@ -29,6 +29,8 @@ namespace Maize {
     public:
 		static void Initialize(sf::RenderWindow& window);
 
+		static void OnWindowResize(sf::Vector2f resize);
+
 		static void InsertDrawable(const std::vector<RenderData>& renderData);
 		static void InsertDrawable(const RenderData& renderData);
 
@@ -58,6 +60,7 @@ namespace Maize {
 		inline static size_t s_DrawCalls = 0;
 
 		inline static sf::RenderWindow* s_RenderWindow = nullptr;
+		inline static sf::View s_DefaultView;
     };
 
 } // Maize

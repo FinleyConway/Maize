@@ -7,6 +7,17 @@ namespace Maize {
 	void Renderer::Initialize(sf::RenderWindow& window)
 	{
 		s_RenderWindow = &window;
+
+		s_DefaultView.setCenter(0, 0);
+		s_DefaultView.setViewport({ 0, 0, 1, 1 });
+		s_DefaultView.setSize(static_cast<sf::Vector2f>(window.getSize()));
+		s_RenderWindow->setView(s_DefaultView);
+	}
+
+	void Renderer::OnWindowResize(sf::Vector2f resize)
+	{
+		s_DefaultView.setSize(resize);
+		s_RenderWindow->setView(s_DefaultView);
 	}
 
 	void Renderer::InsertDrawable(const std::vector<RenderData>& renderData)
@@ -148,17 +159,19 @@ namespace Maize {
 		s_RenderWindow->display();
 
 		s_IsDrawing = false;
+
+		std::cout << s_DrawCalls << std::endl;
 	}
 
 	bool Renderer::InsideViewport(const RenderData& renderData)
 	{
 		auto view = s_RenderWindow->getView();
-		auto viewport = view.getViewport();
+
 		auto size = view.getSize();
+		auto halfSize = size / 2.0f;
+		auto viewSpace = sf::FloatRect(view.getCenter() - halfSize, size);
 
-		auto viewportBounds = sf::FloatRect(viewport.left * size.x, viewport.top * size.y, viewport.width * size.x, viewport.height * size.y);
-
-		if (renderData.bounds.intersects(viewportBounds))
+		if (viewSpace.intersects(renderData.bounds))
 		{
 			return true;
 		}

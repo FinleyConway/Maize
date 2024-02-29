@@ -5,7 +5,7 @@ namespace Maize {
 	class Vector2;
 	class Texture;
 
-	class Sprite : public sf::Drawable, private sf::Transformable
+	class Sprite : public sf::Drawable, public sf::Transformable
 	{
 	public:
 		Sprite() = default;

@@ -37,6 +37,7 @@ namespace Maize {
         void OnEvent(Event& e);
 
         bool OnWindowClose(const WindowCloseEvent& e);
+		bool OnWindowResize(const WindowResizeEvent& e);
 
     private:
         inline static Application* s_Instance = nullptr;
