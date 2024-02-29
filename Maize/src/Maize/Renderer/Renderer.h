@@ -2,6 +2,9 @@
 
 namespace Maize {
 
+	class Sprite;
+	class Transform;
+
 	struct RenderData
 	{
 		const sf::Drawable* drawable = nullptr;
@@ -31,14 +34,9 @@ namespace Maize {
 
 		static void OnWindowResize(sf::Vector2f resize);
 
-		static void InsertDrawable(const std::vector<RenderData>& renderData);
-		static void InsertDrawable(const RenderData& renderData);
-
-		static void RemoveDrawable(const std::vector<sf::Drawable*>& drawables);
+		static void InsertDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer = 0, int32_t orderInLayer = 0);
 		static void RemoveDrawable(const sf::Drawable* drawable);
-
-		static void UpdateDrawable(const std::vector<RenderData>& renderData);
-		static void UpdateDrawable(const RenderData& renderData);
+		static void UpdateDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer = 0, int32_t orderInLayer = 0);
 
         static void BeginDrawing(sf::Color clearColour);
 
@@ -61,6 +59,9 @@ namespace Maize {
 
 		inline static sf::RenderWindow* s_RenderWindow = nullptr;
 		inline static sf::View s_DefaultView;
+
+		static constexpr float m_PixelPerUnit = 100.0f;
+		static constexpr int8_t m_Flip = -1;
     };
 
 } // Maize

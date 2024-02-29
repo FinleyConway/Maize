@@ -15,16 +15,7 @@ namespace Maize {
 		{
 			auto& sprite = spriteRenderer.sprite;
 
-			const float ppu = 100.0f;
-			const int8_t flip = -1;
-
-			const float scaling = ppu / sprite.GetPixelPerUnit();
-
-			sprite.setPosition(transform.position.x * ppu, transform.position.y * ppu * flip);
-			sprite.setRotation(transform.angle);
-			sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * flip);
-
-			Renderer::InsertDrawable({ &sprite, sprite.GetGlobalBounds(), spriteRenderer.sortingLayer, spriteRenderer.orderInLayer });
+			Renderer::InsertDrawable(transform, sprite, spriteRenderer.sortingLayer, spriteRenderer.orderInLayer);
 		}
 	}
 
@@ -36,16 +27,7 @@ namespace Maize {
 		{
 			auto& sprite = spriteRenderer.sprite;
 
-			const float ppu = 100.0f;
-			const int8_t flip = -1;
-
-			const float scaling = ppu / sprite.GetPixelPerUnit();
-
-			sprite.setPosition(transform.position.x * ppu, transform.position.y * ppu * flip);
-			sprite.setRotation(transform.angle);
-			sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * flip);
-
-			Renderer::UpdateDrawable({ &sprite, sprite.GetGlobalBounds(), spriteRenderer.sortingLayer, spriteRenderer.orderInLayer });
+			Renderer::UpdateDrawable(transform, sprite, spriteRenderer.sortingLayer, spriteRenderer.orderInLayer);
 		}
 	}
 

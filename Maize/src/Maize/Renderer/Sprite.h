@@ -5,7 +5,7 @@ namespace Maize {
 	class Vector2;
 	class Texture;
 
-	class Sprite : public sf::Drawable, public sf::Transformable
+	class Sprite : public sf::Drawable, private sf::Transformable
 	{
 	public:
 		Sprite() = default;
@@ -25,6 +25,8 @@ namespace Maize {
 		sf::FloatRect GetGlobalBounds() const;
 
 	private:
+		friend class Renderer;
+
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		void UpdatePositions();
 		void UpdateTexCoords();

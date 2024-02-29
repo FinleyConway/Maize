@@ -2,6 +2,10 @@
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Core/Application.h"
 
+#include "Maize/Renderer/Sprite.h"
+
+#include "Maize/Scene/Components.h"
+
 namespace Maize {
 
 	void Renderer::Initialize(sf::RenderWindow& window)
@@ -20,27 +24,15 @@ namespace Maize {
 		s_RenderWindow->setView(s_DefaultView);
 	}
 
-	void Renderer::InsertDrawable(const std::vector<RenderData>& renderData)
+	void Renderer::InsertDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer, int32_t orderInLayer)
 	{
-		// pre alloc and insert elements into drawables
-		s_Drawables.reserve(s_Drawables.size() + renderData.size());
-		s_Drawables.insert(s_Drawables.end(), renderData.begin(), renderData.end());
-	}
+		const float scaling = m_PixelPerUnit / sprite.GetPixelPerUnit();
 
-	void Renderer::InsertDrawable(const RenderData& renderData)
-	{
-		// add element to vector
-		s_Drawables.emplace_back(renderData);
-	}
+		sprite.setPosition(transform.position.x * m_PixelPerUnit, transform.position.y * m_PixelPerUnit * m_Flip);
+		sprite.setRotation(transform.angle);
+		sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * m_Flip);
 
-	void Renderer::RemoveDrawable(const std::vector<sf::Drawable*>& drawables)
-	{
-		if (drawables.empty()) return;
-
-		for (auto draw : drawables)
-		{
-			RemoveDrawable(draw);
-		}
+		s_Drawables.push_back({ &sprite, sprite.GetGlobalBounds(), sortingLayer, orderInLayer });
 	}
 
 	void Renderer::RemoveDrawable(const sf::Drawable* drawable)
@@ -56,36 +48,24 @@ namespace Maize {
 		}
 	}
 
-	void Renderer::UpdateDrawable(const std::vector<RenderData>& renderData)
-	{
-		for (const auto& data : renderData)
-		{
-			// finds the element
-			auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
-				[drawable = data.drawable](const RenderData& d) { return d.drawable == drawable; });
-
-			// update element if found
-			if (it != s_Drawables.end())
-			{
-				it->bounds = data.bounds;
-				it->sortingLayer = data.orderInLayer;
-				it->orderInLayer = data.orderInLayer;
-			}
-		}
-	}
-
-	void Renderer::UpdateDrawable(const RenderData& renderData)
+	void Renderer::UpdateDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer, int32_t orderInLayer)
 	{
 		// finds the element
 		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
-			[drawable = renderData.drawable](const RenderData& d) { return d.drawable == drawable; });
+			[&sprite](const RenderData& d) { return d.drawable == &sprite; });
 
 		// update element if found
 		if (it != s_Drawables.end())
 		{
-			it->bounds = renderData.bounds;
-			it->sortingLayer = renderData.orderInLayer;
-			it->orderInLayer = renderData.orderInLayer;
+			const float scaling = m_PixelPerUnit / sprite.GetPixelPerUnit();
+
+			sprite.setPosition(transform.position.x * m_PixelPerUnit, transform.position.y * m_PixelPerUnit * m_Flip);
+			sprite.setRotation(transform.angle);
+			sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * m_Flip);
+
+			it->bounds = sprite.GetGlobalBounds();
+			it->sortingLayer = sortingLayer;
+			it->orderInLayer = orderInLayer;
 		}
 	}
 
@@ -159,8 +139,6 @@ namespace Maize {
 		s_RenderWindow->display();
 
 		s_IsDrawing = false;
-
-		std::cout << s_DrawCalls << std::endl;
 	}
 
 	bool Renderer::InsideViewport(const RenderData& renderData)
