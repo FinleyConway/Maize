@@ -41,7 +41,6 @@ namespace Maize {
         static void BeginDrawing(sf::Color clearColour);
 
 		static void DrawScene();
-		static void DrawImmediately(const std::vector<sf::Drawable*>& drawable);
 		static void DrawImmediately(const sf::Drawable* drawable);
 
 		static void EndDrawing();

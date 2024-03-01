@@ -7,20 +7,10 @@ namespace Maize {
     public:
         Texture() = default;
 		explicit Texture(sf::Texture&& texture) : m_Texture(texture) { }
-
-		static std::shared_ptr<Texture> Create(const std::string& filePath)
-		{
-			auto texture = std::make_shared<Texture>();
-
-			if (!texture->m_Texture.loadFromFile(filePath))
-			{
-				return nullptr;
-			}
-			else
-			{
-				return std::move(texture);
-			}
-		}
+        explicit Texture(const std::string& filePath)
+        {
+            m_Texture.loadFromFile(filePath);
+        }
 
         bool IsRegionTransparent(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
         {
@@ -49,9 +39,12 @@ namespace Maize {
         }
 
 		sf::Vector2u GetSize() const { return m_Texture.getSize(); }
-		const sf::Texture& GetTexture() const { return m_Texture; }
 
     private:
+        friend class Sprite;
+
+        const sf::Texture& GetTexture() const { return m_Texture; }
+
         sf::Texture m_Texture;
     };
 

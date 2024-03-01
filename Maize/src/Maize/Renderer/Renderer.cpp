@@ -100,14 +100,6 @@ namespace Maize {
 		}
 	}
 
-	void Renderer::DrawImmediately(const std::vector<sf::Drawable*>& drawable)
-	{
-		for (auto draw : drawable)
-		{
-			DrawImmediately(draw);
-		}
-	}
-
 	void Renderer::DrawImmediately(const sf::Drawable* drawable)
 	{
 		if (s_RenderWindow == nullptr)
