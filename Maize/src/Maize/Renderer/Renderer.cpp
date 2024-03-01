@@ -24,15 +24,26 @@ namespace Maize {
 		s_RenderWindow->setView(s_DefaultView);
 	}
 
-	void Renderer::InsertDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer, int32_t orderInLayer)
+	void Renderer::InsertDrawable(const Transform& transform, SpriteRenderer& spriteRenderer)
 	{
-		const float scaling = m_PixelPerUnit / sprite.GetPixelPerUnit();
+        auto& sprite = spriteRenderer.sprite;
+        const float scaling = m_PixelPerUnit / sprite.GetPixelPerUnit();
 
 		sprite.setPosition(transform.position.x * m_PixelPerUnit, transform.position.y * m_PixelPerUnit * m_Flip);
 		sprite.setRotation(transform.angle);
 		sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * m_Flip);
 
-		s_Drawables.push_back({ &sprite, sprite.GetGlobalBounds(), sortingLayer, orderInLayer });
+        if (spriteRenderer.flipX)
+        {
+            sprite.setScale(-sprite.getScale().x, sprite.getScale().y);
+        }
+
+        if (spriteRenderer.flipY)
+        {
+            sprite.setScale(sprite.getScale().x, -sprite.getScale().y);
+        }
+
+		s_Drawables.push_back({ &sprite, sprite.GetGlobalBounds(), spriteRenderer.sortingLayer, spriteRenderer.orderInLayer });
 	}
 
 	void Renderer::RemoveDrawable(const sf::Drawable* drawable)
@@ -48,9 +59,10 @@ namespace Maize {
 		}
 	}
 
-	void Renderer::UpdateDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer, int32_t orderInLayer)
+	void Renderer::UpdateDrawable(const Transform& transform, SpriteRenderer& spriteRenderer)
 	{
 		// finds the element
+        auto& sprite = spriteRenderer.sprite;
 		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
 			[&sprite](const RenderData& d) { return d.drawable == &sprite; });
 
@@ -63,9 +75,19 @@ namespace Maize {
 			sprite.setRotation(transform.angle);
 			sprite.setScale(transform.scale.x * scaling, transform.scale.y * scaling * m_Flip);
 
+            if (spriteRenderer.flipX)
+            {
+                sprite.setScale(-sprite.getScale().x, sprite.getScale().y);
+            }
+
+            if (spriteRenderer.flipY)
+            {
+                sprite.setScale(sprite.getScale().x, -sprite.getScale().y);
+            }
+
 			it->bounds = sprite.GetGlobalBounds();
-			it->sortingLayer = sortingLayer;
-			it->orderInLayer = orderInLayer;
+			it->sortingLayer = spriteRenderer.sortingLayer;
+			it->orderInLayer = spriteRenderer.orderInLayer;
 		}
 	}
 

@@ -3,7 +3,8 @@
 namespace Maize {
 
 	class Sprite;
-	class Transform;
+	struct Transform;
+    struct SpriteRenderer;
 
 	struct RenderData
 	{
@@ -34,9 +35,9 @@ namespace Maize {
 
 		static void OnWindowResize(sf::Vector2f resize);
 
-		static void InsertDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer = 0, int32_t orderInLayer = 0);
+		static void InsertDrawable(const Transform& transform, SpriteRenderer& spriteRenderer);
 		static void RemoveDrawable(const sf::Drawable* drawable);
-		static void UpdateDrawable(const Transform& transform, Sprite& sprite, int32_t sortingLayer = 0, int32_t orderInLayer = 0);
+		static void UpdateDrawable(const Transform& transform, SpriteRenderer& spriteRenderer);
 
         static void BeginDrawing(sf::Color clearColour);
 

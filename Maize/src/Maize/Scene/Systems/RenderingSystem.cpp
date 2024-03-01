@@ -13,9 +13,7 @@ namespace Maize {
 
 		for (auto [entity, transform, spriteRenderer] : view.each())
 		{
-			auto& sprite = spriteRenderer.sprite;
-
-			Renderer::InsertDrawable(transform, sprite, spriteRenderer.sortingLayer, spriteRenderer.orderInLayer);
+			Renderer::InsertDrawable(transform, spriteRenderer);
 		}
 	}
 
@@ -25,9 +23,7 @@ namespace Maize {
 
 		for (auto [entity, transform, spriteRenderer] : view.each())
 		{
-			auto& sprite = spriteRenderer.sprite;
-
-			Renderer::UpdateDrawable(transform, sprite, spriteRenderer.sortingLayer, spriteRenderer.orderInLayer);
+			Renderer::UpdateDrawable(transform, spriteRenderer);
 		}
 	}
 
