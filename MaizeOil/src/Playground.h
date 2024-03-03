@@ -4,27 +4,12 @@
 
 namespace Maize {
 
-	bool hasPressed = false;
-
 	class CustomSystem : public System
 	{
 	 public:
 		void Update(entt::registry& registry, float update) override
 		{
 			std::cout << "hello!" << std::endl;
-
-			if (Input::IsKeyPressed(KeyCode::Space))
-			{
-				if (!hasPressed)
-				{
-					SceneManager::LoadScene("Default1");
-					hasPressed = true;
-				}
-			}
-			else
-			{
-				hasPressed = false;
-			}
 		}
 	};
 
@@ -34,19 +19,6 @@ namespace Maize {
 		void Update(entt::registry& registry, float update) override
 		{
 			std::cout << "good bye!" << std::endl;
-
-			if (Input::IsKeyPressed(KeyCode::Space))
-			{
-				if (!hasPressed)
-				{
-					SceneManager::LoadScene(SceneManager::GetActiveScene()->GetIndex() - 1);
-					hasPressed = true;
-				}
-			}
-			else
-			{
-				hasPressed = false;
-			}
 		}
 	};
 
@@ -56,10 +28,9 @@ namespace Maize {
 		void OnAttach() override
 		{
 			auto scene = SceneManager::CreateScene("Default");
-			scene->AddSystem<CustomSystem>();
+			scene->AddSystem<CustomCustomSystem>(0);
+			scene->AddSystem<CustomSystem>(1);
 
-			auto scene1 = SceneManager::CreateScene("Default1");
-			scene1->AddSystem<CustomCustomSystem>();
 		}
 
 	};

@@ -18,7 +18,7 @@ namespace Maize {
 		void DestroyEntity(entt::entity entity);
 
 		template<typename T, typename... Args>
-		void AddSystem(Args&& ... args)
+		void AddSystem(uint32_t orderPriority = 0, Args&& ... args)
 		{
 			static_assert(std::is_base_of<System, T>::value, "T must be a base class of System");
 
@@ -31,7 +31,12 @@ namespace Maize {
 				}
 			}
 
-			m_Systems.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+			auto newSystem = std::make_unique<T>(std::forward<Args>(args)...);
+			newSystem->SetOrderPriority(orderPriority);
+
+			m_Systems.emplace_back(std::move(newSystem));
+
+			std::sort(m_Systems.begin(), m_Systems.end());
 		};
 
 		template<typename T>
