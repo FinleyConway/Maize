@@ -11,6 +11,7 @@ namespace Maize {
 	class Event;
 	class WindowCloseEvent;
 	class WindowResizeEvent;
+	class SceneManager;
 
     struct ApplicationSpecification
     {
@@ -43,6 +44,8 @@ namespace Maize {
         inline static Application* s_Instance = nullptr;
 
         Window m_Window;
+		SceneManager* m_SceneManager = nullptr;
+
         LayerStack m_LayerStack;
         bool m_IsRunning = true;
     };

@@ -1,143 +1,50 @@
 #include "mpch.h"
 #include "Maize/Scene/Scene.h"
-#include "Maize/Scene/Entity.h"
-
-#include "Maize/Scene/Systems/HierarchySystem.h"
 
 namespace Maize {
 
-	void Scene::Initialize()
+	Scene::Scene(const std::string& sceneName, uint32_t index) : m_SceneName(sceneName), m_Index(index)
 	{
-		Start();
-		m_Renderer.OnStart(m_Registry);
-		CollisionSystem::OnStart(m_Registry);
+
 	}
 
-	void Scene::Run(float deltaTime)
+	entt::entity Scene::CreateEntity()
 	{
-		// any systems that want to handle physics based logic
-		// TODO:
-		// potentially add a fix time step here
-		PhysicsUpdate(deltaTime);
+		auto entity = m_Registry.create();
 
-		// handle all game collisions
-		CollisionSystem::OnUpdate(m_Registry, deltaTime);
-
-		// any systems that want to handle collision callback logic
-		PhysicsCallback(deltaTime);
-
-		HierarchySystem::Update(m_Registry);
-
-		// main update for systems
-		Update(deltaTime);
-
-		// any systems that want to be updated after the main update
-		LateUpdate(deltaTime);
-
-		m_Renderer.OnUpdate(m_Registry, deltaTime);
-
-		// render all entities
-		m_Renderer.OnRender(m_Registry);
-
-		// update entities that want to be removed
-		End();
-	}
-
-	void Scene::Shutdown()
-	{
-		End();
-		CollisionSystem::OnDestroy();
-	}
-
-	Entity Scene::CreateEntity()
-	{
-		Entity entity = Entity(m_Registry.create(), this);
-
-		entity.AddComponent<Transform>();
-		entity.AddComponent<LocalTransform>();
-		entity.AddComponent<Relationship>();
-
-		m_Entities.emplace_back(entity);
+		m_Registry.emplace<Transform>(entity);
+		m_Registry.emplace<LocalTransform>(entity);
+		m_Registry.emplace<Relationship>(entity);
 
 		return entity;
 	}
 
 	void Scene::DestroyEntity(entt::entity entity)
 	{
-		/*
-		 * TODO:
-		 * Add any error checking if a removal entity goes wrong
-		 */
-
-		auto it = std::remove(m_Entities.begin(), m_Entities.end(), entity);
-		m_Entities.erase(it, m_Entities.end());
-
 		m_Registry.destroy(entity);
 	}
 
-	void Scene::AddSystem(System*system)
+	void Scene::Initialize()
 	{
-		m_Systems.push_back(system);
-	}
-
-	void Scene::RemoveSystem(System*system)
-	{
-		auto it = std::find(m_Systems.begin(), m_Systems.end(), system);
-		if (it != m_Systems.end())
+		for (const auto& system : m_Systems)
 		{
-			m_Systems.erase(it);
+			system->Initialize(m_Registry);
 		}
-	}
-
-	void Scene::Start()
-	{
-		for (auto* system : m_Systems)
-		{
-			system->Start(m_Registry);
-		}
-	}
-
-	void Scene::PhysicsUpdate(float deltaTime)
-	{
-		for (auto* system : m_Systems)
-		{
-			system->PhysicsUpdate(m_Registry, deltaTime);
-		}
-	}
-
-	void Scene::PhysicsCallback(float deltaTime)
-	{
-		for (auto* system : m_Systems)
-		{
-			system->PhysicsCallback(m_Registry, deltaTime);
-		}
-
-		// clear physics callback
-		// !!this needs to be always last in this function!!
-		m_Registry.clear<TriggerEnterContact, TriggerExitContact, CollisionEnterContact, CollisionExitContact>();
 	}
 
 	void Scene::Update(float deltaTime)
 	{
-		for (auto* system : m_Systems)
+		for (const auto& system : m_Systems)
 		{
 			system->Update(m_Registry, deltaTime);
 		}
 	}
 
-	void Scene::LateUpdate(float deltaTime)
+	void Scene::Shutdown()
 	{
-		for (auto* system : m_Systems)
+		for (const auto& system : m_Systems)
 		{
-			system->LateUpdate(m_Registry, deltaTime);
-		}
-	}
-
-	void Scene::End()
-	{
-		for (auto* system : m_Systems)
-		{
-			system->OnEnd(m_Registry);
+			system->Shutdown(m_Registry);
 		}
 	}
 

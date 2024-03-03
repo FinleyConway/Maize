@@ -2,54 +2,74 @@
 
 #include <entt/entt.hpp>
 
-#include "Maize/Scene/Components.h"
 #include "Maize/Scene/System.h"
-
-#include "Maize/Scene/Systems/CollisionSystem.h"
-#include "Maize/Scene/Systems/RenderingSystem.h"
+#include "Maize/Scene/Components.h"
 
 namespace Maize {
 
-	class Entity;
+	class System;
 
 	class Scene
 	{
-	public:
-		Scene() = default;
+	 public:
+		explicit Scene(const std::string& sceneName, uint32_t index);
 
-		void Initialize();
-		void Run(float deltaTime);
-		void Shutdown();
-
-		Entity CreateEntity();
+		entt::entity CreateEntity();
 		void DestroyEntity(entt::entity entity);
 
-		/*
-		 * TODO:
-		 * Decide if this will be a runtime feature.
-		 */
-		void AddSystem(System* system);
-		void RemoveSystem(System* system);
+		template<typename T, typename... Args>
+		void AddSystem(Args&& ... args)
+		{
+			static_assert(std::is_base_of<System, T>::value, "T must be a base class of System");
 
-	private:
-		void Start();
+			for (const auto& system : m_Systems)
+			{
+				if (dynamic_cast<T*>(system.get()) != nullptr)
+				{
+					std::cerr << "Adding a pre-existing system" << std::endl;
+					return;
+				}
+			}
 
-		void PhysicsUpdate(float deltaTime);
-		void PhysicsCallback(float deltaTime);
+			m_Systems.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+		};
 
+		template<typename T>
+		void RemoveSystem()
+		{
+			static_assert(std::is_base_of<System, T>::value, "T must be a base class of System");
+
+			auto it = std::remove_if(m_Systems.begin(), m_Systems.end(), [](const auto& system)
+			{
+			  return dynamic_cast<T*>(system.get()) != nullptr;
+			});
+
+			m_Systems.erase(it, m_Systems.end());
+		};
+
+		const std::string& GetName() const
+		{
+			return m_SceneName;
+		}
+
+		uint32_t GetIndex() const
+		{
+			return m_Index;
+		}
+
+	 private:
+		friend class SceneManager;
+
+		void Initialize();
 		void Update(float deltaTime);
-		void LateUpdate(float deltaTime);
+		void Shutdown();
 
-		void End();
-
-	private:
-		friend class Entity;
+	 private:
+		std::string m_SceneName;
+		uint32_t m_Index = 0;
 
 		entt::registry m_Registry;
-		std::vector<entt::entity> m_Entities;
-		std::vector<System*> m_Systems;
-
-		RenderingSystem m_Renderer;
+		std::vector<std::unique_ptr<System>> m_Systems;
 	};
 
 } // Maize

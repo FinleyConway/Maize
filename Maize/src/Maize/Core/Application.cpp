@@ -8,6 +8,8 @@
 
 #include "Maize/Core/Layer.h"
 
+#include "Maize/Scene/SceneManager.h"
+
 namespace Maize {
 
     Application::Application(const ApplicationSpecification &specification) : m_Window(specification.name)
@@ -17,6 +19,8 @@ namespace Maize {
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		Renderer::Initialize(m_Window.GetRenderWindow());
+
+		m_LayerStack.PushLayer(m_SceneManager = new SceneManager());
     }
 
 	Application::~Application()

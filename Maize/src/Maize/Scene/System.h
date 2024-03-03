@@ -9,12 +9,12 @@ namespace Maize {
 	public:
 		virtual ~System() = default;
 
-		virtual void Start(entt::registry& registry) = 0;
-		virtual void PhysicsUpdate(entt::registry& registry, float deltaTime) = 0;
-		virtual void PhysicsCallback(entt::registry& registry, float deltaTime) = 0;
-		virtual void Update(entt::registry& registry, float deltaTime) = 0;
-		virtual void LateUpdate(entt::registry& registry, float deltaTime) = 0;
-		virtual void OnEnd(entt::registry& registry) = 0;
+		virtual void Initialize(entt::registry& registry) { };
+		virtual void PhysicsUpdate(entt::registry& registry, float deltaTime) { };
+		virtual void PhysicsCallback(entt::registry& registry, float deltaTime) { };
+		virtual void Update(entt::registry& registry, float deltaTime) { };
+		virtual void LateUpdate(entt::registry& registry, float deltaTime) { };
+		virtual void Shutdown(entt::registry& registry) { };
 	};
 
 } // Maize

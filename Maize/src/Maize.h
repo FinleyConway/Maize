@@ -18,7 +18,7 @@
 
 #include "Maize/Utils/Random.h"
 
-#include "Maize/Scene/Entity.h"
-#include "Maize/Scene/Components.h"
-#include "Maize/Scene/System.h"
+#include "Maize/Scene/SceneManager.h"
 #include "Maize/Scene/Scene.h"
+#include "Maize/Scene/System.h"
+#include "Maize/Scene/Components.h"
