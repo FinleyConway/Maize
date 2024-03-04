@@ -7,7 +7,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${ASSETS_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_executable(MaizeOil src/MaizeOilApp.cpp
-        src/LevelEditor.h
         src/Playground.h
 )
 

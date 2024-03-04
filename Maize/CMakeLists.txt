@@ -72,6 +72,7 @@ add_library(Maize STATIC
         src/Maize/Scene/Systems/HierarchySystem.h
         src/Maize/Scene/SceneManager.cpp
         src/Maize/Scene/SceneManager.h
+        src/Maize/Scene/Entity.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

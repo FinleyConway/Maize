@@ -17,14 +17,14 @@ namespace Maize {
 		virtual void Shutdown(entt::registry& registry) { };
 
 		void SetOrderPriority(uint32_t orderPriority) { m_OrderPriority = orderPriority; }
+		uint32_t GetOrderPriority() const { return m_OrderPriority; }
 
-		bool operator<(const System& system) const
-		{
-			return m_OrderPriority < system.m_OrderPriority;
-		}
+		void SetName(const std::string& name) { m_Name = name; }
+		const std::string& GetName() const { return m_Name; }
 
 	 private:
-		uint32_t m_OrderPriority = 0;
+		uint32_t m_OrderPriority;
+		std::string m_Name; // debug purposes
 	};
 
 } // Maize

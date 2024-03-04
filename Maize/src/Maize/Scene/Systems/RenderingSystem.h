@@ -2,14 +2,16 @@
 
 #include <entt/entt.hpp>
 
+#include "Maize/Scene/System.h"
+
 namespace Maize {
 
-	class RenderingSystem
+	class RenderingSystem : public System
 	{
 	public:
-		void OnStart(entt::registry& registry);
-		void OnUpdate(entt::registry& registry, float update);
-		void OnRender(entt::registry& registry);
+		void Initialize(entt::registry& registry) override;
+		void Update(entt::registry& registry, float update) override;
+		void Shutdown(entt::registry& registry) override;
 	};
 
 } // Maize

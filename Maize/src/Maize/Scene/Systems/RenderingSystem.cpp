@@ -7,7 +7,7 @@
 
 namespace Maize {
 
-	void RenderingSystem::OnStart(entt::registry& registry)
+	void RenderingSystem::Initialize(entt::registry& registry)
 	{
 		auto view = registry.view<Transform, SpriteRenderer>();
 
@@ -17,7 +17,7 @@ namespace Maize {
 		}
 	}
 
-	void RenderingSystem::OnUpdate(entt::registry& registry, float update)
+	void RenderingSystem::Update(entt::registry& registry, float update)
 	{
 		auto view = registry.view<Transform, SpriteRenderer>();
 
@@ -25,11 +25,18 @@ namespace Maize {
 		{
 			Renderer::UpdateDrawable(transform, spriteRenderer);
 		}
+
+		Renderer::DrawScene();
 	}
 
-	void RenderingSystem::OnRender(entt::registry& registry)
+	void RenderingSystem::Shutdown(entt::registry& registry)
 	{
-		Renderer::DrawScene();
+		auto view = registry.view<Transform, SpriteRenderer>();
+
+		for (auto [entity, transform, spriteRenderer] : view.each())
+		{
+			Renderer::RemoveDrawable(&spriteRenderer.sprite);
+		}
 	}
 
 } // Maize
