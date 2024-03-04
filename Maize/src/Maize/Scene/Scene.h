@@ -3,7 +3,6 @@
 #include <entt/entt.hpp>
 
 #include "Maize/Scene/System.h"
-#include "Maize/Scene/Components.h"
 
 namespace Maize {
 
@@ -48,7 +47,7 @@ namespace Maize {
 		{
 			if (dynamic_cast<T*>(system.get()) != nullptr)
 			{
-				std::cerr << "Adding a pre-existing system" << std::endl;
+				LOG_CORE_WARN("Adding a pre-existing system");
 				return;
 			}
 		}
@@ -58,7 +57,7 @@ namespace Maize {
 		newSystem->SetName(debugName);
 
 		m_Systems.emplace_back(std::move(newSystem));
-	};
+	}
 
 	template<typename T>
 	inline void Scene::RemoveSystem()
@@ -71,6 +70,6 @@ namespace Maize {
 		});
 
 		m_Systems.erase(it, m_Systems.end());
-	};
+	}
 
 } // Maize

@@ -6,6 +6,7 @@ include(FetchContent)
 FetchContent_Declare(sfml GIT_REPOSITORY https://github.com/SFML/SFML.git  GIT_TAG 2.6.1)
 FetchContent_Declare(entt GIT_REPOSITORY https://github.com/skypjack/entt.git GIT_TAG v3.12.2)
 FetchContent_Declare(box2d GIT_REPOSITORY https://github.com/erincatto/box2d.git GIT_TAG v2.4.1)
+FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git GIT_TAG v1.13.0)
 
 # import personal external dependencies
 FetchContent_Declare(mix GIT_REPOSITORY https://github.com/FinleyConway/MaizeMix.git GIT_TAG master)
@@ -13,6 +14,7 @@ FetchContent_Declare(mix GIT_REPOSITORY https://github.com/FinleyConway/MaizeMix
 FetchContent_MakeAvailable(sfml)
 FetchContent_MakeAvailable(entt)
 FetchContent_MakeAvailable(box2d)
+FetchContent_MakeAvailable(spdlog)
 
 FetchContent_MakeAvailable(mix)
 
@@ -73,6 +75,8 @@ add_library(Maize STATIC
         src/Maize/Scene/SceneManager.cpp
         src/Maize/Scene/SceneManager.h
         src/Maize/Scene/Entity.h
+        src/Maize/Debug/Log.cpp
+        src/Maize/Debug/Log.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -86,6 +90,7 @@ target_link_libraries(Maize PUBLIC
         sfml-network
         EnTT::EnTT
         box2d
+        spdlog::spdlog_header_only
         MaizeMix
 )
 

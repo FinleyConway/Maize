@@ -95,7 +95,7 @@ namespace Maize {
     {
 		if (s_RenderWindow == nullptr)
 		{
-			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
 			return;
 		}
 
@@ -112,7 +112,7 @@ namespace Maize {
 		std::sort(s_Drawables.begin(), s_Drawables.end());
 
 		// naive through entire scene
-		for (auto draw : s_Drawables)
+		for (const auto& draw : s_Drawables)
 		{
 			// only draw if inside the current viewport
 			if (InsideViewport(draw))
@@ -126,13 +126,13 @@ namespace Maize {
 	{
 		if (s_RenderWindow == nullptr)
 		{
-			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
 			return;
 		}
 
 		if (drawable == nullptr)
 		{
-			std::cerr << "Attempting to draw a null object!" << std::endl;
+			LOG_CORE_WARN("Attempting to draw a null object!");
 			return;
 		}
 
@@ -145,7 +145,7 @@ namespace Maize {
 	{
 		if (s_RenderWindow == nullptr)
 		{
-			std::cerr << "Renderer is null!, please assign render window" << std::endl;
+			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
 			return;
 		}
 
@@ -157,11 +157,11 @@ namespace Maize {
 
 	bool Renderer::InsideViewport(const RenderData& renderData)
 	{
-		auto view = s_RenderWindow->getView();
+		const auto& view = s_RenderWindow->getView();
 
-		auto size = view.getSize();
-		auto halfSize = size / 2.0f;
-		auto viewSpace = sf::FloatRect(view.getCenter() - halfSize, size);
+		const auto size = view.getSize();
+		const auto halfSize = size / 2.0f;
+		const auto viewSpace = sf::FloatRect(view.getCenter() - halfSize, size);
 
 		if (viewSpace.intersects(renderData.bounds))
 		{

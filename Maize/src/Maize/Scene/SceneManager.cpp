@@ -70,7 +70,7 @@ namespace Maize {
 	{
 		if (scene == nullptr)
 		{
-			std::cerr << "Trying to load a non-existent scene!" << std::endl;
+			LOG_CORE_WARN("Trying to load a non-existent scene!");
 			return;
 		}
 

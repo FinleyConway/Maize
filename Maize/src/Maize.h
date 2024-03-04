@@ -2,6 +2,7 @@
 
 #include "Maize/Core/Application.h"
 #include "Maize/Core/Layer.h"
+#include "Maize/Debug/Log.h"
 
 #include "Maize/Core/KeyCodes.h"
 #include "Maize/Core/Input.h"

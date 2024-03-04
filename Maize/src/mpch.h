@@ -19,3 +19,5 @@
 #include <vector>
 #include <string>
 #include <array>
+
+#include "Maize/Debug/Log.h"

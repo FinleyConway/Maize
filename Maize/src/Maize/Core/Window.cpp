@@ -1,8 +1,6 @@
 #include "mpch.h"
 #include "Maize/Core/Window.h"
 
-#include "Maize/Renderer/Renderer.h"
-
 #include "Maize/Events/WindowEvents.h"
 #include "Maize/Events/MouseEvents.h"
 #include "Maize/Events/KeyEvents.h"

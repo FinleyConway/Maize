@@ -2,6 +2,7 @@
 #include "Maize/Scene/Scene.h"
 
 #include "Maize/Scene/Entity.h"
+#include "Maize/Scene/Components.h"
 
 #include "Maize/Scene/Systems/HierarchySystem.h"
 #include "Maize/Scene/Systems/RenderingSystem.h"
@@ -42,7 +43,7 @@ namespace Maize {
 
 	void Scene::Initialize()
 	{
-		auto compareFunction = [](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
+		const auto compareFunction = [](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
 		  return a->GetOrderPriority() < b->GetOrderPriority();
 		};
 
