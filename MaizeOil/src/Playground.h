@@ -4,45 +4,57 @@
 
 namespace Maize {
 
-	bool hasPressed = false;
-
 	class CustomCustomSystem : public System
 	{
 	 public:
-		void Update(entt::registry& registry, float update) override
+		void Update(entt::registry& registry, float deltaTime) override
 		{
-			if (Input::IsKeyPressed(KeyCode::Space))
+			if (Input::GetButtonDown(KeyCode::Space))
 			{
-				if (!hasPressed)
-				{
-					SceneManager::LoadScene("Default");
-					hasPressed = true;
-				}
-			}
-			else
-			{
-				hasPressed = false;
+				LOG_INFO("woop");
 			}
 		}
 	};
 
+	struct MovableTag { };
+
 	class CustomSystem : public System
 	{
 	 public:
-		void Update(entt::registry& registry, float update) override
+		void Update(entt::registry& registry, float deltaTime) override
 		{
-			if (Input::IsKeyPressed(KeyCode::Space))
+			if (Input::GetButtonDown(KeyCode::Space))
 			{
-				if (!hasPressed)
-				{
-					SceneManager::LoadScene("Default1");
-					hasPressed = true;
-				}
+				LOG_INFO("down");
 			}
-			else
+
+			if (Input::GetButton(KeyCode::Space))
 			{
-				hasPressed = false;
+				LOG_INFO("held");
 			}
+
+			if (Input::GetButtonUp(KeyCode::Space))
+			{
+				LOG_INFO("up");
+			}
+
+			if (Input::GetMouseButtonDown(MouseCode::Left))
+			{
+				LOG_INFO("click");
+			}
+
+			if (Input::GetMouseButton(MouseCode::Left))
+			{
+				LOG_INFO("clicking");
+			}
+
+			if (Input::GetMouseButtonUp(MouseCode::Left))
+			{
+				LOG_INFO("clock");
+			}
+
+			auto pos = Input::GetMousePosition();
+			//LOG_INFO("Position: x = {}, y = {}", pos.x, pos.y);
 		}
 	};
 
@@ -61,6 +73,7 @@ namespace Maize {
 			scene->AddSystem<CustomSystem>("Custom");
 
 			auto entity = scene->CreateEntity();
+			entity.AddTag<MovableTag>();
 			auto& spriteR = entity.AddComponent<SpriteRenderer>();
 			spriteR.sprite = sprite;
 

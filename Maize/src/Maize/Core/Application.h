@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Maize/Core/Window.h"
+#include "Maize/Core/Input.h"
 #include "Maize/Core/LayerStack.h"
 
 int main();
@@ -44,6 +45,8 @@ namespace Maize {
         inline static Application* s_Instance = nullptr;
 
         Window m_Window;
+		Input m_Input;
+
 		SceneManager* m_SceneManager = nullptr;
 
         LayerStack m_LayerStack;

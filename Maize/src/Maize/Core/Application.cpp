@@ -33,6 +33,8 @@ namespace Maize {
         dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
         dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
 
+		m_Input.OnEvent(e);
+
         for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
         {
             if (e.handled) break;

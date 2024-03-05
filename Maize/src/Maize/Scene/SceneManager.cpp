@@ -70,7 +70,7 @@ namespace Maize {
 	{
 		if (scene == nullptr)
 		{
-			LOG_CORE_WARN("Trying to load a non-existent scene!");
+			LOG_WARN("Trying to load a non-existent scene!");
 			return;
 		}
 

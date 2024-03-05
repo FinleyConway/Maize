@@ -4,6 +4,8 @@ namespace Maize {
 
     enum class KeyCode
     {
+		Unknown = sf::Keyboard::Unknown,
+
         // alphabets
         A = sf::Keyboard::A,
         B = sf::Keyboard::B,

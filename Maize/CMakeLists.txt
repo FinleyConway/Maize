@@ -77,6 +77,7 @@ add_library(Maize STATIC
         src/Maize/Scene/Entity.h
         src/Maize/Debug/Log.cpp
         src/Maize/Debug/Log.h
+        src/Maize/Core/Input.cpp
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -90,7 +91,7 @@ target_link_libraries(Maize PUBLIC
         sfml-network
         EnTT::EnTT
         box2d
-        spdlog::spdlog_header_only
+        spdlog::spdlog
         MaizeMix
 )
 

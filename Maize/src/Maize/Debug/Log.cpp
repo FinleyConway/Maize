@@ -1,4 +1,5 @@
-#include "Log.h"
+#include "mpch.h"
+#include "Maize/Debug/Log.h"
 
 namespace Maize {
 
