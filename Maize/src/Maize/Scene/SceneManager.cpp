@@ -20,11 +20,6 @@ namespace Maize {
 
 		s_Scenes.try_emplace(index, scene);
 
-		if (s_ActiveScene == nullptr)
-		{
-			s_ActiveScene = scene;
-		}
-
 		return s_Scenes.at(index);
 	}
 
@@ -77,11 +72,14 @@ namespace Maize {
 		if (s_ActiveScene != nullptr)
 		{
 			s_ActiveScene->Shutdown();
+			s_ActiveScene->m_IsCurrent = false;
 			s_ActiveScene = nullptr;
 		}
 
 		s_ActiveScene = scene;
 		s_ActiveScene->Initialize();
+		s_ActiveScene->m_IsCurrent = true;
+
 		s_LoadedScene = s_ActiveScene->GetIndex();
 	}
 

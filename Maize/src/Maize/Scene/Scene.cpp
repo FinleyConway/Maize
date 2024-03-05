@@ -11,8 +11,6 @@ namespace Maize {
 
 	Scene::Scene(const std::string& sceneName, uint32_t index) : m_SceneName(sceneName), m_Index(index)
 	{
-		AddSystem<RenderingSystem>("Render", 1000);
-		AddSystem<HierarchySystem>("Parent-Child", 900);
 	}
 
 	Entity Scene::CreateEntity()
@@ -41,9 +39,19 @@ namespace Maize {
 		return m_Index;
 	}
 
+	void Scene::AddSceneInitializer(const std::function<void(Scene&)>& init)
+	{
+		m_SceneInit = init;
+	}
+
 	void Scene::Initialize()
 	{
-		const auto compareFunction = [](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
+		m_SceneInit(*this);
+
+		AddSystem<RenderingSystem>("Render", 1000);
+		AddSystem<HierarchySystem>("Parent-Child", 900);
+
+		const auto compareFunction = [&](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
 		  return a->GetOrderPriority() < b->GetOrderPriority();
 		};
 
@@ -59,6 +67,8 @@ namespace Maize {
 	{
 		for (const auto& system : m_Systems)
 		{
+			if (!m_IsCurrent) return;
+
 			system->Update(m_Registry, deltaTime);
 		}
 	}
@@ -69,6 +79,9 @@ namespace Maize {
 		{
 			system->Shutdown(m_Registry);
 		}
+
+		m_Registry.clear();
+		m_Systems.clear();
 	}
 
 } // Maize

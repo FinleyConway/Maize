@@ -22,6 +22,8 @@ namespace Maize {
 		const std::string& GetName() const;
 		uint32_t GetIndex() const;
 
+		void AddSceneInitializer(const std::function<void(Scene&)>& init);
+
 	 private:
 		friend class Entity;
 		friend class SceneManager;
@@ -33,9 +35,13 @@ namespace Maize {
 	 private:
 		std::string m_SceneName;
 		uint32_t m_Index = 0;
+		bool m_IsCurrent = false;
 
 		entt::registry m_Registry;
 		std::vector<std::unique_ptr<System>> m_Systems;
+
+		// temp since i dont know a solution to serialize scene
+		std::function<void(Scene&)> m_SceneInit;
 	};
 
 	template<typename T, typename... Args>
