@@ -8,6 +8,8 @@
 
 namespace Maize {
 
+	class PhysicsEngine;
+
 	struct RaycastResult
 	{
 		float distance = 0; 			// distance from origin to point
@@ -25,6 +27,8 @@ namespace Maize {
 		static RaycastResult Raycast(Vector2 origin, Vector2 direction, float distance = Math::Infinity(), uint16_t layer = 0x0001);
 
 	private:
+		friend class PhysicsEngine;
+
 		struct RaycastCallback : public b2RayCastCallback
 		{
 			RaycastResult result;
@@ -56,6 +60,12 @@ namespace Maize {
 				return -1.0f;
 			}
 		};
+
+	 private:
+		static void SetPhysicsEngine(b2World* engine);
+
+	 private:
+		inline static b2World* s_PhysicsEngine = nullptr;
 	};
 
 } // Maize

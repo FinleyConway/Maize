@@ -2,6 +2,9 @@
 
 #include <entt/entt.hpp>
 
+#include "Maize/Scene/System.h"
+
+#include "Maize/Physics/PhysicsEngine.h"
 #include "Maize/Physics/PhysicsContactListener.h"
 
 namespace Maize {
@@ -11,34 +14,20 @@ namespace Maize {
 		entt::entity attachedEntity = entt::null;
 	};
 
-	class CollisionSystem
+	class CollisionSystem : public System
 	{
-	public:
-		static void OnStart(entt::registry& reg);
-		static void OnUpdate(entt::registry& reg, float deltaTime);
-		static void OnDestroy();
+	 public:
+		void Initialize(entt::registry& registry) override;
+		void Update(entt::registry& registry, float deltaTime) override;
+		void Shutdown(entt::registry& registry) override;
 
-	private:
-		inline static PhysicsContactListener s_ContactListener;
+	 private:
+		void UpdateBox2d(entt::registry& reg);
+		void UpdateECS(entt::registry& reg);
 
-		static void UpdateBox2d(entt::registry& reg);
-		static void UpdateECS(entt::registry& reg);
-
-		static float NormalizeAngle(float angle)
-		{
-			while (angle > 180.0f)
-			{
-				angle -= 360.0f;
-			}
-
-			while (angle < -180.0f)
-			{
-				angle += 360.0f;
-			}
-
-			return angle;
-		}
-
+	 private:
+		PhysicsEngine m_PhysicsEngine;
+		PhysicsContactListener m_ContactListener;
 	};
 
 } // Maize

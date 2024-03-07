@@ -25,6 +25,7 @@ namespace Maize {
 		static float Acos(float value) { return std::acos(value); }
 		static float Atan(float value) { return std::atan(value); }
 		static float Atan2(float y, float x) { return std::atan2(y, x); }
+		static float Fmod(float x, float y) { return std::fmod(x, y); }
 
 		static float Min(float a, float b) { return std::min(a, b); }
 		static int32_t Min(int32_t a, int32_t b) { return std::min(a, b); }
@@ -45,7 +46,6 @@ namespace Maize {
 		static int32_t FloorToInt(float f) { return std::floor(f); }
 		static float Round(float value) { return std::round(value); }
 		static int32_t RoundToInt(float value) { return static_cast<int32_t>(std::round(value)); }
-
 	};
 
 } // Maize

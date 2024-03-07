@@ -1,5 +1,6 @@
 #include "mpch.h"
 #include "Maize/Physics/PhysicsEngine.h"
+#include "Maize/Physics/Physics.h"
 
 #include "Maize/Math/Math.h"
 
@@ -7,30 +8,32 @@ namespace Maize {
 
 	void PhysicsEngine::Initialize(Vector2 gravity, b2ContactListener* contactListener)
 	{
-		s_PhysicsWorld = new b2World({ gravity.x, gravity.y });
+		m_PhysicsWorld = new b2World({ gravity.x, gravity.y });
 
 		if (contactListener != nullptr)
 		{
-			s_PhysicsWorld->SetContactListener(contactListener);
+			m_PhysicsWorld->SetContactListener(contactListener);
 		}
+		else
+		{
+			LOG_CORE_ERROR("No contact listener has been assigned to physics engine!");
+		}
+
+		Physics::SetPhysicsEngine(this);
 	}
 
 	void PhysicsEngine::Step(float deltaTime)
 	{
-		const int32_t velocityIterations = 6;
-		const int32_t positionIterations = 2;
-		s_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
+		constexpr int32_t velocityIterations = 6;
+		constexpr int32_t positionIterations = 2;
+		m_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
 	}
 
 	void PhysicsEngine::Shutdown()
 	{
-		delete s_PhysicsWorld;
-		s_PhysicsWorld = nullptr;
+		delete m_PhysicsWorld;
+		m_PhysicsWorld = nullptr;
 	}
-
-	void PhysicsEngine::SetGravity(Vector2 gravity) { s_PhysicsWorld->SetGravity({ gravity.x, gravity.y }); }
-
-	Vector2 PhysicsEngine::GetGravity() { return { s_PhysicsWorld->GetGravity().x, s_PhysicsWorld->GetGravity().y }; }
 
 	b2Body* PhysicsEngine::CreateBody(const BodyProperties& bProp, void* userData)
 	{
@@ -44,32 +47,36 @@ namespace Maize {
 		bodyDef.bullet = bProp.isContinuous;
 
 		if (userData != nullptr)
+		{
 			bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(userData);
+		}
 
-		return s_PhysicsWorld->CreateBody(&bodyDef);
+		return m_PhysicsWorld->CreateBody(&bodyDef);
 	}
 
-	void PhysicsEngine::RemoveBody(b2Body*body)
+	void PhysicsEngine::RemoveBody(b2Body* body)
 	{
-		s_PhysicsWorld->DestroyBody(body);
+		m_PhysicsWorld->DestroyBody(body);
 	}
 
 	void PhysicsEngine::CreateBoxCollider(b2Body*body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp)
 	{
-		const Vector2 AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
+		const auto AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
 		const float signY = Math::Sign(scale.y);
 		const float signX = Math::Sign(scale.x);
 
-		// TODO:
-		// add warnings when this happens
 		// cap min size
-		if (size.x <= cs_MinColliderSize)
+		if (size.x <= s_MinColliderSize)
 		{
-			size.x = cs_MinColliderSize;
+			LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
+
+			size.x = s_MinColliderSize;
 		}
-		if (size.y <= cs_MinColliderSize)
+		if (size.y <= s_MinColliderSize)
 		{
-			size.y = cs_MinColliderSize;
+			LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
+
+			size.y = s_MinColliderSize;
 		}
 
 		// create body shape
@@ -92,16 +99,16 @@ namespace Maize {
 
 	void PhysicsEngine::CreateCircleCollider(b2Body*body, float& radius, Vector2 scale, Vector2 offset, const ColliderProperties& cProp)
 	{
-		const Vector2 AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
+		const auto AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
 		const float signY = Math::Sign(scale.y);
 		const float signX = Math::Sign(scale.x);
 
-		// TODO:
-		// add warnings when this happens
 		// cap min size
-		if (radius <= cs_MinColliderSize)
+		if (radius < s_MinColliderSize)
 		{
-			radius = cs_MinColliderSize;
+			LOG_WARN("Cannot have radius smaller the {}", s_MinColliderSize);
+
+			radius = s_MinColliderSize;
 		}
 
 		// create body shape
@@ -125,21 +132,23 @@ namespace Maize {
 
 	void PhysicsEngine::CreateCapsuleCollider(b2Body*body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp, CapsuleDirection direction)
 	{
-		const Vector2 AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
+		const auto AbsScale = Vector2(Math::Abs(scale.x), Math::Abs(scale.y));
 		const float signY = Math::Sign(scale.y);
 		const float signX = Math::Sign(scale.x);
-		const float rectOffset = 0.015f;
+		constexpr float rectOffset = 0.015f;
 
-		// TODO:
-		// add warnings when this happens
 		// cap min size
-		if (size.x <= cs_MinColliderSize)
+		if (size.x < s_MinColliderSize)
 		{
-			size.x = cs_MinColliderSize;
+			LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
+
+			size.x = s_MinColliderSize;
 		}
-		if (size.y <= cs_MinColliderSize)
+		if (size.y < s_MinColliderSize)
 		{
-			size.y = cs_MinColliderSize;
+			LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
+
+			size.y = s_MinColliderSize;
 		}
 
 		// calculate the dimensions for circles and rectangle

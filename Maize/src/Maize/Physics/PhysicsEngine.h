@@ -3,10 +3,18 @@
 #include <box2d/box2d.h>
 
 #include "Maize/Math/Vector2.h"
+#include "Maize/Physics/Physics.h"
 
 namespace Maize {
 
-	enum class BodyType { Static = 0, Kinematic, Dynamic };
+	enum class BodyType
+	{
+		Static = 0, Kinematic, Dynamic
+	};
+	enum class CapsuleDirection
+	{
+		Vertical = 0, Horizontal
+	};
 
 	struct BodyProperties
 	{
@@ -29,30 +37,27 @@ namespace Maize {
 		b2Filter filter;
 	};
 
-	enum class CapsuleDirection { Vertical = 0, Horizontal };
-
 	class PhysicsEngine
 	{
-	public:
-		static void Initialize(Vector2 gravity = { 0.0f, -9.807f }, b2ContactListener* contactListener = nullptr);
-		static void Step(float deltaTime);
-		static void Shutdown();
+	 public:
+		void Initialize(Vector2 gravity = { 0.0f, -9.807f }, b2ContactListener* contactListener = nullptr);
+		void Step(float deltaTime);
+		void Shutdown();
 
-		static void SetGravity(Vector2 gravity);
-		static Vector2 GetGravity();
-
-		static b2Body* CreateBody(const BodyProperties& bProp, void* userData);
-		static void RemoveBody(b2Body* body);
+		b2Body* CreateBody(const BodyProperties& bProp, void* userData);
+		void RemoveBody(b2Body* body);
 
 		static void CreateBoxCollider(b2Body* body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp);
 		static void CreateCircleCollider(b2Body* body, float& radius, Vector2 scale, Vector2 offset, const ColliderProperties& cProp);
 		static void CreateCapsuleCollider(b2Body* body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp, CapsuleDirection direction = CapsuleDirection::Vertical);
 
-	private:
+	 private:
 		friend class Physics;
 
-		inline static b2World* s_PhysicsWorld;
-		inline const static float cs_MinColliderSize = 0.0001f;
+		b2World* m_PhysicsWorld = nullptr;
+		Physics m_Physics;
+
+		static constexpr float s_MinColliderSize = 0.0001f;
 	};
 
 } // Maize

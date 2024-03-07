@@ -1,18 +1,18 @@
 #include "mpch.h"
 #include "Maize/Physics/Physics.h"
-
 #include "Maize/Physics/PhysicsEngine.h"
 
 namespace Maize {
 
 	void Physics::Gravity(Vector2 gravity)
 	{
-		PhysicsEngine::SetGravity(gravity);
+		s_PhysicsEngine->SetGravity({ gravity.x, gravity.y });
 	}
 
 	Vector2 Physics::Gravity()
 	{
-		return PhysicsEngine::GetGravity();
+		auto g = s_PhysicsEngine->GetGravity();
+		return { g.x, g.y };
 	}
 
 	RaycastResult Physics::Raycast(Vector2 origin, Vector2 direction, float distance, uint16_t layer)
@@ -23,9 +23,14 @@ namespace Maize {
 		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
 
 		// perform the raycast
-		PhysicsEngine::s_PhysicsWorld->RayCast(&callback, from, to);
+		s_PhysicsEngine->RayCast(&callback, from, to);
 
 		return callback.result;
+	}
+
+	void Physics::SetPhysicsEngine(b2World* engine)
+	{
+		s_PhysicsEngine = engine;
 	}
 
 } // Maize

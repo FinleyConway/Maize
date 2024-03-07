@@ -4,26 +4,12 @@
 
 namespace Maize {
 
-	class CustomCustomSystem : public System
-	{
-	 public:
-		void Update(entt::registry& registry, float deltaTime) override
-		{
-			if (Input::GetButtonDown(KeyCode::Space))
-			{
-				SceneManager::LoadScene("Default");
-			}
-		}
-	};
-
-	struct MovableTag { };
-
 	class CustomSystem : public System
 	{
 	 public:
 		void Update(entt::registry& registry, float deltaTime) override
 		{
-			auto view = registry.view<Transform, SpriteRenderer, MovableTag>();
+			auto view = registry.view<Transform, SpriteRenderer>();
 			for (auto [entity, transform, sprite] : view.each())
 			{
 				Vector2 dir;
@@ -62,24 +48,23 @@ namespace Maize {
 				scene.AddSystem<CustomSystem>("Custom");
 
 				auto e1 = scene.CreateEntity();
-			  	e1.AddTag<MovableTag>();
 				auto& spriteR = e1.AddComponent<SpriteRenderer>();
 				spriteR.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128 / 2, 128 / 2});
+
+				auto& rb = e1.AddComponent<Rigidbody>();
+				rb.type = BodyType::Dynamic;
+				auto& box = e1.AddComponent<BoxCollider>();
+
+			  auto e2 = scene.CreateEntity();
+			  e2.GetComponent<Transform>().position.y = -2;
+			  auto& spriteR2 = e2.AddComponent<SpriteRenderer>();
+			  spriteR2.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128 / 2, 128 / 2});
+
+			  auto& rb2 = e2.AddComponent<Rigidbody>();
+			  auto& box2 = e2.AddComponent<BoxCollider>();
+			  box2.size.x = 3;
 			};
 			scene1->AddSceneInitializer(initScene1);
-
-
-			// scene 2
-			auto scene2 = SceneManager::CreateScene("Default1");
-			auto initScene2 = [&](Scene& scene)
-			{
-				scene.AddSystem<CustomCustomSystem>("CustomCustom");
-
-				auto e1 = scene.CreateEntity();
-				auto& sprite1 = e1.AddComponent<SpriteRenderer>();
-				sprite1.sprite = Sprite(m_Tx1, { 0, 0, 128, 128 }, { 128 / 2, 128 / 2});
-			};
-			scene2->AddSceneInitializer(initScene2);
 
 			SceneManager::LoadScene(scene1->GetIndex());
 		}

@@ -5,17 +5,15 @@
 
 namespace Maize {
 
-	struct BodyUserData;
-
 	class PhysicsContactListener : public b2ContactListener
 	{
-	public:
+	 public:
 		entt::registry* registry = nullptr;
 
 		void BeginContact(b2Contact* contact) override;
 		void EndContact(b2Contact* contact) override;
 
-	private:
+	 private:
 		void HandleContact(b2Contact* contact, bool begin);
 		void AddCollisionComponents(bool begin, bool sensor, entt::entity entityA, entt::entity entityB) const;
 	};

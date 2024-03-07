@@ -6,6 +6,7 @@
 
 #include "Maize/Scene/Systems/HierarchySystem.h"
 #include "Maize/Scene/Systems/RenderingSystem.h"
+#include "Maize/Scene/Systems/CollisionSystem.h"
 
 namespace Maize {
 
@@ -48,8 +49,9 @@ namespace Maize {
 	{
 		m_SceneInit(*this);
 
-		AddSystem<RenderingSystem>("Render", 1000);
+		AddSystem<RenderingSystem>("Render", 1000); // last
 		AddSystem<HierarchySystem>("Parent-Child", 900);
+		AddSystem<CollisionSystem>("Collision", 800);
 
 		const auto compareFunction = [&](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
 		  return a->GetOrderPriority() < b->GetOrderPriority();
@@ -59,6 +61,8 @@ namespace Maize {
 
 		for (const auto& system : m_Systems)
 		{
+			LOG_CORE_INFO(system->GetName());
+
 			system->Initialize(m_Registry);
 		}
 	}

@@ -7,13 +7,11 @@
 
 namespace Maize {
 
-	void CollisionSystem::OnStart(entt::registry& reg)
+	void CollisionSystem::Initialize(entt::registry& registry)
 	{
-		s_ContactListener.registry = &reg;
+		m_PhysicsEngine.Initialize({ 0.0f, -9.807f }, &m_ContactListener);
 
-		PhysicsEngine::Initialize({ 0, -9.807 }, &s_ContactListener);
-
-		auto view = reg.view<Transform, Rigidbody>();
+		auto view = registry.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
 			// apply rigidbody properties
@@ -25,17 +23,17 @@ namespace Maize {
 			bProp.fixedRotation = rigidbody.fixedRotation;
 			bProp.isContinuous = rigidbody.isContinuous;
 
-			auto* userData = new BodyUserData(); // don't forget to clean up the user data for when the body is removed
+			auto* userData = new BodyUserData();
 			userData->attachedEntity = entity;
 
 			// create body
-			b2Body* body = PhysicsEngine::CreateBody(bProp, userData);
+			b2Body* body = m_PhysicsEngine.CreateBody(bProp, userData);
 			rigidbody.body = body;
 
 			// add a collider if that entity has this component
-			if (reg.all_of<BoxCollider>(entity))
+			if (registry.all_of<BoxCollider>(entity))
 			{
-				auto& boxCollider = reg.get<BoxCollider>(entity);
+				auto& boxCollider = registry.get<BoxCollider>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -52,9 +50,9 @@ namespace Maize {
 			}
 
 			// add a collider if that entity has this component
-			if (reg.all_of<CircleCollider>(entity))
+			if (registry.all_of<CircleCollider>(entity))
 			{
-				auto& circleCollider = reg.get<CircleCollider>(entity);
+				auto& circleCollider = registry.get<CircleCollider>(entity);
 
 				// apply collider properties
 				ColliderProperties cProp;
@@ -72,19 +70,27 @@ namespace Maize {
 		}
 	}
 
-	void CollisionSystem::OnUpdate(entt::registry& reg, float deltaTime)
+	void CollisionSystem::Update(entt::registry& reg, float deltaTime)
 	{
 		UpdateBox2d(reg);
 
 		// update physics engine
-		PhysicsEngine::Step(deltaTime);
+		m_PhysicsEngine.Step(deltaTime);
 
 		UpdateECS(reg);
 	}
 
-	void CollisionSystem::OnDestroy()
+	void CollisionSystem::Shutdown(entt::registry& registry)
 	{
-		PhysicsEngine::Shutdown();
+		// free bodies
+		auto view = registry.view<Transform, Rigidbody>();
+		for (auto [entity, transform, rigidbody] : view.each())
+		{
+			auto body = rigidbody.body;
+			delete reinterpret_cast<const BodyUserData*>(body->GetUserData().pointer);
+		}
+
+		m_PhysicsEngine.Shutdown();
 	}
 
 	void CollisionSystem::UpdateBox2d(entt::registry& reg)
@@ -92,10 +98,10 @@ namespace Maize {
 		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
-			const Vector2 scale = Vector2(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
+			const auto scale = Vector2(Math::Abs(transform.scale.x), Math::Abs(transform.scale.y));
 			const float signY = Math::Sign(transform.scale.y);
 			const float signX = Math::Sign(transform.scale.x);
-			const float minSize = 0.0001f;
+			constexpr float minSize = 0.0001f;
 
 			b2Body* body = rigidbody.body;
 
@@ -109,14 +115,17 @@ namespace Maize {
 			{
 				auto& boxCollider = reg.get<BoxCollider>(entity);
 
-				// TODO:
-				// add warnings when this happens
-				if (boxCollider.size.x <= minSize)
+				// cap min size
+				if (boxCollider.size.x < minSize)
 				{
+					LOG_WARN("Cannot have x size smaller then {}", minSize);
+
 					boxCollider.size.x = minSize;
 				}
-				if (boxCollider.size.y <= minSize)
+				if (boxCollider.size.y < minSize)
 				{
+					LOG_WARN("Cannot have y size smaller then {}", minSize);
+
 					boxCollider.size.y = minSize;
 				}
 
@@ -135,10 +144,11 @@ namespace Maize {
 			{
 				auto& circleCollider = reg.get<CircleCollider>(entity);
 
-				// TODO:
-				// add warnings when this happens
-				if (circleCollider.radius <= minSize)
+				// cap min size
+				if (circleCollider.radius < minSize)
 				{
+					LOG_WARN("Cannot have radius smaller the {}", minSize);
+
 					circleCollider.radius = minSize;
 				}
 
@@ -158,7 +168,7 @@ namespace Maize {
 
 	void CollisionSystem::UpdateECS(entt::registry& reg)
 	{
-		// update entities
+		// Update entities
 		auto view = reg.view<Transform, Rigidbody>();
 		for (auto [entity, transform, rigidbody] : view.each())
 		{
@@ -166,7 +176,18 @@ namespace Maize {
 			auto position = body->GetPosition();
 
 			transform.position = Vector2(position.x, position.y);
-			transform.angle = NormalizeAngle(body->GetAngle() * Math::Rad2Deg());;
+
+			// get the angle of the body and normalize it
+			float angleInRadians = body->GetAngle();
+			float angleInDegrees = angleInRadians * Math::Rad2Deg();
+
+			float normalizedAngle = Math::Fmod(angleInDegrees, 360.0f);
+			if (normalizedAngle < 0)
+			{
+				normalizedAngle += 360.0f;
+			}
+
+			transform.angle = normalizedAngle;
 		}
 	}
 

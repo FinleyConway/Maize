@@ -13,7 +13,6 @@
 #include "Maize/Physics/Physics.h"
 #include "Maize/Utils/Random.h"
 
-#include "Maize/Renderer/Renderer.h"
 #include "Maize/Renderer/Texture.h"
 #include "Maize/Renderer/Sprite.h"
 
