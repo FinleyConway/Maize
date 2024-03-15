@@ -51,7 +51,7 @@ namespace Maize {
 
 		AddSystem<RenderingSystem>("Render", 1000); // last
 		AddSystem<HierarchySystem>("Parent-Child", 900);
-		AddSystem<CollisionSystem>("Collision", 800);
+		AddSystem<CollisionSystem>("Collision", 500);
 
 		const auto compareFunction = [&](const std::unique_ptr<System>& a, const std::unique_ptr<System>& b) {
 		  return a->GetOrderPriority() < b->GetOrderPriority();

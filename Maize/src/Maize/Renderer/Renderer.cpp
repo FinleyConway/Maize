@@ -2,8 +2,6 @@
 #include "Maize/Renderer/Renderer.h"
 #include "Maize/Core/Application.h"
 
-#include "Maize/Renderer/Sprite.h"
-
 #include "Maize/Scene/Components.h"
 
 namespace Maize {

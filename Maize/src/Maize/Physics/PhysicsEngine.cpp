@@ -19,7 +19,7 @@ namespace Maize {
 			LOG_CORE_ERROR("No contact listener has been assigned to physics engine!");
 		}
 
-		Physics::SetPhysicsEngine(this);
+		Physics::SetPhysicsEngine(m_PhysicsWorld);
 	}
 
 	void PhysicsEngine::Step(float deltaTime)
