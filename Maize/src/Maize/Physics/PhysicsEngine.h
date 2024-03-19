@@ -4,6 +4,7 @@
 
 #include "Maize/Math/Vector2.h"
 #include "Maize/Physics/Physics.h"
+#include "Maize/Physics/PhysicsDebugDraw.h"
 
 namespace Maize {
 
@@ -37,26 +38,31 @@ namespace Maize {
 		b2Filter filter;
 	};
 
+	class Renderer;
+
 	class PhysicsEngine
 	{
 	 public:
-		void Initialize(Vector2 gravity = { 0.0f, -9.807f }, b2ContactListener* contactListener = nullptr);
-		void Step(float deltaTime);
-		void Shutdown();
+		static void Initialize(Vector2 gravity = { 0.0f, -9.807f }, b2ContactListener* contactListener = nullptr);
+		static void Step(float deltaTime);
+		static void Shutdown();
 
-		b2Body* CreateBody(const BodyProperties& bProp, void* userData);
-		void RemoveBody(b2Body* body);
+		static b2Body* CreateBody(const BodyProperties& bProp, void* userData);
+		static void RemoveBody(b2Body* body);
 
 		static void CreateBoxCollider(b2Body* body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp);
 		static void CreateCircleCollider(b2Body* body, float& radius, Vector2 scale, Vector2 offset, const ColliderProperties& cProp);
 		static void CreateCapsuleCollider(b2Body* body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp, CapsuleDirection direction = CapsuleDirection::Vertical);
 
+		static void DrawDebug(sf::RenderTarget& renderer);
+
 	 private:
 		friend class Physics;
 
-		b2World* m_PhysicsWorld = nullptr;
-		Physics m_Physics;
+		inline static b2World* s_PhysicsWorld = nullptr;
+		inline static PhysicsDebugDraw* s_PhysicsDebugDraw = nullptr;
 
+		inline static bool s_DrawDebug = false;
 		static constexpr float s_MinColliderSize = 0.0001f;
 	};
 

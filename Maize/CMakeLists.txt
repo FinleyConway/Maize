@@ -78,6 +78,9 @@ add_library(Maize STATIC
         src/Maize/Debug/Log.cpp
         src/Maize/Debug/Log.h
         src/Maize/Core/Input.cpp
+        src/Maize/Physics/PhysicsDebugDraw.cpp
+        src/Maize/Physics/PhysicsDebugDraw.h
+        src/Maize/Physics/PhysicsDebugDraw.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

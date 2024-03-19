@@ -39,6 +39,13 @@ namespace Maize {
 		static bool Approximately(float a, float b, float epsilon = Epsilon()) { return Abs(a - b) < epsilon; }
 
 		static float Sign(float value) { return (value > 0.0f) ? 1.0f : ((value < 0.0f) ? -1.0f : 0.0f); }
+		static float NormalizeAngle(float angle)
+		{
+			angle = Fmod(angle + 180.0f, 360.0f);
+			if (angle < 0.0f)
+				angle += 360.0f;
+			return angle - 180.0f;
+		}
 
 		static float Ceil(float f) { return std::ceil(f); }
 		static int32_t CeilToInt(float f) { return std::ceil(f); }

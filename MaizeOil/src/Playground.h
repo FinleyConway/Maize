@@ -4,15 +4,24 @@
 
 namespace Maize {
 
+	struct Movable { };
+
 	class Test : public System
 	{
 	 public:
 		void Update(entt::registry& registry, float deltaTime) override
 		{
-			auto hit = Physics::RaycastAll(Vector2(-1, 0), Vector2::Right(), 2.5f);
-			for (const auto& results : hit)
+			auto view = registry.view<Rigidbody, Movable>();
+			for (auto [entity, rig] : view.each())
 			{
-				std::cout << (int)results.entity << std::endl;
+				Vector2 dir;
+
+				if (Input::GetButton(KeyCode::Left)) dir.x--;
+				if (Input::GetButton(KeyCode::Right)) dir.x++;
+				if (Input::GetButton(KeyCode::Up)) dir.y++;
+				if (Input::GetButton(KeyCode::Down)) dir.y--;
+
+				rig.body->ApplyLinearImpulseToCenter({dir.x * 5 * deltaTime, dir.y * 5 * deltaTime}, true);
 			}
 		}
 	};
@@ -34,16 +43,17 @@ namespace Maize {
 				auto e1 = scene.CreateEntity();
 			  	auto& t1 = e1.GetComponent<Transform>().position = Vector2(0, 0);
 				auto& spriteR = e1.AddComponent<SpriteRenderer>();
-				spriteR.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128 / 2, 128 / 2});
+				spriteR.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128.f / 2, 128.f / 2}, 128);
 				auto& rb = e1.AddComponent<Rigidbody>();
 				rb.type = BodyType::Dynamic;
 				rb.gravityScale = 0;
 				auto& box = e1.AddComponent<BoxCollider>();
+				e1.AddTag<Movable>();
 
 			  	auto e2 = scene.CreateEntity();
 			  	auto& t2 = e2.GetComponent<Transform>().position = Vector2(1, 0);
 			  	auto& spriteR2 = e2.AddComponent<SpriteRenderer>();
-			  	spriteR2.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128 / 2, 128 / 2});
+			  	spriteR2.sprite = Sprite(m_Tx, { 0, 0, 128, 128 }, { 128.f / 2, 128.f / 2}, 128);
 			  	auto& rb2 = e2.AddComponent<Rigidbody>();
 			  	rb2.type = BodyType::Dynamic;
 			  	rb2.gravityScale = 0;

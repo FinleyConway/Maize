@@ -75,12 +75,12 @@ namespace Maize {
 
 	void Physics::Gravity(Vector2 gravity)
 	{
-		s_PhysicsEngine->SetGravity({ gravity.x, gravity.y });
+		PhysicsEngine::s_PhysicsWorld->SetGravity({ gravity.x, gravity.y });
 	}
 
 	Vector2 Physics::Gravity()
 	{
-		auto g = s_PhysicsEngine->GetGravity();
+		auto g = PhysicsEngine::s_PhysicsWorld->GetGravity();
 		return { g.x, g.y };
 	}
 
@@ -92,7 +92,7 @@ namespace Maize {
 		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
 
 		// perform the raycast
-		s_PhysicsEngine->RayCast(&callback, from, to);
+		PhysicsEngine::s_PhysicsWorld->RayCast(&callback, from, to);
 
 		if (!callback.results.empty())
 		{
@@ -110,7 +110,7 @@ namespace Maize {
 		b2Vec2 to = from + distance * b2Vec2(direction.x, direction.y);
 
 		// perform the raycast
-		s_PhysicsEngine->RayCast(&callback, from, to);
+		PhysicsEngine::s_PhysicsWorld->RayCast(&callback, from, to);
 
 		return callback.results;
 	}
@@ -123,7 +123,7 @@ namespace Maize {
 
 		QueryCallBack callback(true, aabb, layer);
 
-		s_PhysicsEngine->QueryAABB(&callback, aabb);
+		PhysicsEngine::s_PhysicsWorld->QueryAABB(&callback, aabb);
 
 		if (!callback.inside.empty())
 		{
@@ -141,14 +141,9 @@ namespace Maize {
 
 		QueryCallBack callback(false, aabb, layer);
 
-		s_PhysicsEngine->QueryAABB(&callback, aabb);
+		PhysicsEngine::s_PhysicsWorld->QueryAABB(&callback, aabb);
 
 		return callback.inside;
-	}
-
-	void Physics::SetPhysicsEngine(b2World* engine)
-	{
-		s_PhysicsEngine = engine;
 	}
 
 } // Maize

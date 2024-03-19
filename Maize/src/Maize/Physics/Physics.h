@@ -8,8 +8,6 @@
 
 namespace Maize {
 
-	class PhysicsEngine;
-
 	struct RaycastResult
 	{
 		float distance = 0;                // distance from origin to point
@@ -30,14 +28,6 @@ namespace Maize {
 
 		static entt::entity OverlapArea(Vector2 pointA, Vector2 pointB, uint16_t layer = 0x0001);
 		static std::vector<entt::entity> OverlapAreaAll(Vector2 pointA, Vector2 pointB, uint16_t layer = 0x0001);
-
-	 private:
-		friend class PhysicsEngine;
-
-		static void SetPhysicsEngine(b2World* engine);
-
-	 private:
-		inline static b2World* s_PhysicsEngine = nullptr;
 	};
 
 } // Maize

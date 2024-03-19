@@ -118,6 +118,8 @@ namespace Maize {
 				DrawImmediately(draw.drawable);
 			}
 		}
+
+		PhysicsEngine::DrawDebug(*s_RenderWindow);
 	}
 
 	void Renderer::DrawImmediately(const sf::Drawable* drawable)

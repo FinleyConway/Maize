@@ -8,31 +8,33 @@ namespace Maize {
 
 	void PhysicsEngine::Initialize(Vector2 gravity, b2ContactListener* contactListener)
 	{
-		m_PhysicsWorld = new b2World({ gravity.x, gravity.y });
+		s_PhysicsWorld = new b2World({ gravity.x, gravity.y });
+		s_PhysicsDebugDraw = new PhysicsDebugDraw();
 
 		if (contactListener != nullptr)
 		{
-			m_PhysicsWorld->SetContactListener(contactListener);
+			s_PhysicsWorld->SetContactListener(contactListener);
 		}
 		else
 		{
 			LOG_CORE_ERROR("No contact listener has been assigned to physics engine!");
 		}
 
-		Physics::SetPhysicsEngine(m_PhysicsWorld);
+		s_PhysicsWorld->SetDebugDraw(s_PhysicsDebugDraw);
 	}
 
 	void PhysicsEngine::Step(float deltaTime)
 	{
 		constexpr int32_t velocityIterations = 6;
 		constexpr int32_t positionIterations = 2;
-		m_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
+
+		s_PhysicsWorld->Step(deltaTime, velocityIterations, positionIterations);
 	}
 
 	void PhysicsEngine::Shutdown()
 	{
-		delete m_PhysicsWorld;
-		m_PhysicsWorld = nullptr;
+		delete s_PhysicsWorld;
+		s_PhysicsWorld = nullptr;
 	}
 
 	b2Body* PhysicsEngine::CreateBody(const BodyProperties& bProp, void* userData)
@@ -51,12 +53,12 @@ namespace Maize {
 			bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(userData);
 		}
 
-		return m_PhysicsWorld->CreateBody(&bodyDef);
+		return s_PhysicsWorld->CreateBody(&bodyDef);
 	}
 
 	void PhysicsEngine::RemoveBody(b2Body* body)
 	{
-		m_PhysicsWorld->DestroyBody(body);
+		s_PhysicsWorld->DestroyBody(body);
 	}
 
 	void PhysicsEngine::CreateBoxCollider(b2Body*body, Vector2& size, Vector2 scale, Vector2 offset, const ColliderProperties& cProp)
@@ -202,6 +204,17 @@ namespace Maize {
 
 		fixtureDef.shape = &rectangleShape;
 		body->CreateFixture(&fixtureDef);
+	}
+
+	void PhysicsEngine::DrawDebug(sf::RenderTarget& renderer)
+	{
+		if (!s_DrawDebug)
+		{
+			s_PhysicsDebugDraw->SetFlags(b2Draw::e_shapeBit);
+			s_PhysicsDebugDraw->SetRenderTarget(renderer);
+		}
+
+		s_PhysicsWorld->DebugDraw();
 	}
 
 } // Maize

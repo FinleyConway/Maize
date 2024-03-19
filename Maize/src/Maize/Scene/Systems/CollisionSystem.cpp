@@ -106,7 +106,7 @@ namespace Maize {
 			b2Body* body = rigidbody.body;
 
 			body->SetType(static_cast<b2BodyType>(rigidbody.type));
-			body->SetTransform({ transform.position.x, transform.position.y }, transform.angle * Math::Deg2Rad());
+			body->SetTransform({ transform.position.x, transform.position.y }, -transform.angle * Math::Deg2Rad());
 			body->SetGravityScale(rigidbody.gravityScale);
 			body->SetFixedRotation(rigidbody.fixedRotation);
 			body->SetBullet(rigidbody.isContinuous);
@@ -176,18 +176,7 @@ namespace Maize {
 			auto position = body->GetPosition();
 
 			transform.position = Vector2(position.x, position.y);
-
-			// get the angle of the body and normalize it
-			float angleInRadians = body->GetAngle();
-			float angleInDegrees = angleInRadians * Math::Rad2Deg();
-
-			float normalizedAngle = Math::Fmod(angleInDegrees, 360.0f);
-			if (normalizedAngle < 0)
-			{
-				normalizedAngle += 360.0f;
-			}
-
-			transform.angle = normalizedAngle;
+			transform.angle = Math::NormalizeAngle(-body->GetAngle() * Math::Rad2Deg());
 		}
 	}
 
