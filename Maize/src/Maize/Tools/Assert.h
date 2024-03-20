@@ -23,6 +23,6 @@
 			} \
 		} while(0)
 	#else
-		#define CORE_ASSERT(condition, message) do { } while(0)
+		#define MZ_ASSERT_CORE(condition, message) do { } while(0)
 		#define MZ_ASSERT_GAME(condition, message) do { } while(0)
 #endif

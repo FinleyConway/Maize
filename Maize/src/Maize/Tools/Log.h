@@ -21,13 +21,25 @@ namespace Maize {
 } // Maize
 
 // core log macros
-#define MZ_LOG_CORE_TRACE(...)    ::Maize::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define MZ_LOG_CORE_INFO(...)     ::Maize::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define MZ_LOG_CORE_WARN(...)     ::Maize::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define MZ_LOG_CORE_ERROR(...)    ::Maize::Log::GetCoreLogger()->error(__VA_ARGS__)
+#ifndef NDEBUG
+	#define MZ_LOG_CORE_TRACE(...)    ::Maize::Log::GetCoreLogger()->trace(__VA_ARGS__)
+	#define MZ_LOG_CORE_INFO(...)     ::Maize::Log::GetCoreLogger()->info(__VA_ARGS__)
+	#define MZ_LOG_CORE_WARN(...)     ::Maize::Log::GetCoreLogger()->warn(__VA_ARGS__)
+	#define MZ_LOG_CORE_ERROR(...)    ::Maize::Log::GetCoreLogger()->error(__VA_ARGS__)
 
-// game log macros
-#define MZ_LOG_TRACE(...)         ::Maize::Log::GetGameLogger()->trace(__VA_ARGS__)
-#define MZ_LOG_INFO(...)          ::Maize::Log::GetGameLogger()->info(__VA_ARGS__)
-#define MZ_LOG_WARN(...)          ::Maize::Log::GetGameLogger()->warn(__VA_ARGS__)
-#define MZ_LOG_ERROR(...)         ::Maize::Log::GetGameLogger()->error(__VA_ARGS__)
+	// game log macros
+	#define MZ_LOG_TRACE(...)         ::Maize::Log::GetGameLogger()->trace(__VA_ARGS__)
+	#define MZ_LOG_INFO(...)          ::Maize::Log::GetGameLogger()->info(__VA_ARGS__)
+	#define MZ_LOG_WARN(...)          ::Maize::Log::GetGameLogger()->warn(__VA_ARGS__)
+	#define MZ_LOG_ERROR(...)         ::Maize::Log::GetGameLogger()->error(__VA_ARGS__)
+#else
+	#define MZ_LOG_CORE_TRACE(...)
+	#define MZ_LOG_CORE_INFO(...)
+	#define MZ_LOG_CORE_WARN(...)
+	#define MZ_LOG_CORE_ERROR(...)
+
+	#define MZ_LOG_TRACE(...)
+	#define MZ_LOG_INFO(...)
+	#define MZ_LOG_WARN(...)
+	#define MZ_LOG_ERROR(...)
+#endif
