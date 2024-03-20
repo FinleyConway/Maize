@@ -15,7 +15,8 @@ namespace Maize {
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 		m_Window.InitializeRenderer(m_Renderer);
 
-		m_LayerStack.PushLayer(m_InputLayer = new InputLayer());
+		m_LayerStack.PushLayer(m_InputLayer = new InputLayer(m_Input));
+		m_LayerStack.PushLayer(m_GameLayer = new GameLayer(m_Window, m_Renderer, m_Input));
     }
 
     void Application::OnEvent(Event& e)

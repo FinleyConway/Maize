@@ -5,6 +5,11 @@
 
 namespace Maize {
 
+	void SceneManager::OnFixedUpdate(float fixedDeltaTime)
+	{
+
+	}
+
 	void SceneManager::OnUpdate(float deltaTime)
 	{
 		if (s_ActiveScene != nullptr)

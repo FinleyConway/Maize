@@ -17,7 +17,7 @@ namespace Maize {
 	class InputLayer final : public Layer
 	{
 	 public:
-		InputLayer();
+		explicit InputLayer(Input& input);
 
 		void OnEvent(Event& e) override;
 
@@ -31,8 +31,6 @@ namespace Maize {
 		bool OnMouseReleased(const MouseButtonReleasedEvent& e);
 
 	 private:
-		Input m_Input;
-
 		std::array<bool, sf::Keyboard::KeyCount> m_KeyDown{};
 		std::array<bool, sf::Keyboard::KeyCount> m_KeyUp{};
 		std::array<bool, sf::Keyboard::KeyCount> m_PrevKeyDown{};

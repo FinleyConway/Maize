@@ -2,6 +2,7 @@
 
 #include "Maize/Core/Window.h"
 #include "Maize/Renderer/Renderer.h"
+#include "Maize/Core/Input.h"
 
 #include "Maize/Core/LayerStack.h"
 
@@ -42,6 +43,7 @@ namespace Maize {
     private:
         Window m_Window;
 		Renderer m_Renderer;
+		Input m_Input;
 
         LayerStack m_LayerStack;
 		InputLayer* m_InputLayer = nullptr;

@@ -6,10 +6,11 @@ namespace Maize {
 
 	class Scene;
 
-	class SceneManager : public Layer
+	class SceneManager
 	{
 	 public:
-		void OnUpdate(float deltaTime) override;
+		void OnFixedUpdate(float fixedDeltaTime);
+		void OnUpdate(float deltaTime);
 
 		static std::shared_ptr<Scene> CreateScene(const std::string& sceneName);
 

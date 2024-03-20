@@ -8,7 +8,9 @@ namespace Maize {
 
 	bool Input::GetButtonDown(KeyCode key)
 	{
-		auto& instance = s_InputHandler;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		auto& instance = m_InputHandler;
 
 		bool prevState = instance->m_PrevKeyDown[static_cast<size_t>(key)];
 		bool currentState = instance->m_KeyDown[static_cast<size_t>(key)];
@@ -21,12 +23,16 @@ namespace Maize {
 
 	bool Input::GetButton(KeyCode key)
 	{
-		return s_InputHandler->m_KeyDown[static_cast<size_t>(key)];
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		return m_InputHandler->m_KeyDown[static_cast<size_t>(key)];
 	}
 
 	bool Input::GetButtonUp(KeyCode key)
 	{
-		auto& instance = s_InputHandler;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		auto& instance = m_InputHandler;
 
 		bool prevState = instance->m_PrevKeyUp[static_cast<size_t>(key)];
 		bool currentState = instance->m_KeyUp[static_cast<size_t>(key)];
@@ -39,7 +45,9 @@ namespace Maize {
 
 	bool Input::GetMouseButtonDown(MouseCode button)
 	{
-		auto& instance = s_InputHandler;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		auto& instance = m_InputHandler;
 
 		bool prevState = instance->m_PrevMouseDown[static_cast<size_t>(button)];
 		bool currentState = instance->m_MouseDown[static_cast<size_t>(button)];
@@ -52,14 +60,18 @@ namespace Maize {
 
 	bool Input::GetMouseButton(MouseCode button)
 	{
-		auto& instance = s_InputHandler;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		auto& instance = m_InputHandler;
 
 		return instance->m_MouseDown[static_cast<size_t>(button)];
 	}
 
 	bool Input::GetMouseButtonUp(MouseCode button)
 	{
-		auto& instance = s_InputHandler;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		auto& instance = m_InputHandler;
 
 		bool prevState = instance->m_PrevMouseUp[static_cast<size_t>(button)];
 		bool currentState = instance->m_MouseUp[static_cast<size_t>(button)];
@@ -72,12 +84,14 @@ namespace Maize {
 
 	Vector2 Input::GetMousePosition()
 	{
-		return s_InputHandler->m_MousePosition;
+		MZ_ASSERT_CORE(m_InputHandler != nullptr, "Input handler is nullptr, please assign input handler!");
+
+		return m_InputHandler->m_MousePosition;
 	}
 
 	void Input::SetInputLayer(InputLayer* inputLayer)
 	{
-		s_InputHandler = inputLayer;
+		m_InputHandler = inputLayer;
 	}
 
 } // Maize

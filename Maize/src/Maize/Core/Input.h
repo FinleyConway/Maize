@@ -10,22 +10,22 @@ namespace Maize {
 	class Input final
 	{
 	 public:
-		static bool GetButtonDown(KeyCode key);
-		static bool GetButton(KeyCode key);
-		static bool GetButtonUp(KeyCode key);
+		bool GetButtonDown(KeyCode key);
+		bool GetButton(KeyCode key);
+		bool GetButtonUp(KeyCode key);
 
-		static Vector2 GetMousePosition();
+		Vector2 GetMousePosition();
 
-		static bool GetMouseButtonDown(MouseCode button);
-		static bool GetMouseButton(MouseCode button);
-		static bool GetMouseButtonUp(MouseCode button);
+		bool GetMouseButtonDown(MouseCode button);
+		bool GetMouseButton(MouseCode button);
+		bool GetMouseButtonUp(MouseCode button);
 
 	 private:
 		friend class InputLayer;
 
 		void SetInputLayer(InputLayer* inputLayer);
 
-		inline static InputLayer* s_InputHandler = nullptr;
+		InputLayer* m_InputHandler = nullptr;
 	};
 
 } // Maize

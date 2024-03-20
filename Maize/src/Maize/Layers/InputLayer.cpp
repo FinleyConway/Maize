@@ -7,9 +7,9 @@
 
 namespace Maize {
 
-	InputLayer::InputLayer()
+	InputLayer::InputLayer(Input& input)
 	{
-		m_Input.SetInputLayer(this);
+		input.SetInputLayer(this);
 	}
 
 	void InputLayer::OnEvent(Event& e)
