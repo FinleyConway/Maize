@@ -2,8 +2,8 @@
 #include "Maize/Scene/Systems/CollisionSystem.h"
 #include "Maize/Physics/PhysicsEngine.h"
 #include "Maize/Scene/Components.h"
-#include "Maize/Math/Math.h"
-#include "Maize/Math/Vector2.h"
+#include "Maize/Utils/Math.h"
+#include "Maize/Utils/Vector2.h"
 
 namespace Maize {
 

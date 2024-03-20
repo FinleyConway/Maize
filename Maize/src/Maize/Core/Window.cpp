@@ -5,6 +5,8 @@
 #include "Maize/Events/MouseEvents.h"
 #include "Maize/Events/KeyEvents.h"
 
+#include "Maize/Renderer/Renderer.h"
+
 namespace Maize {
 
     Window::Window(const std::string& title, sf::Vector2u windowSize)
@@ -14,17 +16,43 @@ namespace Maize {
         SetVSync(true);
     }
 
+	void Window::InitializeRenderer(Renderer& renderer)
+	{
+		renderer.Initialize(m_Window);
+	}
+
     void Window::SetTitle(const std::string& title)
     {
         m_Window.setTitle(title);
         m_WindowTitle = title;
     }
 
+	const std::string& Window::GetTitle() const
+	{
+		return m_WindowTitle;
+	}
+
+	sf::Vector2u Window::GetSize() const
+	{
+		return m_Window.getSize();
+	}
+
     void Window::SetVSync(bool enable)
     {
         m_Window.setVerticalSyncEnabled(enable);
         m_IsVSyncEnabled = enable;
     }
+
+	bool Window::IsVSyncEnabled() const
+	{
+		return m_IsVSyncEnabled;
+	}
+
+	void Window::ToggleFullscreen()
+	{
+		m_IsFullscreen = !m_IsFullscreen;
+		Create({ 1280, 720 });
+	}
 
     void Window::PollEvents()
     {
@@ -73,12 +101,6 @@ namespace Maize {
                 m_EventCallback(event);
             }
         }
-    }
-
-    void Window::ToggleFullscreen()
-    {
-        m_IsFullscreen = !m_IsFullscreen;
-        Create({ 1280, 720 });
     }
 
 	void Window::Create(sf::Vector2u windowSize)

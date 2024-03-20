@@ -6,8 +6,8 @@
 #include "Maize/Renderer/Sprite.h"
 #include "Maize/Renderer/Animation.h"
 
-#include "Maize/Math/Vector2.h"
-#include "Maize/Physics/Physics.h"
+#include "Maize/Utils/Vector2.h"
+#include "Maize/Utils/Physics.h"
 #include "Maize/Physics/PhysicsEngine.h"
 
 /*

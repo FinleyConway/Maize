@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Maize/Physics/Physics.h"
+#include "Physics.h"
 #include "Maize/Physics/PhysicsEngine.h"
 
 namespace Maize {

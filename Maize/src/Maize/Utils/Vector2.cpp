@@ -1,8 +1,8 @@
 #include "mpch.h"
-#include "Maize/Math/Vector2.h"
+#include "Vector2.h"
 
-#include "Maize/Math/Vector2Int.h"
-#include "Maize/Math/Math.h"
+#include "Vector2Int.h"
+#include "Math.h"
 
 namespace Maize {
 

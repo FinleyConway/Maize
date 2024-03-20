@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Maize/Core/Window.h"
-#include "Maize/Core/Input.h"
+#include "Maize/Renderer/Renderer.h"
+
 #include "Maize/Core/LayerStack.h"
 
 int main();
@@ -9,10 +10,11 @@ int main();
 namespace Maize {
 
 	class Layer;
+	class InputLayer;
+	class GameLayer;
 	class Event;
 	class WindowCloseEvent;
 	class WindowResizeEvent;
-	class SceneManager;
 
     struct ApplicationSpecification
     {
@@ -23,33 +25,28 @@ namespace Maize {
     {
     public:
         explicit Application(const ApplicationSpecification& specification);
-		~Application();
-
-        static Application& Get() { return *s_Instance; }
+		~Application() = default;
 
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
-
-        Window& GetWindow() { return m_Window; }
 
     private:
         friend int ::main();
 
         void Run();
-        void OnEvent(Event& e);
 
+        void OnEvent(Event& e);
         bool OnWindowClose(const WindowCloseEvent& e);
 		bool OnWindowResize(const WindowResizeEvent& e);
 
     private:
-        inline static Application* s_Instance = nullptr;
-
         Window m_Window;
-		Input m_Input;
-
-		SceneManager* m_SceneManager = nullptr;
+		Renderer m_Renderer;
 
         LayerStack m_LayerStack;
+		InputLayer* m_InputLayer = nullptr;
+		GameLayer* m_GameLayer = nullptr;
+
         bool m_IsRunning = true;
     };
 

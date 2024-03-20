@@ -2,8 +2,8 @@
 
 #include <box2d/box2d.h>
 
-#include "Maize/Math/Vector2.h"
-#include "Maize/Physics/Physics.h"
+#include "Maize/Utils/Vector2.h"
+#include "Maize/Utils/Physics.h"
 #include "Maize/Physics/PhysicsDebugDraw.h"
 
 namespace Maize {

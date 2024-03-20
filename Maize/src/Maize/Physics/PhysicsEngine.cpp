@@ -1,8 +1,8 @@
 #include "mpch.h"
 #include "Maize/Physics/PhysicsEngine.h"
-#include "Maize/Physics/Physics.h"
+#include "Maize/Utils/Physics.h"
 
-#include "Maize/Math/Math.h"
+#include "Maize/Utils/Math.h"
 
 namespace Maize {
 

@@ -2,6 +2,7 @@
 
 namespace Maize {
 
+	class Renderer;
 	class Event;
 
 	class Window
@@ -11,22 +12,18 @@ namespace Maize {
 
 		explicit Window(const std::string& title, sf::Vector2u windowSize = { 1280, 720 });
 
+		void InitializeRenderer(Renderer& renderer);
+
 		void SetTitle(const std::string& title);
-		const std::string& GetTitle() const { return m_WindowTitle; }
-
-		sf::Vector2u GetSize() const { return m_Window.getSize(); }
-		float GetAspectRatio() const { return static_cast<float>(m_Window.getSize().x) / static_cast<float>(m_Window.getSize().y); }
-
+		const std::string& GetTitle() const;
+		sf::Vector2u GetSize() const;
 		void SetVSync(bool enable);
-		bool IsVSyncEnabled() const { return m_IsVSyncEnabled; }
-
-		void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
-
-		void PollEvents();
+		bool IsVSyncEnabled() const;
 
 		void ToggleFullscreen();
 
-		sf::RenderWindow& GetRenderWindow() { return m_Window; }
+		void SetEventCallback(const EventCallbackFn& callback) { m_EventCallback = callback; }
+		void PollEvents();
 
 	private:
 		void Create(sf::Vector2u windowSize);

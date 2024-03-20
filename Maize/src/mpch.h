@@ -20,4 +20,4 @@
 #include <string>
 #include <array>
 
-#include "Maize/Debug/Log.h"
+#include "Maize/Tools/Log.h"

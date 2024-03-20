@@ -40,6 +40,7 @@ add_library(Maize STATIC
         src/Maize/Events/KeyEvents.h
         src/Maize/Events/MouseEvents.h
         src/Maize/Core/Input.h
+        src/Maize/Core/Input.cpp
         src/Maize/Renderer/Renderer.cpp
         src/Maize/Renderer/Renderer.h
         src/Maize/Renderer/Texture.h
@@ -48,23 +49,21 @@ add_library(Maize STATIC
         src/Maize/Utils/Random.cpp
         src/Maize/Renderer/Sprite.cpp
         src/Maize/Renderer/Sprite.h
-        src/Maize/Scene/Systems/RenderingSystem.cpp
-        src/Maize/Scene/Systems/RenderingSystem.h
         src/Maize/Renderer/Animation.cpp
         src/Maize/Renderer/Animation.h
         src/Maize/Scene/Systems/AnimationSystem.cpp
         src/Maize/Scene/Systems/AnimationSystem.h
         src/Maize/Scene/Systems/CollisionSystem.cpp
         src/Maize/Scene/Systems/CollisionSystem.h
-        src/Maize/Math/Math.h
-        src/Maize/Math/Vector2.h
-        src/Maize/Math/Vector2Int.h
-        src/Maize/Math/Vector2.cpp
-        src/Maize/Math/Vector2Int.cpp
+        src/Maize/Utils/Math.h
+        src/Maize/Utils/Vector2.h
+        src/Maize/Utils/Vector2Int.h
+        src/Maize/Utils/Vector2.cpp
+        src/Maize/Utils/Vector2Int.cpp
         src/Maize/Physics/PhysicsEngine.cpp
         src/Maize/Physics/PhysicsEngine.h
-        src/Maize/Physics/Physics.cpp
-        src/Maize/Physics/Physics.h
+        src/Maize/Utils/Physics.cpp
+        src/Maize/Utils/Physics.h
         src/Maize/Physics/PhysicsContactListener.h
         src/Maize/Scene/Scene.cpp
         src/Maize/Scene/Scene.h
@@ -75,12 +74,16 @@ add_library(Maize STATIC
         src/Maize/Scene/SceneManager.cpp
         src/Maize/Scene/SceneManager.h
         src/Maize/Scene/Entity.h
-        src/Maize/Debug/Log.cpp
-        src/Maize/Debug/Log.h
-        src/Maize/Core/Input.cpp
+        src/Maize/Tools/Log.cpp
+        src/Maize/Tools/Log.h
         src/Maize/Physics/PhysicsDebugDraw.cpp
         src/Maize/Physics/PhysicsDebugDraw.h
-        src/Maize/Physics/PhysicsDebugDraw.h
+        src/Maize/Layers/GameLayer.cpp
+        src/Maize/Layers/GameLayer.h
+        src/Maize/Tools/Assert.h
+        src/Maize/Tools/PlatformDetection.h
+        src/Maize/Layers/InputLayer.cpp
+        src/Maize/Layers/InputLayer.h
 )
 
 target_include_directories(Maize PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

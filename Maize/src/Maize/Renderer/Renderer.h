@@ -2,7 +2,6 @@
 
 namespace Maize {
 
-	class Sprite;
 	struct Transform;
     struct SpriteRenderer;
 
@@ -31,34 +30,34 @@ namespace Maize {
     class Renderer
     {
     public:
-		static void Initialize(sf::RenderWindow& window);
+		void Initialize(sf::RenderWindow& window); // initialize renderer
+		void OnWindowResize(sf::Vector2f resize); // resizes the games view based on window size
 
-		static void OnWindowResize(sf::Vector2f resize);
+		void SetClearColour(sf::Color clearColour); // set clear colour for background
 
-		static void InsertDrawable(const Transform& transform, SpriteRenderer& spriteRenderer);
-		static void RemoveDrawable(const sf::Drawable* drawable);
-		static void UpdateDrawable(const Transform& transform, SpriteRenderer& spriteRenderer);
+		void InsertDrawable(const Transform& transform, SpriteRenderer& spriteRenderer); // insert a new drawable to the rendering buffer
+		void RemoveDrawable(const sf::Drawable* drawable); // remove drawable from the rendering buffer
+		void UpdateDrawable(const Transform& transform, SpriteRenderer& spriteRenderer); // update drawable
 
-        static void BeginDrawing(sf::Color clearColour);
+        void BeginDrawing(); // set rendering state to start drawing
+		void DrawScene(); // draw rendering buffer to the screen
+		void DrawImmediately(const sf::Drawable* drawable); // draw immediately to the screen
+		void EndDrawing(); // set rendering state to end drawing
 
-		static void DrawScene();
-		static void DrawImmediately(const sf::Drawable* drawable);
-
-		static void EndDrawing();
-
-		static bool IsDrawing() { return s_IsDrawing; };
-		static size_t GetDrawCall() { return s_DrawCalls; }
+		bool IsDrawing() const; // is rendering in the drawing state?
+		size_t GetDrawCall() const; // returns the amount of drawables being drawn
 
     private:
-		static bool InsideViewport(const RenderData& renderData);
+		bool InsideViewport(const RenderData& renderData); // checks if drawable is within the view
 
-		inline static std::vector<RenderData> s_Drawables;
+		std::vector<RenderData> m_Drawables;
 
-		inline static bool s_IsDrawing = false;
-		inline static size_t s_DrawCalls = 0;
+		bool m_IsDrawing = false;
+		size_t m_DrawCalls = 0;
 
-		inline static sf::RenderWindow* s_RenderWindow = nullptr;
-		inline static sf::View s_DefaultView;
+		sf::RenderWindow* m_RenderWindow = nullptr;
+		sf::View m_DefaultView;
+		sf::Color m_ClearColour = { 70, 130, 180 };
 
 		static constexpr float m_PixelPerUnit = 100.0f;
 		static constexpr int8_t m_Flip = -1;

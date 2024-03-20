@@ -1,18 +1,13 @@
 #pragma once
 
-#include "Maize/Core/KeyCodes.h"
-#include "Maize/Math/Vector2.h"
-
 namespace Maize {
 
-	class KeyPressedEvent;
-	class KeyReleasedEvent;
-	class MouseMovedEvent;
-	class MouseButtonPressedEvent;
-	class MouseButtonReleasedEvent;
-	class Event;
+	enum class KeyCode;
+	enum class MouseCode;
+	class InputLayer;
+	class Vector2;
 
-	class Input
+	class Input final
 	{
 	 public:
 		static bool GetButtonDown(KeyCode key);
@@ -25,29 +20,12 @@ namespace Maize {
 		static bool GetMouseButton(MouseCode button);
 		static bool GetMouseButtonUp(MouseCode button);
 
-		void OnEvent(Event& e);
-
 	 private:
-		static Input& Instance();
+		friend class InputLayer;
 
-		bool OnKeyPressed(const KeyPressedEvent& e);
-		bool OnKeyReleased(const KeyReleasedEvent& e);
-		bool OnMouseMoved(const MouseMovedEvent& e);
-		bool OnMousePressed(const MouseButtonPressedEvent& e);
-		bool OnMouseReleased(const MouseButtonReleasedEvent& e);
+		void SetInputLayer(InputLayer* inputLayer);
 
-	 private:
-		std::array<bool, sf::Keyboard::KeyCount> m_KeyDown;
-		std::array<bool, sf::Keyboard::KeyCount> m_KeyUp;
-		std::array<bool, sf::Keyboard::KeyCount> m_PrevKeyDown;
-		std::array<bool, sf::Keyboard::KeyCount> m_PrevKeyUp;
-
-		std::array<bool, sf::Mouse::ButtonCount> m_MouseDown;
-		std::array<bool, sf::Mouse::ButtonCount> m_MouseUp;
-		std::array<bool, sf::Mouse::ButtonCount> m_PrevMouseDown;
-		std::array<bool, sf::Mouse::ButtonCount> m_PrevMouseUp;
-
-		Vector2 m_MousePosition;
+		inline static InputLayer* s_InputHandler = nullptr;
 	};
 
 } // Maize

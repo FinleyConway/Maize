@@ -1,39 +1,28 @@
 #include "mpch.h"
 #include "Maize/Core/Application.h"
 
-#include "Maize/Renderer/Renderer.h"
-
 #include "Maize/Events/EventDispatcher.h"
 #include "Maize/Events/WindowEvents.h"
 
 #include "Maize/Core/Layer.h"
-
-#include "Maize/Scene/SceneManager.h"
+#include "Maize/Layers/InputLayer.h"
+#include "Maize/Layers/GameLayer.h"
 
 namespace Maize {
 
     Application::Application(const ApplicationSpecification &specification) : m_Window(specification.name)
     {
-        s_Instance = this;
-
         m_Window.SetEventCallback(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		m_Window.InitializeRenderer(m_Renderer);
 
-		Renderer::Initialize(m_Window.GetRenderWindow());
-
-		m_LayerStack.PushLayer(m_SceneManager = new SceneManager());
+		m_LayerStack.PushLayer(m_InputLayer = new InputLayer());
     }
-
-	Application::~Application()
-	{
-	}
 
     void Application::OnEvent(Event& e)
     {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
         dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
-
-		m_Input.OnEvent(e);
 
         for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); it++)
         {
@@ -68,12 +57,12 @@ namespace Maize {
 
             m_Window.PollEvents();
 
-			Renderer::BeginDrawing(sf::Color::Black);
+			m_Renderer.BeginDrawing();
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(deltaTime);
 
-			Renderer::EndDrawing();
+			m_Renderer.EndDrawing();
         }
     }
 
@@ -85,7 +74,7 @@ namespace Maize {
 
 	bool Application::OnWindowResize(const WindowResizeEvent& e)
 	{
-		Renderer::OnWindowResize(sf::Vector2f(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight())));
+		m_Renderer.OnWindowResize(sf::Vector2f(static_cast<float>(e.GetWidth()), static_cast<float>(e.GetHeight())));
 		return false;
 	}
 

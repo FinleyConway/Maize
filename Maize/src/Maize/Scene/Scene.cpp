@@ -5,7 +5,6 @@
 #include "Maize/Scene/Components.h"
 
 #include "Maize/Scene/Systems/HierarchySystem.h"
-#include "Maize/Scene/Systems/RenderingSystem.h"
 #include "Maize/Scene/Systems/CollisionSystem.h"
 
 namespace Maize {
@@ -49,7 +48,6 @@ namespace Maize {
 	{
 		m_SceneInit(*this);
 
-		AddSystem<RenderingSystem>("Render", 1000); // last
 		AddSystem<HierarchySystem>("Parent-Child", 900);
 		AddSystem<CollisionSystem>("Collision", 500);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Maize/Debug/Log.h"
 #include "Maize/Core/Application.h"
 
 int main()

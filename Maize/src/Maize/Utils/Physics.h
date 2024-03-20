@@ -1,10 +1,10 @@
 #pragma once
 
-#include <entt/entt.hpp>
-#include <box2d/box2d.h>
+#include "entt/entt.hpp"
+#include "box2d/box2d.h"
 
-#include "Maize/Math/Vector2.h"
-#include "Maize/Math/Math.h"
+#include "Maize/Utils/Vector2.h"
+#include "Maize/Utils/Math.h"
 
 namespace Maize {
 

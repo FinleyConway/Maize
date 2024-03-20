@@ -4,22 +4,29 @@
 
 #include "Maize/Scene/Components.h"
 
+#include <cassert>
+
 namespace Maize {
 
 	void Renderer::Initialize(sf::RenderWindow& window)
 	{
-		s_RenderWindow = &window;
+		m_RenderWindow = &window;
 
-		s_DefaultView.setCenter(0, 0);
-		s_DefaultView.setViewport({ 0, 0, 1, 1 });
-		s_DefaultView.setSize(static_cast<sf::Vector2f>(window.getSize()));
-		s_RenderWindow->setView(s_DefaultView);
+		m_DefaultView.setCenter(0, 0);
+		m_DefaultView.setViewport({ 0, 0, 1, 1 });
+		m_DefaultView.setSize(static_cast<sf::Vector2f>(window.getSize()));
+		m_RenderWindow->setView(m_DefaultView);
 	}
 
 	void Renderer::OnWindowResize(sf::Vector2f resize)
 	{
-		s_DefaultView.setSize(resize);
-		s_RenderWindow->setView(s_DefaultView);
+		m_DefaultView.setSize(resize);
+		m_RenderWindow->setView(m_DefaultView);
+	}
+
+	void Renderer::SetClearColour(sf::Color clearColour)
+	{
+		m_ClearColour = clearColour;
 	}
 
 	void Renderer::InsertDrawable(const Transform& transform, SpriteRenderer& spriteRenderer)
@@ -41,19 +48,25 @@ namespace Maize {
             sprite.setScale(sprite.getScale().x, -sprite.getScale().y);
         }
 
-		s_Drawables.push_back({ &sprite, sprite.GetGlobalBounds(), spriteRenderer.sortingLayer, spriteRenderer.orderInLayer });
+		m_Drawables.push_back({ &sprite, sprite.GetGlobalBounds(), spriteRenderer.sortingLayer, spriteRenderer.orderInLayer });
 	}
 
 	void Renderer::RemoveDrawable(const sf::Drawable* drawable)
 	{
+		if (drawable == nullptr)
+		{
+			LOG_CORE_WARN("Attempting to remove a null object!");
+			return;
+		}
+
 		// finds the element
-		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
+		auto it = std::find_if(m_Drawables.begin(), m_Drawables.end(),
 			[&drawable](const RenderData& data) { return data.drawable == drawable; });
 
 		// removes element if found
-		if (it != s_Drawables.end())
+		if (it != m_Drawables.end())
 		{
-			s_Drawables.erase(it);
+			m_Drawables.erase(it);
 		}
 	}
 
@@ -61,11 +74,11 @@ namespace Maize {
 	{
 		// finds the element
         auto& sprite = spriteRenderer.sprite;
-		auto it = std::find_if(s_Drawables.begin(), s_Drawables.end(),
+		auto it = std::find_if(m_Drawables.begin(), m_Drawables.end(),
 			[&sprite](const RenderData& d) { return d.drawable == &sprite; });
 
 		// update element if found
-		if (it != s_Drawables.end())
+		if (it != m_Drawables.end())
 		{
 			const float scaling = m_PixelPerUnit / sprite.GetPixelPerUnit();
 
@@ -89,28 +102,24 @@ namespace Maize {
 		}
 	}
 
-	void Renderer::BeginDrawing(sf::Color clearColour)
+	void Renderer::BeginDrawing()
     {
-		if (s_RenderWindow == nullptr)
-		{
-			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
-			return;
-		}
+		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
 
 		// mark as begin drawing
-		s_RenderWindow->clear(clearColour);
+		m_RenderWindow->clear(m_ClearColour);
 
-		s_IsDrawing = true;
-		s_DrawCalls = 0;
+		m_IsDrawing = true;
+		m_DrawCalls = 0;
     }
 
 	void Renderer::DrawScene()
 	{
 		// TODO: Look into something like a quad tree to only naive through nearby objects!
-		std::sort(s_Drawables.begin(), s_Drawables.end());
+		std::sort(m_Drawables.begin(), m_Drawables.end());
 
 		// naive through entire scene
-		for (const auto& draw : s_Drawables)
+		for (const auto& draw : m_Drawables)
 		{
 			// only draw if inside the current viewport
 			if (InsideViewport(draw))
@@ -119,16 +128,12 @@ namespace Maize {
 			}
 		}
 
-		PhysicsEngine::DrawDebug(*s_RenderWindow);
+		PhysicsEngine::DrawDebug(*m_RenderWindow);
 	}
 
 	void Renderer::DrawImmediately(const sf::Drawable* drawable)
 	{
-		if (s_RenderWindow == nullptr)
-		{
-			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
-			return;
-		}
+		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
 
 		if (drawable == nullptr)
 		{
@@ -136,28 +141,34 @@ namespace Maize {
 			return;
 		}
 
-		s_RenderWindow->draw(*drawable);
+		m_RenderWindow->draw(*drawable);
 
-		s_DrawCalls++;
+		m_DrawCalls++;
 	}
 
 	void Renderer::EndDrawing()
 	{
-		if (s_RenderWindow == nullptr)
-		{
-			LOG_CORE_ERROR("Renderer is null!, please assign render window!");
-			return;
-		}
+		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
 
 		// mark as ended drawing
-		s_RenderWindow->display();
+		m_RenderWindow->display();
 
-		s_IsDrawing = false;
+		m_IsDrawing = false;
+	}
+
+	bool Renderer::IsDrawing() const
+	{
+		return m_IsDrawing;
+	}
+
+	size_t Renderer::GetDrawCall() const
+	{
+		return m_DrawCalls;
 	}
 
 	bool Renderer::InsideViewport(const RenderData& renderData)
 	{
-		const auto& view = s_RenderWindow->getView();
+		const auto& view = m_RenderWindow->getView();
 
 		const auto size = view.getSize();
 		const auto halfSize = size / 2.0f;
