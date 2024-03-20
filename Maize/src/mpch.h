@@ -21,3 +21,4 @@
 #include <array>
 
 #include "Maize/Tools/Log.h"
+#include "Maize/Tools/Assert.h"

@@ -53,7 +53,7 @@ namespace Maize {
 		{
 			if (dynamic_cast<T*>(system.get()) != nullptr)
 			{
-				LOG_CORE_WARN("Adding a pre-existing system");
+				MZ_LOG_CORE_WARN("Adding a pre-existing system");
 				return;
 			}
 		}

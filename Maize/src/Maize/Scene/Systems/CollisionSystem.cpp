@@ -118,13 +118,13 @@ namespace Maize {
 				// cap min size
 				if (boxCollider.size.x < minSize)
 				{
-					LOG_WARN("Cannot have x size smaller then {}", minSize);
+					MZ_LOG_WARN("Cannot have x size smaller then {}", minSize);
 
 					boxCollider.size.x = minSize;
 				}
 				if (boxCollider.size.y < minSize)
 				{
-					LOG_WARN("Cannot have y size smaller then {}", minSize);
+					MZ_LOG_WARN("Cannot have y size smaller then {}", minSize);
 
 					boxCollider.size.y = minSize;
 				}
@@ -147,7 +147,7 @@ namespace Maize {
 				// cap min size
 				if (circleCollider.radius < minSize)
 				{
-					LOG_WARN("Cannot have radius smaller the {}", minSize);
+					MZ_LOG_WARN("Cannot have radius smaller the {}", minSize);
 
 					circleCollider.radius = minSize;
 				}

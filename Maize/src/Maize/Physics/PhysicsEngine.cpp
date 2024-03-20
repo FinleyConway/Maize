@@ -8,18 +8,12 @@ namespace Maize {
 
 	void PhysicsEngine::Initialize(Vector2 gravity, b2ContactListener* contactListener)
 	{
+		MZ_ASSERT_CORE(contactListener != nullptr, "contact listener has not been assigned!");
+
 		s_PhysicsWorld = new b2World({ gravity.x, gravity.y });
 		s_PhysicsDebugDraw = new PhysicsDebugDraw();
 
-		if (contactListener != nullptr)
-		{
-			s_PhysicsWorld->SetContactListener(contactListener);
-		}
-		else
-		{
-			LOG_CORE_ERROR("No contact listener has been assigned to physics engine!");
-		}
-
+		s_PhysicsWorld->SetContactListener(contactListener);
 		s_PhysicsWorld->SetDebugDraw(s_PhysicsDebugDraw);
 	}
 
@@ -70,13 +64,13 @@ namespace Maize {
 		// cap min size
 		if (size.x <= s_MinColliderSize)
 		{
-			LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
+			MZ_LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
 
 			size.x = s_MinColliderSize;
 		}
 		if (size.y <= s_MinColliderSize)
 		{
-			LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
+			MZ_LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
 
 			size.y = s_MinColliderSize;
 		}
@@ -108,7 +102,7 @@ namespace Maize {
 		// cap min size
 		if (radius < s_MinColliderSize)
 		{
-			LOG_WARN("Cannot have radius smaller the {}", s_MinColliderSize);
+			MZ_LOG_WARN("Cannot have radius smaller the {}", s_MinColliderSize);
 
 			radius = s_MinColliderSize;
 		}
@@ -142,13 +136,13 @@ namespace Maize {
 		// cap min size
 		if (size.x < s_MinColliderSize)
 		{
-			LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
+			MZ_LOG_WARN("Cannot have x size smaller then {}", s_MinColliderSize);
 
 			size.x = s_MinColliderSize;
 		}
 		if (size.y < s_MinColliderSize)
 		{
-			LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
+			MZ_LOG_WARN("Cannot have y size smaller then {}", s_MinColliderSize);
 
 			size.y = s_MinColliderSize;
 		}

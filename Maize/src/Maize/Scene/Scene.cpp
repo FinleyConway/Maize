@@ -59,7 +59,7 @@ namespace Maize {
 
 		for (const auto& system : m_Systems)
 		{
-			LOG_CORE_INFO(system->GetName());
+			MZ_LOG_CORE_INFO(system->GetName());
 
 			system->Initialize(m_Registry);
 		}

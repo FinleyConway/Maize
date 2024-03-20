@@ -4,8 +4,6 @@
 
 #include "Maize/Scene/Components.h"
 
-#include <cassert>
-
 namespace Maize {
 
 	void Renderer::Initialize(sf::RenderWindow& window)
@@ -20,6 +18,8 @@ namespace Maize {
 
 	void Renderer::OnWindowResize(sf::Vector2f resize)
 	{
+		MZ_ASSERT_CORE(m_RenderWindow != nullptr, "Renderer is null!, please assign render window!");
+
 		m_DefaultView.setSize(resize);
 		m_RenderWindow->setView(m_DefaultView);
 	}
@@ -55,7 +55,7 @@ namespace Maize {
 	{
 		if (drawable == nullptr)
 		{
-			LOG_CORE_WARN("Attempting to remove a null object!");
+			MZ_LOG_CORE_WARN("Attempting to remove a null object!");
 			return;
 		}
 
@@ -104,7 +104,7 @@ namespace Maize {
 
 	void Renderer::BeginDrawing()
     {
-		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
+		MZ_ASSERT_CORE(m_RenderWindow != nullptr, "Renderer is null!, please assign render window!");
 
 		// mark as begin drawing
 		m_RenderWindow->clear(m_ClearColour);
@@ -133,11 +133,11 @@ namespace Maize {
 
 	void Renderer::DrawImmediately(const sf::Drawable* drawable)
 	{
-		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
+		MZ_ASSERT_CORE(m_RenderWindow != nullptr, "Renderer is null!, please assign render window!");
 
 		if (drawable == nullptr)
 		{
-			LOG_CORE_WARN("Attempting to draw a null object!");
+			MZ_LOG_CORE_WARN("Attempting to draw a null object!");
 			return;
 		}
 
@@ -148,7 +148,7 @@ namespace Maize {
 
 	void Renderer::EndDrawing()
 	{
-		assert((m_RenderWindow != nullptr) && "Renderer is null!, please assign render window!");
+		MZ_ASSERT_CORE(m_RenderWindow != nullptr, "Renderer is null!, please assign render window!");
 
 		// mark as ended drawing
 		m_RenderWindow->display();

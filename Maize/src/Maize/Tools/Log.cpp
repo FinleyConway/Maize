@@ -1,5 +1,5 @@
 #include "mpch.h"
-#include "Maize/Debug/Log.h"
+#include "Maize/Tools/Log.h"
 
 namespace Maize {
 
